@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_200">#0A4DE0</color>
+    <color name="blue_500">#0A4DE0</color>
+    <color name="blue_700">#0A4DE0</color>
+    <color name="faded_gray">#7A7C7F</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dark_blue_700">#0A1837</color>
+    <color name="dark_blue_500">#0A1837</color>
+    <color name="dark_blue_200">#B6C3E0</color>
+    <color name="faded_black">#60999797</color>
+</resources>

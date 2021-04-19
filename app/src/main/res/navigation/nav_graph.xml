@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/noteDisplay">
+    <fragment
+        android:id="@+id/noteDisplay"
+        android:name="com.gitsoft.notesapp.ui.display.NoteDisplay"
+        android:label="All Notes"
+        tools:layout="@layout/note_display_fragment" >
+        <action
+            android:id="@+id/action_noteDisplay_to_newNoteFragment"
+            app:destination="@id/newNoteFragment"
+            app:popUpTo="@id/newNoteFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_showNoteData"
+            app:destination="@id/noteContentFragment"
+            app:popUpTo="@id/noteContentFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/newNoteFragment"
+        android:name="com.gitsoft.notesapp.ui.collect.NewNoteFragment"
+        android:label="Add Note"
+        tools:layout="@layout/new_note_fragment" >
+        <action
+            android:id="@+id/action_newNoteFragment_to_noteDisplay"
+            app:destination="@id/noteDisplay"
+            app:popUpTo="@id/noteDisplay"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/noteContentFragment"
+        android:name="com.gitsoft.notesapp.ui.note_content.NoteContentFragment"
+        android:label="Note Info"
+        tools:layout="@layout/note_content_fragment">
+        <argument
+            android:name="selectedNote"
+            app:argType="com.gitsoft.notesapp.database.Note" />
+    </fragment>
+</navigation>
