@@ -3,41 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/noteDisplay">
+    app:startDestination="@id/noteListFragment">
     <fragment
-        android:id="@+id/noteDisplay"
-        android:name="com.gitsoft.notesapp.ui.display.NoteDisplay"
-        android:label="All Notes"
-        tools:layout="@layout/note_display_fragment" >
+        android:id="@+id/noteListFragment"
+        android:name="com.gitsoft.notesapp.ui.noteslist.NoteListFragment"
+        android:label="My Notes"
+        tools:layout="@layout/note_list_fragment">
         <action
-            android:id="@+id/action_noteDisplay_to_newNoteFragment"
-            app:destination="@id/newNoteFragment"
-            app:popUpTo="@id/newNoteFragment"
+            android:id="@+id/action_noteListFragment_to_addEditNoteFragment"
+            app:destination="@id/addEditNoteFragment"
+            app:popUpTo="@id/addEditNoteFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_showNoteData"
-            app:destination="@id/noteContentFragment"
-            app:popUpTo="@id/noteContentFragment"
+            android:id="@+id/action_noteListFragment_to_viewNoteFragment"
+            app:destination="@id/viewNoteFragment"
+            app:popUpTo="@id/viewNoteFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/newNoteFragment"
-        android:name="com.gitsoft.notesapp.ui.collect.NewNoteFragment"
+        android:id="@+id/addEditNoteFragment"
+        android:name="com.gitsoft.notesapp.ui.addnote.AddEditNoteFragment"
         android:label="Add Note"
-        tools:layout="@layout/new_note_fragment" >
+        tools:layout="@layout/add_edit_note_fragment">
         <action
-            android:id="@+id/action_newNoteFragment_to_noteDisplay"
-            app:destination="@id/noteDisplay"
-            app:popUpTo="@id/noteDisplay"
+            android:id="@+id/action_addEditNoteFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment"
+            app:popUpTo="@id/noteListFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/noteContentFragment"
-        android:name="com.gitsoft.notesapp.ui.note_content.NoteContentFragment"
-        android:label="Note Info"
-        tools:layout="@layout/note_content_fragment">
+        android:id="@+id/viewNoteFragment"
+        android:name="com.gitsoft.notesapp.ui.viewnote.ViewNoteFragment"
+        android:label="This Note"
+        tools:layout="@layout/view_note_fragment">
+        <action
+            android:id="@+id/action_viewNoteFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment"
+            app:popUpTo="@id/noteListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_viewNoteFragment_to_addEditNoteFragment"
+            app:destination="@id/addEditNoteFragment"
+            app:popUpTo="@id/addEditNoteFragment"
+            app:popUpToInclusive="true" />
         <argument
-            android:name="selectedNote"
-            app:argType="com.gitsoft.notesapp.database.Note" />
+            android:name="note"
+            app:argType="com.gitsoft.notesapp.model.Note" />
     </fragment>
 </navigation>

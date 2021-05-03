@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.gitsoft.notesapp.ui.noteslist.NoteListViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.noteslist.NoteListFragment">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:scrollbars="vertical"
+            android:padding="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_item"
+                    notes="@{viewModel.allNotes}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:spanCount="2"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/note_item" />
+
+                <RelativeLayout
+                    visibilityStatus="@{viewModel.visibility}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" >
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/info" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/no_note_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="30dp"
+                        android:text="@string/no_note_text"
+                        android:textSize="25sp"
+                        android:textAlignment="center"
+                        android:layout_below="@id/appCompatImageView"
+                        android:gravity="center_horizontal" />
+
+                </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/newNoteFab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="18dp"
+            android:contentDescription="@string/add_note"
+            android:onClick="@{() -> viewModel.onAddNewNote()}"
+            android:src="@drawable/add_icon"
+            app:backgroundTint="?attr/colorPrimary"
+            app:elevation="10dp"
+            app:rippleColor="@color/white"
+            app:tintMode="@color/white" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

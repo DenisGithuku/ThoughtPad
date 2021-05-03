@@ -11,4 +11,6 @@
     <string name="status_text">Click on the + button to add a new note</string>
     <string name="view_list">View List</string>
     <string name="view_grid">View Grid</string>
+    <string name="no_note_text">Click on the + button to add a new note</string>
+    <string name="delete_all">Delete all</string>
 </resources>

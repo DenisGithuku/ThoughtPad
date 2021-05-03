@@ -1,25 +1,32 @@
 package com.gitsoft.notesapp.database
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
+import com.gitsoft.notesapp.model.Note
+import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface NotesDatabaseDao {
-    @Insert
-    fun insert(note: Note)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(note: Note)
 
     @Update
-    fun update(note: Note)
+    suspend fun update(note: Note)
 
-    @Query("select * from notes_table order by noteId desc")
-    fun getAllNotes(): LiveData<List<Note>>
-
-    @Query("select * from notes_table order by noteId desc limit 1")
-    fun getOneNote(): Note?
+    @Delete
+    suspend fun delete(note: Note)
 
     @Query("delete from notes_table")
-    fun clear()
+    suspend fun clear()
+
+    @Query("select * from notes_table order by noteId desc")
+    fun loadAllNotes(): Flow<List<Note>>
+
+    @Query("select * from notes_table order by noteId desc limit 1")
+    fun loadOneNote(): Flow<Note?>
+
+    @Query("select * from notes_table where noteTitle like :query or noteText like :query")
+    fun searchDatabase(query: String): Flow<List<Note>>
+
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.gitsoft.notesapp.ui.addnote.AddEditNoteViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/viewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.addnote.AddEditNoteFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/noteTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:hint="@string/title"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:text="@={viewModel.title}"
+                android:textSize="22sp"
+                app:backgroundTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.028" />
+
+            <EditText
+                android:id="@+id/noteText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:hint="@string/text"
+                android:textColor="@color/black"
+                android:padding="15dp"
+                android:text="@={viewModel.text}"
+                android:textSize="16sp"
+                app:backgroundTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noteTitle"
+                app:layout_constraintVertical_bias="0.047" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/saveNoteFab"
+            app:srcCompat="@drawable/check"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="18dp"
+            app:backgroundTint="?attr/colorPrimary"
+            app:tintMode="@color/white"
+            android:onClick="@{() -> viewModel.onSaveNote()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="VectorDrawableCompat" />
+
+        <include layout="@layout/card_background" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

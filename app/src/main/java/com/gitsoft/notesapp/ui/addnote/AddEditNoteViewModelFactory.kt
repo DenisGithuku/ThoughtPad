@@ -1,21 +1,20 @@
-package com.gitsoft.notesapp.ui.note_content
+package com.gitsoft.notesapp.ui.addnote
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.gitsoft.notesapp.database.Note
+import com.gitsoft.notesapp.repository.NotesRepository
 import java.lang.IllegalArgumentException
 
-class NoteContentViewModelFactory(
-    val note: Note,
-    val application: Application
+class AddEditNoteViewModelFactory(
+    private val application: Application,
+    private val repository: NotesRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("unchecked_cast")
-        if (modelClass.isAssignableFrom(NoteContentViewModel::class.java)) {
-            return NoteContentViewModel(note, application) as T
+        if (modelClass.isAssignableFrom(AddEditNoteViewModel::class.java)) {
+            return AddEditNoteViewModel(repository, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

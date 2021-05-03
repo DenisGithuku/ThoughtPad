@@ -3,7 +3,7 @@
     <color name="blue_200">#0A4DE0</color>
     <color name="blue_500">#0A4DE0</color>
     <color name="blue_700">#0A4DE0</color>
-    <color name="faded_gray">#7A7C7F</color>
+    <color name="faded_gray">#656666</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
@@ -12,4 +12,9 @@
     <color name="dark_blue_500">#0A1837</color>
     <color name="dark_blue_200">#B6C3E0</color>
     <color name="faded_black">#60999797</color>
+    <color name="cyan">#0ADDE0</color>
+    <color name="sky_blue">#4F7FE9</color>
+    <color name="yellow">#E9DF2B</color>
+    <color name="orange">#F8802B</color>
+    <color name="green">#8AE93C</color>
 </resources>

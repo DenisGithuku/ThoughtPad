@@ -5,4 +5,7 @@
     <string name="text">Text</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
+    <string name="no_note_text">Click on the + button to add a new note</string>
+    <string name="add_note">Add Note</string>
+    <string name="delete_all">Delete all</string>
 </resources>
