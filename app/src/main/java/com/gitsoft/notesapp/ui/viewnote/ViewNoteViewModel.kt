@@ -53,9 +53,9 @@ class ViewNoteViewModel(
             } else {
                 val note = Note(id, title, text)
                 update(note)
-
-                _navigateToNoteDisplay.value = true
             }
+
+            _navigateToNoteDisplay.value = true
         }
 
     }
@@ -66,7 +66,6 @@ class ViewNoteViewModel(
 
     fun deleteNote() {
         viewModelScope.launch {
-            val note = _selectedNote.value!!
             delete(note)
 
             _navigateToNoteDisplay.value = true
@@ -87,7 +86,7 @@ class ViewNoteViewModel(
     }
 
     fun onShowDeleteNoteEvent() {
-        _deleteNoteEvent.value = true
+        _deleteNoteEvent.value = false
     }
 
     override fun onCleared() {

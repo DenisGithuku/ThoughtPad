@@ -65,7 +65,7 @@ class AddEditNoteFragment : Fragment() {
 
         viewModel.backgroundChanged.observe(viewLifecycleOwner, {
             it.let {
-                binding.viewLayout.setBackgroundColor(Color.argb(100, 10, 221, 224))
+                binding.editLayout.setBackgroundColor(Color.argb(100, 10, 221, 224))
             }
         })
 

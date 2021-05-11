@@ -22,8 +22,10 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
     private val _navigateToAddNote = MutableLiveData<Boolean>()
     val navigateToAddNote: LiveData<Boolean> = _navigateToAddNote
 
-    private val _visibility = MutableLiveData<NoteStatus>()
-    val visibility: LiveData<NoteStatus> = _visibility
+    val empty: LiveData<Boolean> = Transformations.map(allNotes) {
+        it.isEmpty()
+    }
+
 
     private val _navigateToViewNote = MutableLiveData<Note?>()
     val navigateToViewNote: LiveData<Note?> = _navigateToViewNote
@@ -31,11 +33,7 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
 
 
     init {
-        if (allNotes.value?.isEmpty() == true) {
-            _visibility.value = NoteStatus.EMPTY
-        } else {
-            _visibility.value = NoteStatus.OCCUPIED
-        }
+
     }
 
     fun onClearAll() {

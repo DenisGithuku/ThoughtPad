@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -41,7 +42,7 @@
                     tools:listitem="@layout/note_item" />
 
                 <RelativeLayout
-                    visibilityStatus="@{viewModel.visibility}"
+                    android:visibility="@{viewModel.empty? View.VISIBLE : View.GONE}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

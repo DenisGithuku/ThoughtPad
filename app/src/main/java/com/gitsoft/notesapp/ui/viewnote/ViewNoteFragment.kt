@@ -1,7 +1,10 @@
 package com.gitsoft.notesapp.ui.viewnote
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -41,7 +44,7 @@ class ViewNoteFragment : Fragment() {
         viewModel.noteEmptyEvent.observe(viewLifecycleOwner, {
             if (true == it) {
                 Snackbar.make(
-                    requireActivity().findViewById(android.R.id.content),
+                    binding.viewLayout,
                     "Note cannot be empty",
                     Snackbar.LENGTH_SHORT
                 ).show()
@@ -56,6 +59,7 @@ class ViewNoteFragment : Fragment() {
                     Snackbar.LENGTH_SHORT
                 ).show()
 
+//                snackBar.setAction(R.string.undo_text, MyUndoListener(application))
                 viewModel.onShowDeleteNoteEvent()
             }
         })
@@ -65,8 +69,22 @@ class ViewNoteFragment : Fragment() {
         return binding.root
     }
 
+    private fun shareDetails() {
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+            val title = viewModel.noteTitle.value.toString()
+            val text = viewModel.noteText.toString()
+            putExtra(Intent.EXTRA_TEXT, title)
+            type = "text/plain"
+        }
+        try {
+            startActivity(sendIntent)
+        }catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), "Format not supported", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.view_todo_menu, menu)
+        inflater.inflate(R.menu.view_note_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -75,10 +93,18 @@ class ViewNoteFragment : Fragment() {
             viewModel.deleteNote()
             true
         }
+        R.id.share_item -> {
+            shareDetails()
+            true
+        }
         else -> {
             super.onOptionsItemSelected(item)
         }
     }
 
-
+//    class MyUndoListener(private val application: Application): View.OnClickListener {
+//
+//        override fun onClick(v: View?) {
+//            Toast.makeText(application, "Action Working", Toast.LENGTH_SHORT).show()
+//        }
 }

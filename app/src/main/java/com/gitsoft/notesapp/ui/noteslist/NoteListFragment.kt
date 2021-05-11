@@ -45,23 +45,17 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
 
         viewModel.navigateToViewNote.observe(viewLifecycleOwner, {
             if (it != null) {
-                openDetails(it)
+                val navController = findNavController()
+                navController.navigate(NoteListFragmentDirections.actionNoteListFragmentToViewNoteFragment(
+                    it))
+
+                viewModel.onNavigateToViewNote()
             }
         })
         setHasOptionsMenu(true)
         return binding.root
     }
-
-    private fun openDetails(note: Note) {
-        val navController = findNavController()
-        navController.navigate(NoteListFragmentDirections.actionNoteListFragmentToViewNoteFragment(
-            note
-        ))
-
-        viewModel.onNavigateToViewNote()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.note_list_menu, menu)
 
         val search = menu.findItem(R.id.app_bar_search)
@@ -95,9 +89,9 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
         return true
     }
     private fun searchDatabase(query: String) {
-        val search = "%$query%"
+        val searchQuery = "%$query%"
 
-        viewModel.searchDatabase(search).observe(viewLifecycleOwner, {
+        viewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner, {
             it.let {
                 adapter.submitList(it)
             }
