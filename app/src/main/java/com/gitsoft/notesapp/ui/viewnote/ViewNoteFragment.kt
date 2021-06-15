@@ -73,7 +73,7 @@ class ViewNoteFragment : Fragment() {
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             val title = viewModel.noteTitle.value.toString()
             val text = viewModel.noteText.toString()
-            putExtra(Intent.EXTRA_TEXT, title)
+            putExtra(Intent.EXTRA_TEXT, text)
             type = "text/plain"
         }
         try {

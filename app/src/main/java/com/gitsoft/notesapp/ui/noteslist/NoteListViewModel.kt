@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.gitsoft.notesapp.model.Note
 import com.gitsoft.notesapp.repository.NotesRepository
-import com.gitsoft.notesapp.utils.NoteStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,8 +21,10 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
     private val _navigateToAddNote = MutableLiveData<Boolean>()
     val navigateToAddNote: LiveData<Boolean> = _navigateToAddNote
 
-    val empty: LiveData<Boolean> = Transformations.map(allNotes) {
+    val empty: LiveData<Boolean> by lazy {
+        Transformations.map(allNotes) {
         it.isEmpty()
+    }
     }
 
 

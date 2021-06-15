@@ -38,9 +38,6 @@ class AddEditNoteViewModel(
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val allNotes = repository.allNotes.asLiveData()
-    val oneNote = repository.oneNote.asLiveData()
-
     init {
 
     }

@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import com.gitsoft.notesapp.R
 import com.gitsoft.notesapp.database.NotesDatabase
 import com.gitsoft.notesapp.databinding.NoteListFragmentBinding
-import com.gitsoft.notesapp.model.Note
 import com.gitsoft.notesapp.repository.NotesRepository
 import com.gitsoft.notesapp.utils.NotesAdapter
 
@@ -60,7 +59,7 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
 
         val search = menu.findItem(R.id.app_bar_search)
         val searchView = search.actionView as SearchView
-        searchView.isSubmitButtonEnabled = true
+        searchView.isSubmitButtonEnabled = false
         searchView.setOnQueryTextListener(this)
         super.onCreateOptionsMenu(menu, inflater)
     }
