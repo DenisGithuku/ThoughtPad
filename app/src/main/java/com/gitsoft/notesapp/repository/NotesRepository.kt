@@ -1,16 +1,16 @@
 package com.gitsoft.notesapp.repository
 
+import androidx.lifecycle.LiveData
 import com.gitsoft.notesapp.database.NotesDatabaseDao
 import com.gitsoft.notesapp.model.Note
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class NotesRepository(private val dao: NotesDatabaseDao) {
 
 
-    val allNotes: Flow<List<Note>> = dao.loadAllNotes()
-    val oneNote: Flow<Note?> = dao.loadOneNote()
+    val allNotes: LiveData<List<Note>> = dao.loadAllNotes()
+    val oneNote: LiveData<Note?> = dao.loadOneNote()
 
     suspend fun insert(note: Note) {
         return withContext(Dispatchers.IO) {
@@ -36,7 +36,7 @@ class NotesRepository(private val dao: NotesDatabaseDao) {
         }
     }
 
-    fun searchDatabase(query: String): Flow<List<Note>> {
+    fun searchDatabase(query: String): LiveData<List<Note>> {
             return dao.searchDatabase(query)
     }
 

@@ -1,7 +1,10 @@
 package com.gitsoft.notesapp.ui.noteslist
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.gitsoft.notesapp.model.Note
 import com.gitsoft.notesapp.repository.NotesRepository
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +15,7 @@ import kotlinx.coroutines.launch
 class NoteListViewModel(application: Application, val repository: NotesRepository) :
     AndroidViewModel(application) {
 
-    val allNotes = repository.allNotes.asLiveData()
+    val allNotes = repository.allNotes
 
 
     private val viewModelJob = Job()
@@ -61,7 +64,7 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
     }
 
     fun searchDatabase(query: String): LiveData<List<Note>> {
-        return repository.searchDatabase(query).asLiveData()
+        return repository.searchDatabase(query)
     }
 
 

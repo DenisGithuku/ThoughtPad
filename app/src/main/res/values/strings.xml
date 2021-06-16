@@ -8,12 +8,12 @@
     <string name="text">Text</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
-    <string name="status_text">Click on the + button to add a new note</string>
+    <string name="no_note_text">Click on the + button to add a new note</string>
     <string name="view_list">View List</string>
     <string name="view_grid">View Grid</string>
-    <string name="no_note_text">Click on the + button to add a new note</string>
+    <string name="splash_header">Write anything, Any time</string>
     <string name="page_title">Personal note keeper</string>
-    <string name="page_subtitle">Jot down anything at any time, and I\'ll keep it for you.</string>
+    <string name="splash_subtitle">Dare to defy the limits</string>
     <string name="delete_all">Delete all</string>
     <string name="undo_text">Undo</string>
 </resources>

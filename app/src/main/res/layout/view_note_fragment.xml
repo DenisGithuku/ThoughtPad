@@ -80,7 +80,5 @@
                 tools:ignore="VectorDrawableCompat"
                 android:contentDescription="@string/save" />
 
-<include layout="@layout/card_background" />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
