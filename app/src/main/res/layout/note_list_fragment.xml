@@ -72,7 +72,8 @@
                 android:text="@string/no_note_text"
                 android:textSize="25sp"
                 android:textAlignment="center"
-                android:layout_below="@id/appCompatImageView" />
+                android:layout_below="@id/appCompatImageView"
+                android:gravity="center_horizontal" />
 
         </RelativeLayout>
 

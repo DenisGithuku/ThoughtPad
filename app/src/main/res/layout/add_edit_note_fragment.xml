@@ -75,8 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="VectorDrawableCompat" />
-
-        <include layout="@layout/card_background" />
+        
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
