@@ -7,10 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.notesapp.model.Note
 import com.gitsoft.notesapp.repository.NotesRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class ViewNoteViewModel(
     val repository: NotesRepository,
@@ -35,6 +32,9 @@ class ViewNoteViewModel(
 
     val noteText = MutableLiveData<String>()
 
+    private val viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
     init {
         _selectedNote.value = note
         noteTitle.value = _selectedNote.value!!.noteTitle!!
@@ -58,6 +58,25 @@ class ViewNoteViewModel(
             _navigateToNoteDisplay.value = true
         }
 
+    }
+
+    fun undoDelete() {
+        coroutineScope.launch {
+            val id = note.noteId
+            val title = note.noteTitle
+            val text = note.noteText
+
+            val note = Note(id, title, text)
+
+            insert(note)
+        }
+
+    }
+
+    private suspend fun insert(note: Note){
+        return withContext(Dispatchers.IO){
+            repository.insert(note)
+        }
     }
 
     fun onNavigatedToNoteDisplay() {

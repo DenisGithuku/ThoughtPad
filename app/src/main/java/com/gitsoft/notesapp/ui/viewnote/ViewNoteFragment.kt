@@ -28,7 +28,11 @@ class ViewNoteFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val dao = NotesDatabase.getInstance(application).dao
         val repository = NotesRepository(dao)
-        val viewModelFactory = ViewNoteViewModelFactory(repository, arguments, application)
+        val viewModelFactory = com.gitsoft.notesapp.ui.viewnote.ViewNoteViewModelFactory(
+            repository,
+            arguments,
+            application
+        )
         viewModel = ViewModelProvider(this, viewModelFactory).get(ViewNoteViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -53,11 +57,17 @@ class ViewNoteFragment : Fragment() {
 
         viewModel.deleteNoteEvent.observe(viewLifecycleOwner, {
             if (true == it) {
-                Snackbar.make(
+                val snackbar = Snackbar.make(
                     requireActivity().findViewById(android.R.id.content),
                     "Note deleted successfully",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                    Snackbar.LENGTH_LONG
+                )
+
+                snackbar.setAction("UNDO") {
+                    viewModel.undoDelete()
+                }
+
+                snackbar.show()
 
 //                snackBar.setAction(R.string.undo_text, MyUndoListener(application))
                 viewModel.onShowDeleteNoteEvent()

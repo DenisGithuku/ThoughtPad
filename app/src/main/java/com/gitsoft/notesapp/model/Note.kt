@@ -31,7 +31,7 @@ data class Note(
 
     companion object CREATOR : Parcelable.Creator<Note> {
         override fun createFromParcel(parcel: Parcel): Note {
-            return Note(parcel)
+            return com.gitsoft.notesapp.model.Note(parcel)
         }
 
         override fun newArray(size: Int): Array<Note?> {
