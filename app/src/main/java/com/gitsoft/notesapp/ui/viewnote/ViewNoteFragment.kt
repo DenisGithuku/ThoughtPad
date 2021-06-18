@@ -112,9 +112,4 @@ class ViewNoteFragment : Fragment() {
         }
     }
 
-//    class MyUndoListener(private val application: Application): View.OnClickListener {
-//
-//        override fun onClick(v: View?) {
-//            Toast.makeText(application, "Action Working", Toast.LENGTH_SHORT).show()
-//        }
 }
