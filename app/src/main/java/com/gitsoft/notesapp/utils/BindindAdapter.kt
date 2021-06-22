@@ -14,15 +14,3 @@ fun bindNotes(recyclerView: RecyclerView, data: List<Note>?) {
     val adapter = recyclerView.adapter as NotesAdapter
     adapter.submitList(data)
 }
-
-@BindingAdapter("visibilityStatus")
-fun bindVisibility(layout: RelativeLayout, status: NoteStatus?) {
-    when (status) {
-        NoteStatus.EMPTY -> {
-            layout.visibility = View.VISIBLE
-        }
-        NoteStatus.OCCUPIED -> {
-            layout.visibility = View.GONE
-        }
-    }
-}

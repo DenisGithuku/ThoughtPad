@@ -26,14 +26,12 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
 
     val empty: LiveData<Boolean> by lazy {
         Transformations.map(allNotes) {
-        it.isEmpty()
+            it.isEmpty()
+        }
     }
-    }
-
 
     private val _navigateToViewNote = MutableLiveData<Note?>()
     val navigateToViewNote: LiveData<Note?> = _navigateToViewNote
-
 
 
     init {
@@ -66,7 +64,6 @@ class NoteListViewModel(application: Application, val repository: NotesRepositor
     fun searchDatabase(query: String): LiveData<List<Note>> {
         return repository.searchDatabase(query)
     }
-
 
 
     override fun onCleared() {
