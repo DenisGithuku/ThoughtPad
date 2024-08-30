@@ -5,11 +5,11 @@
     <data>
         <variable
             name="note"
-            type="com.gitsoft.notesapp.model.Note" />
+            type="com.gitsoft.thoughtpad.model.Note" />
 
         <variable
             name="viewModel"
-            type="com.gitsoft.notesapp.ui.noteslist.NoteListViewModel" />
+            type="com.gitsoft.thoughtpad.ui.noteslist.NoteListViewModel" />
 
     </data>
 
@@ -41,6 +41,7 @@
                             <TextView
                                 android:id="@+id/noteTitle"
                                 android:textSize="22sp"
+                                android:fontFamily="@font/poppins_regular"
                                 android:textColor="@color/black"
                                 android:text="@{note.noteTitle}"
                                 android:layout_width="match_parent"
@@ -57,6 +58,7 @@
                                 android:layout_below="@+id/noteTitle"
                                 android:layout_width="match_parent"
                                 android:textSize="16sp"
+                                android:fontFamily="@font/poppins_medium"
                                 android:text="@{note.noteText}"
                                 android:layout_marginTop="8dp"
                                 android:maxLines="7"

@@ -6,8 +6,8 @@
     app:startDestination="@id/noteListFragment">
     <fragment
         android:id="@+id/noteListFragment"
-        android:name="com.gitsoft.notesapp.ui.noteslist.NoteListFragment"
-        android:label="My Notes"
+        android:name="com.gitsoft.thoughtpad.ui.noteslist.NoteListFragment"
+        android:label="@string/note_list_title"
         tools:layout="@layout/note_list_fragment">
         <action
             android:id="@+id/action_noteListFragment_to_addEditNoteFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEditNoteFragment"
-        android:name="com.gitsoft.notesapp.ui.addnote.AddEditNoteFragment"
+        android:name="com.gitsoft.thoughtpad.ui.addnote.AddEditNoteFragment"
         android:label="Add Note"
         tools:layout="@layout/add_edit_note_fragment">
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewNoteFragment"
-        android:name="com.gitsoft.notesapp.ui.viewnote.ViewNoteFragment"
+        android:name="com.gitsoft.thoughtpad.ui.viewnote.ViewNoteFragment"
         android:label="This Note"
         tools:layout="@layout/view_note_fragment">
         <action
@@ -48,6 +48,6 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="note"
-            app:argType="com.gitsoft.notesapp.model.Note" />
+            app:argType="com.gitsoft.thoughtpad.model.Note" />
     </fragment>
 </navigation>

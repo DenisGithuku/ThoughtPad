@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NotesApp</string>
+    <string name="app_name">ThoughtPad</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="test_string">Testing</string>
     <string name="add_note">Add Note</string>
@@ -11,9 +11,12 @@
     <string name="no_note_text">Click on the + button to add a new note</string>
     <string name="view_list">View List</string>
     <string name="view_grid">View Grid</string>
-    <string name="splash_header">Write anything, Any time</string>
+    <string name="splash_header">Write anything, any time</string>
     <string name="page_title">Personal note keeper</string>
     <string name="splash_subtitle">Dare to defy the limits</string>
     <string name="delete_all">Delete all</string>
     <string name="undo_text">Undo</string>
+    <string name="note_added_messge">New note added</string>
+    <string name="empty_note_message">Note cannot be empty</string>
+    <string name="note_list_title">My notes</string>
 </resources>

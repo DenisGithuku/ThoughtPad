@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.gitsoft.notesapp.ui.noteslist.NoteListViewModel" />
+            type="com.gitsoft.thoughtpad.ui.noteslist.NoteListViewModel" />
 
     </data>
 
@@ -30,7 +30,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_item"
-                    notes="@{viewModel.allNotes}"
+                    app:notes="@{viewModel.allNotes}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
@@ -70,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
                 android:text="@string/no_note_text"
-                android:textSize="25sp"
+                android:textSize="@dimen/body_medium"
+                android:fontFamily="@font/poppins_regular"
                 android:textAlignment="center"
                 android:layout_below="@id/appCompatImageView"
                 android:gravity="center_horizontal" />
@@ -88,6 +89,7 @@
             android:src="@drawable/add_icon"
             app:backgroundTint="?attr/colorPrimary"
             app:elevation="10dp"
+            android:textSize="@dimen/body_large"
             app:rippleColor="@color/white"
             app:tintMode="@color/white" />
 

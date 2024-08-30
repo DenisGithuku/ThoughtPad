@@ -2,4 +2,15 @@
 <resources>
     <dimen name="header">28sp</dimen>
     <dimen name="subtitle">22sp</dimen>
+    <dimen name="logo_width">100dp</dimen>
+    <dimen name="logo_height">100dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+
+    <dimen name="title_large">24sp</dimen>
+    <dimen name="title_medium">18sp</dimen>
+    <dimen name="title_small">16sp</dimen>
+    <dimen name="body_large">20sp</dimen>
+    <dimen name="body_medium">16sp</dimen>
+    <dimen name="body_small">12sp</dimen>
+    <dimen name="caption">10sp</dimen>
 </resources>

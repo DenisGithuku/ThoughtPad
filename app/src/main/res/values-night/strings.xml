@@ -8,4 +8,6 @@
     <string name="no_note_text">Click on the + button to add a new note</string>
     <string name="add_note">Add Note</string>
     <string name="delete_all">Delete all</string>
+    <string name="note_added_messge">New note added</string>
+    <string name="empty_note_message">Note cannot be empty</string>
 </resources>

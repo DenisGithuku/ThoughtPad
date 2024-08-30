@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.gitsoft.notesapp.ui.viewnote.ViewNoteViewModel" />
+            type="com.gitsoft.thoughtpad.ui.viewnote.ViewNoteViewModel" />
 
     </data>
 
@@ -36,8 +36,9 @@
                     android:padding="15dp"
                     android:textColor="@color/black"
                     android:text="@={viewModel.noteTitle}"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/title_medium"
                     app:backgroundTint="@color/white"
+                    android:fontFamily="@font/poppins_bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -52,11 +53,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
+                    android:fontFamily="@font/poppins_regular"
                     android:hint="@string/text"
                     android:textColor="@color/black"
                     android:padding="15dp"
                     android:text="@={viewModel.noteText}"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/body_medium"
                     app:backgroundTint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="VectorDrawableCompat"
+                android:textSize="@dimen/body_medium"
                 android:contentDescription="@string/save" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

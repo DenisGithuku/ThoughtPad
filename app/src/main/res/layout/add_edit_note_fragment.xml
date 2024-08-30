@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.gitsoft.notesapp.ui.addnote.AddEditNoteViewModel" />
+            type="com.gitsoft.thoughtpad.ui.addnote.AddEditNoteViewModel" />
 
     </data>
 
