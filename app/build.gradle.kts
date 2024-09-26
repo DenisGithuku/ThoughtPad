@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.gitsoft.thoughtpad"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 2
         versionName = "1.0.1"
@@ -60,6 +60,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 

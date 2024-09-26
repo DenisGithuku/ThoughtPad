@@ -88,6 +88,9 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
         }
         return true
     }
+
+
+
     private fun searchDatabase(query: String) {
         val searchQuery = "%$query%"
 

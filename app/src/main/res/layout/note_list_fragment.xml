@@ -89,9 +89,8 @@
             android:src="@drawable/add_icon"
             app:backgroundTint="?attr/colorPrimary"
             app:elevation="10dp"
-            android:textSize="@dimen/body_large"
-            app:rippleColor="@color/white"
-            app:tintMode="@color/white" />
+            app:tint="?attr/colorOnPrimary"
+            android:textSize="@dimen/body_large" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
