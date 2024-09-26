@@ -19,6 +19,11 @@
             app:destination="@id/viewNoteFragment"
             app:popUpTo="@id/viewNoteFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_noteListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/addEditNoteFragment"
@@ -50,4 +55,9 @@
             android:name="note"
             app:argType="com.gitsoft.thoughtpad.model.Note" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.gitsoft.thoughtpad.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

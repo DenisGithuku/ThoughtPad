@@ -65,8 +65,9 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
-        R.id.delete_all -> {
-            viewModel.onClearAll()
+        R.id.settings -> {
+            val navController = findNavController()
+            navController.navigate(NoteListFragmentDirections.actionNoteListFragmentToSettingsFragment())
             true
         }
         else -> {
@@ -87,6 +88,9 @@ class NoteListFragment : Fragment(), SearchView.OnQueryTextListener {
         }
         return true
     }
+
+
+
     private fun searchDatabase(query: String) {
         val searchQuery = "%$query%"
 

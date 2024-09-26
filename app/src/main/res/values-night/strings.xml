@@ -10,4 +10,5 @@
     <string name="delete_all">Delete all</string>
     <string name="note_added_messge">New note added</string>
     <string name="empty_note_message">Note cannot be empty</string>
+    <string name="confirm">Okay</string>
 </resources>

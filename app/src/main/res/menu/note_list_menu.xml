@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/delete_all"
-        app:showAsAction="never"
-        android:title="@string/delete_all" />
     <item
         android:id="@+id/app_bar_search"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
-        android:iconTint="@color/white"
+        android:iconTint="?attr/colorOnPrimary"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         tools:targetApi="o" />
+    <item android:id="@+id/settings"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/baseline_settings_24"
+        android:iconTint="?attr/colorOnPrimary"
+        android:title="@string/settings" />
 </menu>
