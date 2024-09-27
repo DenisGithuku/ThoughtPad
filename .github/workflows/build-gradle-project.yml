@@ -22,7 +22,7 @@ jobs:
           cache: 'gradle'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-    - name: Generate keystore.properties
+      - name: Generate keystore.properties
         run: |
           cat <<EOF > keystore.properties
           storePassword:${{ secrets.KEYSTORE_STORE_PASSWORD }}
