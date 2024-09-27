@@ -25,9 +25,9 @@ jobs:
       - name: Generate keystore.properties
         run: |
           cat <<EOF > keystore.properties
-          storePassword:${{ secrets.KEYSTORE_STORE_PASSWORD }}
-          keyPassword:${{ secrets.KEYSTORE_KEY_PASSWORD }}
-          keyAlias:${{ secrets.KEYSTORE_KEY_ALIAS }}
+          storePassword:${{ secrets.STORE_PASSWORD }}
+          keyPassword:${{ secrets.KEY_PASSWORD }}
+          keyAlias:${{ secrets.KEY_ALIAS }}
           storeFile:${{ vars.KEYSTORE_STORE_FILE_PATH }}
           EOF
 
@@ -35,7 +35,7 @@ jobs:
         env:
             KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-            STORE_FILE: keystore/my-release-key.jks  # Path to the keystore file
+            STORE_FILE: keystore.properties  # Path to the keystore file
             STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
         run: ./gradlew build
       - name: Run tests with Gradle Wrapper
