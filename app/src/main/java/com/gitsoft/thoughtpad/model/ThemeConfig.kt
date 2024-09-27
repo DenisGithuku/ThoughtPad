@@ -22,14 +22,12 @@ enum class ThemeConfig {
     SYSTEM
 }
 
-class ThemeConfigConverter {
-    companion object {
-        fun fromThemeConfig(value: ThemeConfig): String {
-            return value.name
-        }
+object ThemeConfigConverter {
+    fun fromThemeConfig(value: ThemeConfig): String {
+        return value.name
+    }
 
-        fun toThemeConfig(value: String): ThemeConfig {
-            return ThemeConfig.valueOf(value)
-        }
+    fun toThemeConfig(value: String): ThemeConfig {
+        return ThemeConfig.valueOf(value)
     }
 }

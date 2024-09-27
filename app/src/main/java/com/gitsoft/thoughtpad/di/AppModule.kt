@@ -37,7 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-private val USER_PREFERENCES = "user_preferences"
+private const val USER_PREFERENCES = "user_preferences"
 
 @Module
 @InstallIn(SingletonComponent::class)

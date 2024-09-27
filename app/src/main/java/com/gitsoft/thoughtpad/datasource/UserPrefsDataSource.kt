@@ -21,6 +21,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.gitsoft.thoughtpad.model.ThemeConfig
+import com.gitsoft.thoughtpad.model.ThemeConfigConverter
 import com.gitsoft.thoughtpad.model.UserPreferences
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +33,9 @@ class UserPrefsDataSource @Inject constructor(private val prefsDataStore: DataSt
         prefsDataStore.data.map { preferences ->
             UserPreferences(
                 themeConfig =
-                    ThemeConfig.valueOf(preferences[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.SYSTEM.name)
+                    ThemeConfigConverter.toThemeConfig(
+                        preferences[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.SYSTEM.name
+                    )
             )
         }
 

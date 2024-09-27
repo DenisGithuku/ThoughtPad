@@ -50,8 +50,6 @@ class AddEditNoteViewModel(private val repository: NotesRepository, application:
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    init {}
-
     fun onSaveNote() {
         val title = title.value
         val text = text.value
@@ -68,30 +66,6 @@ class AddEditNoteViewModel(private val repository: NotesRepository, application:
         }
     }
 
-    fun onCyanClicked() {
-        _backgroundChanged.value = true
-    }
-
-    fun onBlueClicked() {
-        _backgroundChanged.value = true
-    }
-
-    fun onOrangeClicked() {
-        _backgroundChanged.value = true
-    }
-
-    fun onGreenClicked() {
-        _backgroundChanged.value = true
-    }
-
-    fun onWhiteClicked() {
-        _backgroundChanged.value = true
-    }
-
-    fun onYellowClicked() {
-        _backgroundChanged.value = true
-    }
-
     fun finishedShowingSnackBar() {
         _noteEmptyEvent.value = false
         _noteAddedEvent.value = false
@@ -106,7 +80,7 @@ class AddEditNoteViewModel(private val repository: NotesRepository, application:
     }
 
     override fun onCleared() {
-        viewModelJob.cancel()
         super.onCleared()
+        viewModelJob.cancel()
     }
 }

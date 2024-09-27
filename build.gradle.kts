@@ -1,4 +1,5 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
+import io.gitlab.arturbosch.detekt.Detekt
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -13,6 +14,7 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android.gradle) apply false
     alias(libs.plugins.com.diffplug.spotless) apply false
+    alias(libs.plugins.detekt)
 }
 
 subprojects {
@@ -81,5 +83,22 @@ subprojects {
             isIncludeNoLocationClasses = true
             excludes = listOf("jdk.internal.*", "**org.hl7*")
         }
+    }
+}
+
+detekt {
+    toolVersion = "1.23.6"
+    config.setFrom(file("config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+}
+
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
     }
 }

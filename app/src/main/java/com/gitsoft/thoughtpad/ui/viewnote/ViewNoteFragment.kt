@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad.ui.viewnote
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -105,7 +106,7 @@ class ViewNoteFragment : Fragment() {
     private fun shareDetails() {
         val sendIntent =
             Intent(Intent.ACTION_SEND).apply {
-                val title = viewModel.noteTitle.value.toString()
+                //                val title = viewModel.noteTitle.value.toString()
                 val text = viewModel.noteText.toString()
                 putExtra(Intent.EXTRA_TEXT, text)
                 type = "text/plain"
@@ -113,6 +114,8 @@ class ViewNoteFragment : Fragment() {
         try {
             startActivity(sendIntent)
         } catch (e: ActivityNotFoundException) {
+            // Define what your app should do if no activity can handle the intent.
+            Log.e("ViewNoteFragment", "shareDetails: " + e.message)
             Toast.makeText(requireContext(), "Format not supported", Toast.LENGTH_SHORT).show()
         }
     }

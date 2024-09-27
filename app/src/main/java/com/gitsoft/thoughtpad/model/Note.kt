@@ -24,10 +24,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "notes_table")
 data class Note(
     @PrimaryKey(autoGenerate = true) val noteId: Long,
-    var noteTitle: String?,
-    var noteText: String?
+    val noteTitle: String?,
+    val noteText: String?
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readLong(), parcel.readString(), parcel.readString()) {}
+    constructor(parcel: Parcel) : this(parcel.readLong(), parcel.readString(), parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(noteId)

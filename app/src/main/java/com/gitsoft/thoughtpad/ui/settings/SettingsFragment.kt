@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.EaseIn
@@ -269,12 +268,4 @@ fun AnimatedScaleInTransition(
         exit = scaleOut(animationSpec = tween(100, easing = LinearEasing)) + fadeOut(),
         content = content
     )
-}
-
-private fun setSystemTheme(uiState: SettingsUiState) {
-    when {
-        uiState.selectedTheme == ThemeConfig.SYSTEM -> {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-    }
 }

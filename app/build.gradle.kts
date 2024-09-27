@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.android.gradle)
+    alias(libs.plugins.detekt)
     id("kotlin-kapt")
     id("androidx.navigation.safeargs")
 }
