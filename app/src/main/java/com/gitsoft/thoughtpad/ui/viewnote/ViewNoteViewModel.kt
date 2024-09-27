@@ -1,3 +1,19 @@
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.ui.viewnote
 
 import android.app.Application
@@ -7,14 +23,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.model.Note
 import com.gitsoft.thoughtpad.repository.NotesRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ViewNoteViewModel(
-    val repository: NotesRepository,
-    val note: Note,
-    application: Application
-) : AndroidViewModel(application) {
-
+class ViewNoteViewModel(val repository: NotesRepository, val note: Note, application: Application) :
+    AndroidViewModel(application) {
 
     private val _selectedNote = MutableLiveData<Note>()
 
@@ -26,7 +43,6 @@ class ViewNoteViewModel(
 
     private val _deleteNoteEvent = MutableLiveData<Boolean>()
     val deleteNoteEvent: LiveData<Boolean> = _deleteNoteEvent
-
 
     val noteTitle = MutableLiveData<String>()
 
@@ -43,7 +59,6 @@ class ViewNoteViewModel(
 
     fun onUpdateNote() {
         viewModelScope.launch {
-
             val id = _selectedNote.value!!.noteId
             val title = noteTitle.value
             val text = noteText.value
@@ -57,7 +72,6 @@ class ViewNoteViewModel(
 
             _navigateToNoteDisplay.value = true
         }
-
     }
 
     fun undoDelete() {
@@ -70,13 +84,10 @@ class ViewNoteViewModel(
 
             insert(note)
         }
-
     }
 
-    private suspend fun insert(note: Note){
-        return withContext(Dispatchers.IO){
-            repository.insert(note)
-        }
+    private suspend fun insert(note: Note) {
+        return withContext(Dispatchers.IO) { repository.insert(note) }
     }
 
     fun onNavigatedToNoteDisplay() {
@@ -93,15 +104,11 @@ class ViewNoteViewModel(
     }
 
     private suspend fun delete(note: Note) {
-        return withContext(Dispatchers.IO) {
-            repository.delete(note)
-        }
+        return withContext(Dispatchers.IO) { repository.delete(note) }
     }
 
     private suspend fun update(note: Note) {
-        return withContext(Dispatchers.IO) {
-            repository.update(note)
-        }
+        return withContext(Dispatchers.IO) { repository.update(note) }
     }
 
     fun onShowDeleteNoteEvent() {
@@ -112,5 +119,4 @@ class ViewNoteViewModel(
         viewModelScope.cancel()
         super.onCleared()
     }
-
 }
