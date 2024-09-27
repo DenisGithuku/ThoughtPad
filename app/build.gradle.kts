@@ -11,6 +11,7 @@ plugins {
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
+
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
@@ -58,27 +59,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
+    kotlinOptions { jvmTarget = "17" }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
 }
 
 dependencies {
-    implementation (libs.legacy.support.v4)
-    implementation (libs.appcompat)
-    implementation (libs.constraintlayout)
-    implementation (libs.fragment.ktx)
-    implementation (libs.room.runtime)
-    kapt (libs.room.compiler)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.appcompat)
+    implementation(libs.constraintlayout)
+    implementation(libs.fragment.ktx)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
 
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    //compose dependencies
+    // compose dependencies
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -93,33 +90,32 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //support for datastore
-    implementation (libs.androidx.datastore.preferences)
+    // support for datastore
+    implementation(libs.androidx.datastore.preferences)
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation (libs.room.ktx)
-
+    implementation(libs.room.ktx)
 
     // ViewModel
-    implementation (libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
     // LiveData
-    implementation (libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
     // Kotlin
-    implementation (libs.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
-    //coroutines
-    implementation (libs.kotlinx.coroutines.android)
+    // coroutines
+    implementation(libs.kotlinx.coroutines.android)
 
-    //coordinator layout
+    // coordinator layout
     implementation(libs.androidx.coordinatorlayout)
 
-//    implementation ("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-    implementation (libs.androidx.core.ktx)
-    implementation (libs.appcompat)
-    implementation (libs.material)
-    implementation (libs.constraintlayout)
-    testImplementation (libs.junit)
-    androidTestImplementation (libs.androidx.junit)
-    androidTestImplementation (libs.androidx.espresso.core)
+    //    implementation ("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
