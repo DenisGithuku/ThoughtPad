@@ -13,7 +13,9 @@ plugins {
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 
 android {
     namespace = "com.gitsoft.thoughtpad"
@@ -36,10 +38,24 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias =
+                (keystoreProperties["keyAlias"] as String?)
+                    ?: System.getenv("KEY_ALIAS")
+                    ?: error("KEY_ALIAS not set")
+            keyPassword =
+                (keystoreProperties["keyPassword"] as String?)
+                    ?: System.getenv("KEY_PASSWORD")
+                    ?: error("KEY_PASSWORD not set")
+            storeFile =
+                file(
+                    (keystoreProperties["storeFile"] as String?)
+                        ?: System.getenv("STORE_FILE")
+                        ?: error("STORE_FILE not set")
+                )
+            storePassword =
+                (keystoreProperties["storePassword"] as String?)
+                    ?: System.getenv("STORE_PASSWORD")
+                    ?: error("STORE_PASSWORD not set")
         }
     }
     buildTypes {
