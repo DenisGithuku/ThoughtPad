@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        classpath(libs.navigation.safeargs)
+        classpath(libs.androidx.navigation.safeargs)
     }
 }
 

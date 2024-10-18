@@ -70,9 +70,11 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)
-    implementation(libs.fragment.ktx)
-    implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.navigation.compose)
+    //    implementation(libs.koin.compose)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -97,14 +99,14 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
+    implementation(libs.androidx.room.ktx)
 
     // ViewModel
-    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     // LiveData
-    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     // Kotlin
-    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
     // coroutines
