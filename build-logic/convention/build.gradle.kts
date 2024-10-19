@@ -4,14 +4,15 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.gitsoft.thoughtpad.build-logic"
+group = "com.gitsoft.thoughtpad.buildlogic"
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_1
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
@@ -49,11 +50,15 @@ gradlePlugin {
         }
         register("firebase-crashlytics") {
             id = "thoughtpad.google.firebase.application"
-            implementationClass = "AndroidFirebaseCrashlyticsConventionPlugin"
+            implementationClass = "AndroidApplicationFirebaseConventionPlugin"
         }
         register("android-testing") {
             id = "thoughtpad.android.testing"
             implementationClass = "AndroidTestConventionPlugin"
         }
+        register("koin") {
+            id = "thoughtpad.android.koin"
+            implementationClass = "AndroidKoinConventionPlugin"
+        }
+        }
     }
-}

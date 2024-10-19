@@ -1,3 +1,5 @@
+package config
+
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -29,7 +31,9 @@ internal fun Project.configureKotlinAndroid(
     configureKotlin()
 
     dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+        add("coreLibraryDesugaring", libs.findLibrary("android.desugar.jdk.libs").get())
+        add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
+        add("implementation", libs.findLibrary("androidx.core.ktx").get())
     }
 }
 

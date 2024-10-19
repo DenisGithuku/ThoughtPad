@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
+import config.AndroidSdk
+import config.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

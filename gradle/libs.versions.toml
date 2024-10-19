@@ -1,6 +1,6 @@
 [versions]
+android-desugar-lib = "2.0.3"
 androidx-compose-bom = "2024.10.00"
-androidx-compose-compiler = "1.5.3"
 agp = "8.1.4"
 appcompat = "1.7.0"
 constraintlayout = "2.1.4"
@@ -18,9 +18,10 @@ hilt = "2.49"
 junit = "4.13.2"
 junit-version = "1.2.1"
 koin = "4.0.0"
-kotlin = "1.9.24"
+koin-annotations = "1.4.0"
+kotlin = "2.0.10"
 kotlinx-coroutines-android = "1.7.3"
-ksp = "1.9.10-1.0.13"
+ksp = "2.0.10-1.0.24"
 legacy-support-v4 = "1.0.0"
 lifecycle-livedata-ktx = "2.8.6"
 lifecycle-viewmodel-ktx = "2.8.6"
@@ -34,6 +35,7 @@ spotless-plugin-gradle = "6.25.0"
 ktlint = "11.6.1"
 
 [libraries]
+android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-lib" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose" }
 androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
@@ -52,6 +54,7 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-material-extended-icons = { group = "androidx.compose.material", name = "material-icons-extended-android" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime-android"}
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
@@ -72,7 +75,11 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
@@ -84,6 +91,16 @@ ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devt
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 
 [plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp"}
+com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 #project plugins
 thoughtpad-android-application = { id = "thoughtpad.android.application", version = "unspecified"}
 thoughtpad-android-library = { id = "thoughtpad.android.library", version = "unspecified"}
@@ -92,12 +109,4 @@ thoughtpad-compose-library = { id = "thoughtpad.compose.library", version = "uns
 thoughtpad-android-room = { id = "thoughtpad.android.room", version = "unspecified"}
 thoughtpad-android-testing = { id = "thoughtpad.android.testing", version = "unspecified"}
 thoughtpad-google-firebase-application = { id = "thoughtpad.google.firebase.application", version = "unspecified"}
-
-
-android-application = { id = "com.android.application", version.ref = "agp" }
-com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+thoughtpad-android-koin = { id = "thoughtpad.android.koin", version = "unspecified"}
