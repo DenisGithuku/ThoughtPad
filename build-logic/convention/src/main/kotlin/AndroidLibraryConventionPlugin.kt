@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.LibraryExtension
 import config.AndroidSdk
 import config.configureKotlinAndroid
+import config.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -21,6 +22,7 @@ class AndroidLibraryConventionPlugin: Plugin<Project> {
             }
 
             dependencies {
+                add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))
             }

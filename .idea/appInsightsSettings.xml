@@ -17,6 +17,23 @@
             </InsightsFilterSettings>
           </value>
         </entry>
+        <entry key="Firebase Crashlytics">
+          <value>
+            <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="com.gitsoft.thoughtpad.debug" />
+                  <option name="mobileSdkAppId" value="1:1044232279221:android:f1074c470c3681acbb9afc" />
+                  <option name="projectId" value="thoughtpad-31e94" />
+                  <option name="projectNumber" value="1044232279221" />
+                </ConnectionSetting>
+              </option>
+              <option name="signal" value="SIGNAL_UNSPECIFIED" />
+              <option name="timeIntervalDays" value="THIRTY_DAYS" />
+              <option name="visibilityType" value="ALL" />
+            </InsightsFilterSettings>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

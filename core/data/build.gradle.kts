@@ -5,4 +5,7 @@ plugins {
 
 android { namespace = "com.gitsoft.thoughtpad.core.data" }
 
-dependencies {}
+dependencies {
+    implementation(project(":core:model"))
+    implementation(project(":core:database"))
+}
