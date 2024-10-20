@@ -44,5 +44,5 @@ val prefsModule = module {
         )
     }
 
-    single<UserPrefsRepository> { UserPrefsRepositoryImpl(get()) }
+    single<UserPrefsDataSource> { UserPrefsDataSource(get()) }
 }

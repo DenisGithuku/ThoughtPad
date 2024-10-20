@@ -1,0 +1,122 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.gitsoft.thoughtpad.core.data.test" >
+4
+5    <uses-sdk
+5-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:5:5-74
+6        android:minSdkVersion="27"
+6-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:5:15-41
+7        android:targetSdkVersion="34" />
+7-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:5:42-71
+8
+9    <instrumentation
+9-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:11:5-15:87
+10        android:name="android.test.InstrumentationTestRunner"
+10-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:11:22-75
+11        android:functionalTest="false"
+11-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:14:22-52
+12        android:handleProfiling="false"
+12-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:13:22-53
+13        android:label="Tests for com.gitsoft.thoughtpad.core.data.test"
+13-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:15:22-85
+14        android:targetPackage="com.gitsoft.thoughtpad.core.data.test" />
+14-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:12:22-83
+15
+16    <permission
+16-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+17        android:name="com.gitsoft.thoughtpad.core.data.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+17-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+18        android:protectionLevel="signature" />
+18-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+19
+20    <uses-permission android:name="com.gitsoft.thoughtpad.core.data.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+20-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+20-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+21
+22    <application
+22-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:7:5-9:19
+23        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+23-->[androidx.core:core:1.13.1] /home/githukudenis/.gradle/caches/transforms-4/e31e8de3b4e2c42515f8da0f1e832f55/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+24        android:debuggable="true"
+25        android:extractNativeLibs="false" >
+26        <uses-library android:name="android.test.runner" />
+26-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:8:9-60
+26-->/home/githukudenis/CodeFactory/Android/ThoughtPad/core/data/build/intermediates/tmp/manifest/androidTest/debug/tempFile1ProcessTestManifest12891015578472620733.xml:8:23-57
+27
+28        <provider
+28-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+29            android:name="androidx.startup.InitializationProvider"
+29-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:25:13-67
+30            android:authorities="com.gitsoft.thoughtpad.core.data.test.androidx-startup"
+30-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:26:13-68
+31            android:exported="false" >
+31-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:27:13-37
+32            <meta-data
+32-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+33                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+33-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:30:17-75
+34                android:value="androidx.startup" />
+34-->[androidx.emoji2:emoji2:1.3.0] /home/githukudenis/.gradle/caches/transforms-4/380cde6eb280613ba14578e4b4675f12/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:31:17-49
+35            <meta-data
+35-->[androidx.lifecycle:lifecycle-process:2.8.5] /home/githukudenis/.gradle/caches/transforms-4/3e5f123f29119859a76d3ef913610706/transformed/jetified-lifecycle-process-2.8.5/AndroidManifest.xml:29:13-31:52
+36                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+36-->[androidx.lifecycle:lifecycle-process:2.8.5] /home/githukudenis/.gradle/caches/transforms-4/3e5f123f29119859a76d3ef913610706/transformed/jetified-lifecycle-process-2.8.5/AndroidManifest.xml:30:17-78
+37                android:value="androidx.startup" />
+37-->[androidx.lifecycle:lifecycle-process:2.8.5] /home/githukudenis/.gradle/caches/transforms-4/3e5f123f29119859a76d3ef913610706/transformed/jetified-lifecycle-process-2.8.5/AndroidManifest.xml:31:17-49
+38            <meta-data
+38-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+39                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+39-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+40                android:value="androidx.startup" />
+40-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+41        </provider>
+42
+43        <service
+43-->[androidx.room:room-runtime:2.6.1] /home/githukudenis/.gradle/caches/transforms-4/db69e3014e1316970ce1fa8b46d2183b/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+44            android:name="androidx.room.MultiInstanceInvalidationService"
+44-->[androidx.room:room-runtime:2.6.1] /home/githukudenis/.gradle/caches/transforms-4/db69e3014e1316970ce1fa8b46d2183b/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+45            android:directBootAware="true"
+45-->[androidx.room:room-runtime:2.6.1] /home/githukudenis/.gradle/caches/transforms-4/db69e3014e1316970ce1fa8b46d2183b/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+46            android:exported="false" />
+46-->[androidx.room:room-runtime:2.6.1] /home/githukudenis/.gradle/caches/transforms-4/db69e3014e1316970ce1fa8b46d2183b/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+47
+48        <receiver
+48-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+49            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+49-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+50            android:directBootAware="false"
+50-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+51            android:enabled="true"
+51-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+52            android:exported="true"
+52-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+53            android:permission="android.permission.DUMP" >
+53-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+54            <intent-filter>
+54-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+55                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+55-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+55-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+56            </intent-filter>
+57            <intent-filter>
+57-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+58                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+58-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+58-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+59            </intent-filter>
+60            <intent-filter>
+60-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+61                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+61-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+61-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+62            </intent-filter>
+63            <intent-filter>
+63-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+64                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+64-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+64-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/githukudenis/.gradle/caches/transforms-4/79d8fb88ab42a727b22f51080741cf08/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+65            </intent-filter>
+66        </receiver>
+67    </application>
+68
+69</manifest>

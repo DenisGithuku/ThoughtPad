@@ -14,14 +14,16 @@ class AndroidLibraryConventionPlugin: Plugin<Project> {
             with (pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
+                apply("kotlinx-serialization")
             }
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = AndroidSdk.targetSdk
+                lint.targetSdk = AndroidSdk.targetSdk
             }
 
             dependencies {
+                add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
                 add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))

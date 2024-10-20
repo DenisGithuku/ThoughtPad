@@ -21,24 +21,81 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.gitsoft.thoughtpad.core.model.CheckListItem
+import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.Tag
 
 @Dao
 interface NotesDatabaseDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(note: Note)
+    @Transaction
+    @Query("SELECT * FROM notes_table order by noteId desc")
+    suspend fun loadAllNotes(): List<DataWithNotesCheckListItemsAndTags>
 
-    @Update suspend fun update(note: Note)
+    @Transaction
+    @Query("SELECT * FROM notes_table where noteId = :id")
+    suspend fun noteById(id: Int): DataWithNotesCheckListItemsAndTags
+
+    // Insert operations
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertNote(note: Note): Long
 
     @Delete suspend fun delete(note: Note)
 
-    @Query("delete from notes_table") suspend fun clear()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertChecklistItems(checklistItems: List<CheckListItem>)
 
-    @Query("select * from notes_table order by noteId desc") fun loadAllNotes(): List<Note>
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertTags(tags: List<Tag>)
 
-    @Query("select * from notes_table order by noteId desc limit 1") fun loadOneNote(): Note?
+    // Update operations
+    @Update suspend fun updateNote(note: Note)
 
-    @Query("select * from notes_table where noteTitle like :query or noteText like :query")
-    fun searchDatabase(query: String): List<Note>
+    @Update suspend fun updateChecklistItem(checklistItem: CheckListItem)
+
+    @Update suspend fun updateTags(tags: List<Tag>)
+
+    // Delete operations if needed
+    @Delete suspend fun deleteChecklistItems(checklistItems: List<CheckListItem>)
+
+    @Delete suspend fun deleteTags(tags: List<Tag>)
+
+    // Example transaction for inserting all data (note + checklist items + tags)
+    @Transaction
+    suspend fun insertNoteWithDetails(
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    ) {
+        val noteId = insertNote(note)
+        val updatedCheckListItems = checklistItems.map { it.copy(noteId = noteId) } // Set foreign key
+        val updatedTagList = tags.map { it.copy(noteId = noteId) } // Set foreign key
+
+        insertChecklistItems(updatedCheckListItems)
+        insertTags(updatedTagList)
+    }
+
+    // Example transaction for updating all data (note + checklist items + tags)
+    @Transaction
+    suspend fun updateNoteWithDetails(
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    ) {
+        updateNote(note)
+
+        // We want to delete old checklist items and tags before adding new ones
+        deleteChecklistItems(getChecklistItemsForNoteId(note.noteId))
+        deleteTags(getTagsForNoteId(note.noteId))
+
+        insertChecklistItems(checklistItems)
+        insertTags(tags)
+    }
+
+    @Query("SELECT * FROM checklist WHERE noteId = :noteId")
+    suspend fun getChecklistItemsForNoteId(noteId: Long): List<CheckListItem>
+
+    @Query("SELECT * FROM noteTags WHERE noteId = :noteId")
+    suspend fun getTagsForNoteId(noteId: Long): List<Tag>
 }

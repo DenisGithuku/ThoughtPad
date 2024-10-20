@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.dependencies
 Compose specific configuration
  */
 internal fun Project.configureAndroidCompose(
-    commonExtension: CommonExtension<*, *, *, *, *>
+    commonExtension: CommonExtension<*, *, *, *, *, *>
 ) {
     commonExtension.apply {
         buildFeatures {

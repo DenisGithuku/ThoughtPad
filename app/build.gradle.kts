@@ -5,6 +5,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.thoughtpad.android.application)
     alias(libs.plugins.thoughtpad.compose.application)
+    alias(libs.plugins.thoughtpad.android.koin)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ksp)
 }
@@ -56,6 +57,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:notelist"))
+    implementation(project(":feature:addnote"))
+    implementation(project(":feature:notedetail"))
+    implementation(project(":feature:settings"))
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:model"))
+    implementation(project(":core:common"))
+    implementation(project(":core:toga"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

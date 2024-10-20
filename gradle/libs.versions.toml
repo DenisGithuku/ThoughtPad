@@ -1,7 +1,7 @@
 [versions]
-android-desugar-lib = "2.0.3"
+android-desugar-lib = "2.1.2"
 androidx-compose-bom = "2024.10.00"
-agp = "8.1.4"
+agp = "8.5.2"
 appcompat = "1.7.0"
 constraintlayout = "2.1.4"
 coordinatorlayout = "1.2.0"
@@ -19,9 +19,12 @@ junit = "4.13.2"
 junit-version = "1.2.1"
 koin = "4.0.0"
 koin-annotations = "1.4.0"
+koin-ksp-compiler = "1.4.0"
 kotlin = "2.0.10"
 kotlinx-coroutines-android = "1.7.3"
+kotlinx-serialization = "1.6.3"
 ksp = "2.0.10-1.0.24"
+ktlint = "11.6.1"
 legacy-support-v4 = "1.0.0"
 lifecycle-livedata-ktx = "2.8.6"
 lifecycle-viewmodel-ktx = "2.8.6"
@@ -32,7 +35,6 @@ navigation-ui-ktx = "2.8.1"
 nav-version = "2.8.1"
 room = "2.6.1"
 spotless-plugin-gradle = "6.25.0"
-ktlint = "11.6.1"
 
 [libraries]
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-lib" }
@@ -78,8 +80,10 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler-jvm", version.ref = "koin-ksp-compiler" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization", version.ref = "kotlinx-serialization"}
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
@@ -93,13 +97,14 @@ room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", ver
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 #project plugins
 thoughtpad-android-application = { id = "thoughtpad.android.application", version = "unspecified"}

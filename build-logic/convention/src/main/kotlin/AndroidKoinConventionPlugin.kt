@@ -12,7 +12,7 @@ class AndroidKoinConventionPlugin: Plugin<Project> {
 
             dependencies {
                 add("implementation", libs.findLibrary("koin.android").get())
-                add("ksp", libs.findLibrary("koin.compiler").get())
+                add("ksp", libs.findLibrary("koin.ksp.compiler").get())
                 add("implementation", libs.findLibrary("koin.annotations").get())
                 add("implementation", libs.findLibrary("koin.compose").get())
                 add("implementation", libs.findLibrary("koin.core").get())

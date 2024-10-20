@@ -8,4 +8,5 @@ android { namespace = "com.gitsoft.thoughtpad.core.data" }
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:database"))
+    implementation(project(":core:datastore"))
 }

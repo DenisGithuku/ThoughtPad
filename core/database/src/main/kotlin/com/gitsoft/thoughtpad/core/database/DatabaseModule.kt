@@ -18,12 +18,13 @@ package com.gitsoft.thoughtpad.core.database
 
 import android.app.Application
 import androidx.room.Room
+import com.gitsoft.thoughtpad.core.database.migrations.Migration_1_2
 import org.koin.dsl.module
 
 val databaseModule = module {
     single<NotesDatabase> {
         Room.databaseBuilder(get<Application>(), NotesDatabase::class.java, "notes_database")
-            .fallbackToDestructiveMigration()
+            .addMigrations(Migration_1_2)
             .build()
     }
 

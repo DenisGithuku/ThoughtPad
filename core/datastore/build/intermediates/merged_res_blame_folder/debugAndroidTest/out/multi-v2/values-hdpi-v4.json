@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.gitsoft.thoughtpad.core.datastore.test.datastore-mergeDebugAndroidTestResources-52:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/home/githukudenis/.gradle/caches/transforms-4/a5f4c8dae40a0e554db97f12318fd429/transformed/appcompat-1.7.0/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

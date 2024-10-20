@@ -1,0 +1,10 @@
+#Sun Oct 20 15:23:38 EAT 2024
+base.0=/home/githukudenis/CodeFactory/Android/ThoughtPad/core/testing/build/intermediates/dex/debugAndroidTest/mergeExtDexDebugAndroidTest/classes.dex
+base.1=/home/githukudenis/CodeFactory/Android/ThoughtPad/core/testing/build/intermediates/dex/debugAndroidTest/mergeProjectDexDebugAndroidTest/0/classes.dex
+base.2=/home/githukudenis/CodeFactory/Android/ThoughtPad/core/testing/build/intermediates/desugar_lib_dex/debugAndroidTest/classes1000.dex
+path.0=classes.dex
+path.1=0/classes.dex
+path.2=classes1000.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex
+renamed.2=classes3.dex

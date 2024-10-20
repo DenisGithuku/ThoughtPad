@@ -18,9 +18,14 @@ package com.gitsoft.thoughtpad.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.gitsoft.thoughtpad.core.model.CheckListItem
+import com.gitsoft.thoughtpad.core.model.Converters
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.Tag
 
-@Database(entities = [Note::class], version = 1, exportSchema = false)
+@Database(entities = [Note::class, Tag::class, CheckListItem::class], version = 2)
+@TypeConverters(Converters::class)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun dao(): NotesDatabaseDao
 }

@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.gitsoft.thoughtpad.core.database.test.database-mergeDebugAndroidTestResources-49:/values-h720dp-v13/values-h720dp-v13.xml",
+            "map": [
+                {
+                    "source": "/home/githukudenis/.gradle/caches/transforms-4/a5f4c8dae40a0e554db97f12318fd429/transformed/appcompat-1.7.0/res/values-h720dp-v13/values-h720dp-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "66",
+                        "endOffsets": "117"
+                    }
+                }
+            ]
+        }
+    ]
+}

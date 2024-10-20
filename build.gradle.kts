@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.com.diffplug.spotless) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
 }
 
 subprojects {
@@ -32,6 +33,7 @@ subprojects {
                 .editorConfigOverride(
                     mapOf(
                         "ktlint_standard_package-name" to "disabled",
+                        "ktlint_standard_filename" to "disabled",
                         "ij_kotlin_allow_trailing_comma" to "false",
                         "ij_kotlin_allow_trailing_comma_on_call_site" to "false",
                     ),

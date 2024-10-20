@@ -17,20 +17,22 @@
 package core.gitsoft.thoughtpad.core.data.repository
 
 import com.gitsoft.thoughtpad.core.database.NotesDatabaseDao
+import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 
-class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) : NotesRepository {
-    override val allNotes: Flow<List<Note>>
-        get() = flowOf(notesDatabaseDao.loadAllNotes())
+internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) :
+    NotesRepository {
+    override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
+        get() = flow { emit(notesDatabaseDao.loadAllNotes()) }
 
-    override suspend fun getNoteById(id: Int): Note? {
-        return notesDatabaseDao.loadOneNote()
+    override suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags {
+        return notesDatabaseDao.noteById(id)
     }
 
     override suspend fun insert(note: Note) {
-        notesDatabaseDao.insert(note)
+        notesDatabaseDao.insertNote(note)
     }
 
     override suspend fun delete(note: Note) {
@@ -38,6 +40,6 @@ class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) : Note
     }
 
     override suspend fun update(note: Note) {
-        notesDatabaseDao.update(note)
+        notesDatabaseDao.updateNote(note)
     }
 }

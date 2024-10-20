@@ -16,36 +16,52 @@
 */
 package com.gitsoft.thoughtpad.core.model
 
-import android.os.Parcel
-import android.os.Parcelable
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Entity(tableName = "notes_table")
 data class Note(
     @PrimaryKey(autoGenerate = true) val noteId: Long,
-    val noteTitle: String?,
-    val noteText: String?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readLong(), parcel.readString(), parcel.readString())
+    val noteTitle: String? = null,
+    val noteText: String? = null,
+    val createdAt: Long? = null,
+    val updatedAt: Long? = null,
+    val isPinned: Boolean = false,
+    val isArchived: Boolean = false,
+    val color: String? = null,
+    val isFavorite: Boolean = false,
+    val isDeleted: Boolean = false,
+    val isCheckList: Boolean = false,
+    val reminderTime: Long? = null,
+    @TypeConverters(Converters::class) val attachments: List<String> = emptyList()
+)
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(noteId)
-        parcel.writeString(noteTitle)
-        parcel.writeString(noteText)
+class Converters {
+
+    @TypeConverter
+    fun fromAttachmentsList(attachments: List<String>?): String {
+        return attachments?.joinToString(separator = ",") ?: ""
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Note> {
-        override fun createFromParcel(parcel: Parcel): Note {
-            return Note(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Note?> {
-            return arrayOfNulls(size)
+    @TypeConverter
+    fun toAttachmentsList(attachmentsString: String): List<String> {
+        return if (attachmentsString.isEmpty()) {
+            emptyList()
+        } else {
+            attachmentsString.split(",")
         }
     }
 }
+
+data class DataWithNotesCheckListItemsAndTags(
+    @Embedded val note: Note,
+    @Relation(parentColumn = "noteId", entityColumn = "noteId")
+    val checkListItems: List<CheckListItem> = emptyList(),
+    @Relation(parentColumn = "noteId", entityColumn = "noteId") val tags: List<Tag> = emptyList()
+)

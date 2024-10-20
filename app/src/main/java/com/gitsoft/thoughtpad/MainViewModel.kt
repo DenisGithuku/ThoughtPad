@@ -18,22 +18,18 @@ package com.gitsoft.thoughtpad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gitsoft.thoughtpad.model.ThemeConfig
-import com.gitsoft.thoughtpad.repository.UserPrefsRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
 data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
 
-@HiltViewModel
-class MainViewModel @Inject constructor(private val userPrefsRepository: UserPrefsRepository) :
-    ViewModel() {
+class MainViewModel(private val userPrefsRepository: UserPrefsRepository) : ViewModel() {
 
     val uiState =
-        userPrefsRepository.userPreferencesFlow
+        userPrefsRepository.userPrefs
             .mapLatest { MainUiState(it.themeConfig) }
             .stateIn(
                 scope = viewModelScope,

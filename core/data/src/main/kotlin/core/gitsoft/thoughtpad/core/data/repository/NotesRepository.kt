@@ -16,13 +16,14 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {
-    val allNotes: Flow<List<Note>>
+    val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
 
-    suspend fun getNoteById(id: Int): Note?
+    suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags
 
     suspend fun insert(note: Note)
 

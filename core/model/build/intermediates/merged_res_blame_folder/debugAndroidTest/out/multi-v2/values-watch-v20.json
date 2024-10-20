@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.gitsoft.thoughtpad.core.model.test.model-mergeDebugAndroidTestResources-32:/values-watch-v20/values-watch-v20.xml",
+            "map": [
+                {
+                    "source": "/home/githukudenis/.gradle/caches/transforms-4/2bdfc06fba76b492c5a03767598c435c/transformed/appcompat-1.6.1/res/values-watch-v20/values-watch-v20.xml",
+                    "from": {
+                        "startLines": "2,5,8",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,214,385",
+                        "endLines": "4,7,10",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "209,380,553"
+                    }
+                }
+            ]
+        }
+    ]
+}
