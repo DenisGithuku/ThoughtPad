@@ -36,7 +36,7 @@ import kotlinx.serialization.Serializable
         ]
 )
 data class CheckListItem(
-    @PrimaryKey(autoGenerate = true) val checkListItemId: Long? = null,
+    @PrimaryKey(autoGenerate = true) val checkListItemId: Long = 0,
     @ColumnInfo(index = true) val noteId: Long? = null,
     val text: String? = null,
     val isChecked: Boolean = false

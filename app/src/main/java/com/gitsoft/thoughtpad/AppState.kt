@@ -68,4 +68,6 @@ sealed class ThoughtPadDestination(val route: String) {
     data object AddNote : ThoughtPadDestination(route = "addnote")
 
     data object Splash : ThoughtPadDestination(route = "splash")
+
+    data object Settings : ThoughtPadDestination(route = "settings")
 }

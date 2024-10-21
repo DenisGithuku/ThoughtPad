@@ -1,3 +1,4 @@
+int drawable ic_arrow_left 0x0
 int font poppins_black 0x0
 int font poppins_bold 0x0
 int font poppins_light 0x0
@@ -7,3 +8,4 @@ int font poppins_semibold 0x0
 int font poppins_thin 0x0
 int font roboto 0x0
 int font roboto_medium 0x0
+int string back 0x0

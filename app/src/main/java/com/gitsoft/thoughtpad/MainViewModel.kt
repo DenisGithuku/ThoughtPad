@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.stateIn
 
 data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
 
-class MainViewModel(private val userPrefsRepository: UserPrefsRepository) : ViewModel() {
+class MainViewModel(userPrefsRepository: UserPrefsRepository) : ViewModel() {
 
     val uiState =
         userPrefsRepository.userPrefs

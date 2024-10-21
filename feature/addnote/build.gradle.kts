@@ -9,4 +9,5 @@ android { namespace = "com.gitsoft.thoughtpad.feature.addnote" }
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
+    implementation(project(":core:toga"))
 }

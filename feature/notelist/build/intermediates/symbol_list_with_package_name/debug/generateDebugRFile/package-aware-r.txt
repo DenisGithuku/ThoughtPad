@@ -1,1 +1,10 @@
 com.gitsoft.thoughtpad.feature.notelist
+drawable ic_add
+drawable ic_search
+drawable ic_settings
+raw no_notes
+string add_note
+string no_notes_available
+string no_notes_found
+string notes_list_title
+string settings

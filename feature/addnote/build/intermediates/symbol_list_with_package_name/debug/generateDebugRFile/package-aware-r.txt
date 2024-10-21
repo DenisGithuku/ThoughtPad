@@ -1,1 +1,3 @@
 com.gitsoft.thoughtpad.feature.addnote
+string add_note
+string save

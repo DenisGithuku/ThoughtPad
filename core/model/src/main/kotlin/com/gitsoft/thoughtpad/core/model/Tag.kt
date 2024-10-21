@@ -36,7 +36,7 @@ import kotlinx.serialization.Serializable
         ]
 )
 data class Tag(
-    @PrimaryKey(autoGenerate = true) val tagId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val tagId: Long = 0,
     @ColumnInfo(index = true) val noteId: Long? = null,
     val name: String? = null,
     val color: String? = null

@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
-    private lateinit var mainUiState: MainUiState
+    private val mainUiState = mutableStateOf(MainUiState())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -39,16 +40,16 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collectLatest { mainUiState = it }
+                viewModel.uiState.collectLatest { mainUiState.value = it }
             }
         }
 
         setContent {
             val appState: AppState = rememberAppState()
             WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
-                mainUiState.themeConfig == ThemeConfig.LIGHT
+                mainUiState.value.themeConfig == ThemeConfig.LIGHT
 
-            ThoughtPadTheme(darkTheme = mainUiState.themeConfig == ThemeConfig.DARK) {
+            ThoughtPadTheme(darkTheme = mainUiState.value.themeConfig == ThemeConfig.DARK) {
                 MainNavGraph(appState)
             }
         }

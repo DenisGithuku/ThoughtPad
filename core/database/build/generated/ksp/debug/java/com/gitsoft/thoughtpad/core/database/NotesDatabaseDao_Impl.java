@@ -122,17 +122,13 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `checklist` (`checkListItemId`,`noteId`,`text`,`isChecked`) VALUES (?,?,?,?)";
+        return "INSERT OR REPLACE INTO `checklist` (`checkListItemId`,`noteId`,`text`,`isChecked`) VALUES (nullif(?, 0),?,?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final CheckListItem entity) {
-        if (entity.getCheckListItemId() == null) {
-          statement.bindNull(1);
-        } else {
-          statement.bindLong(1, entity.getCheckListItemId());
-        }
+        statement.bindLong(1, entity.getCheckListItemId());
         if (entity.getNoteId() == null) {
           statement.bindNull(2);
         } else {
@@ -198,11 +194,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final CheckListItem entity) {
-        if (entity.getCheckListItemId() == null) {
-          statement.bindNull(1);
-        } else {
-          statement.bindLong(1, entity.getCheckListItemId());
-        }
+        statement.bindLong(1, entity.getCheckListItemId());
       }
     };
     this.__deletionAdapterOfTag = new EntityDeletionOrUpdateAdapter<Tag>(__db) {
@@ -284,11 +276,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final CheckListItem entity) {
-        if (entity.getCheckListItemId() == null) {
-          statement.bindNull(1);
-        } else {
-          statement.bindLong(1, entity.getCheckListItemId());
-        }
+        statement.bindLong(1, entity.getCheckListItemId());
         if (entity.getNoteId() == null) {
           statement.bindNull(2);
         } else {
@@ -301,11 +289,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         }
         final int _tmp = entity.isChecked() ? 1 : 0;
         statement.bindLong(4, _tmp);
-        if (entity.getCheckListItemId() == null) {
-          statement.bindNull(5);
-        } else {
-          statement.bindLong(5, entity.getCheckListItemId());
-        }
+        statement.bindLong(5, entity.getCheckListItemId());
       }
     };
     this.__updateAdapterOfTag = new EntityDeletionOrUpdateAdapter<Tag>(__db) {
@@ -809,12 +793,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           final List<CheckListItem> _result = new ArrayList<CheckListItem>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final CheckListItem _item;
-            final Long _tmpCheckListItemId;
-            if (_cursor.isNull(_cursorIndexOfCheckListItemId)) {
-              _tmpCheckListItemId = null;
-            } else {
-              _tmpCheckListItemId = _cursor.getLong(_cursorIndexOfCheckListItemId);
-            }
+            final long _tmpCheckListItemId;
+            _tmpCheckListItemId = _cursor.getLong(_cursorIndexOfCheckListItemId);
             final Long _tmpNoteId;
             if (_cursor.isNull(_cursorIndexOfNoteId)) {
               _tmpNoteId = null;
@@ -864,8 +844,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           final List<Tag> _result = new ArrayList<Tag>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final Tag _item;
-            final int _tmpTagId;
-            _tmpTagId = _cursor.getInt(_cursorIndexOfTagId);
+            final long _tmpTagId;
+            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
             final Long _tmpNoteId;
             if (_cursor.isNull(_cursorIndexOfNoteId)) {
               _tmpNoteId = null;
@@ -948,12 +928,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           final ArrayList<CheckListItem> _tmpRelation = _map.get(_tmpKey);
           if (_tmpRelation != null) {
             final CheckListItem _item_1;
-            final Long _tmpCheckListItemId;
-            if (_cursor.isNull(_cursorIndexOfCheckListItemId)) {
-              _tmpCheckListItemId = null;
-            } else {
-              _tmpCheckListItemId = _cursor.getLong(_cursorIndexOfCheckListItemId);
-            }
+            final long _tmpCheckListItemId;
+            _tmpCheckListItemId = _cursor.getLong(_cursorIndexOfCheckListItemId);
             final Long _tmpNoteId;
             if (_cursor.isNull(_cursorIndexOfNoteId)) {
               _tmpNoteId = null;
@@ -1027,8 +1003,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           final ArrayList<Tag> _tmpRelation = _map.get(_tmpKey);
           if (_tmpRelation != null) {
             final Tag _item_1;
-            final int _tmpTagId;
-            _tmpTagId = _cursor.getInt(_cursorIndexOfTagId);
+            final long _tmpTagId;
+            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
             final Long _tmpNoteId;
             if (_cursor.isNull(_cursorIndexOfNoteId)) {
               _tmpNoteId = null;

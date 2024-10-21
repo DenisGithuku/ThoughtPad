@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+drawable ic_arrow_left
 font poppins_black
 font poppins_bold
 font poppins_light
@@ -9,3 +10,4 @@ font poppins_semibold
 font poppins_thin
 font roboto
 font roboto_medium
+string back

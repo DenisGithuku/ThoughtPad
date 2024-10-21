@@ -19,11 +19,14 @@ package com.gitsoft.thoughtpad.feature.addnote
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import core.gitsoft.thoughtpad.core.toga.components.TogaStandardScaffold
+import core.gitsoft.thoughtpad.core.toga.components.TogaTextButton
 
 @Composable
 fun AddNoteRoute(onNavigateBack: () -> Unit) {
@@ -32,10 +35,19 @@ fun AddNoteRoute(onNavigateBack: () -> Unit) {
 
 @Composable
 internal fun AddNoteScreen(onNavigateBack: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column {
-            Text(text = "Add note")
-            Button(onClick = onNavigateBack) { Text(text = "Back") }
+    TogaStandardScaffold(
+        onNavigateBack = onNavigateBack,
+        title = R.string.add_note,
+        actions = { TogaTextButton(text = R.string.save, onClick = {}) }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            Column {
+                Text(text = "Add note")
+                Button(onClick = onNavigateBack) { Text(text = "Back") }
+            }
         }
     }
 }

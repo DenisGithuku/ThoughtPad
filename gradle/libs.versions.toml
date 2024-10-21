@@ -28,6 +28,7 @@ ktlint = "11.6.1"
 legacy-support-v4 = "1.0.0"
 lifecycle-livedata-ktx = "2.8.6"
 lifecycle-viewmodel-ktx = "2.8.6"
+lottie-compose= "5.2.0"
 material = "1.12.0"
 navigation = "2.8.3"
 navigation-fragment-ktx = "2.8.1"
@@ -85,6 +86,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization", version.ref = "kotlinx-serialization"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose"}
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 #build-logic dependencies

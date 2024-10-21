@@ -38,10 +38,10 @@ public final class NotesDatabase_Impl extends NotesDatabase {
         db.execSQL("CREATE TABLE IF NOT EXISTS `notes_table` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` TEXT, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `noteTags` (`tagId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteId` INTEGER, `name` TEXT, `color` TEXT, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_noteTags_noteId` ON `noteTags` (`noteId`)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `checklist` (`checkListItemId` INTEGER PRIMARY KEY AUTOINCREMENT, `noteId` INTEGER, `text` TEXT, `isChecked` INTEGER NOT NULL, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `checklist` (`checkListItemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteId` INTEGER, `text` TEXT, `isChecked` INTEGER NOT NULL, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_checklist_noteId` ON `checklist` (`noteId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ea6c06c7d86138b03376cd531f5b8ec')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35429467115c8c5a5dca922715582f2b')");
       }
 
       @Override
@@ -133,7 +133,7 @@ public final class NotesDatabase_Impl extends NotesDatabase {
                   + " Found:\n" + _existingNoteTags);
         }
         final HashMap<String, TableInfo.Column> _columnsChecklist = new HashMap<String, TableInfo.Column>(4);
-        _columnsChecklist.put("checkListItemId", new TableInfo.Column("checkListItemId", "INTEGER", false, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsChecklist.put("checkListItemId", new TableInfo.Column("checkListItemId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsChecklist.put("noteId", new TableInfo.Column("noteId", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsChecklist.put("text", new TableInfo.Column("text", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsChecklist.put("isChecked", new TableInfo.Column("isChecked", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
@@ -150,7 +150,7 @@ public final class NotesDatabase_Impl extends NotesDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "5ea6c06c7d86138b03376cd531f5b8ec", "44c2a6ef57c7416ae1b3eff85c26a9b5");
+    }, "35429467115c8c5a5dca922715582f2b", "25addb31e793fbc7036a56a25217b202");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

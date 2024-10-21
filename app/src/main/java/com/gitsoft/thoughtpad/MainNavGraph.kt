@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import com.gitsoft.thoughtpad.feature.addnote.AddNoteRoute
 import com.gitsoft.thoughtpad.feature.notedetail.NoteDetailRoute
 import com.gitsoft.thoughtpad.feature.notelist.NoteListRoute
+import com.gitsoft.thougtpad.feature.settings.SettingsRoute
 
 @Composable
 fun MainNavGraph(appState: AppState) {
@@ -66,6 +67,13 @@ fun MainNavGraph(appState: AppState) {
                         ThoughtPadDestination.AddNote.route,
                         true
                     )
+                },
+                onOpenSettings = {
+                    appState.navigate(
+                        ThoughtPadDestination.Settings.route,
+                        ThoughtPadDestination.Settings.route,
+                        true
+                    )
                 }
             )
         }
@@ -94,6 +102,19 @@ fun MainNavGraph(appState: AppState) {
             route = ThoughtPadDestination.AddNote.route
         ) {
             AddNoteRoute(onNavigateBack = { appState.popBackStack() })
+        }
+
+        composable(
+            enterTransition = {
+                slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
+            },
+            exitTransition = {
+                slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) +
+                    fadeOut()
+            },
+            route = ThoughtPadDestination.Settings.route
+        ) {
+            SettingsRoute(onNavigateBack = { appState.popBackStack() })
         }
     }
 }

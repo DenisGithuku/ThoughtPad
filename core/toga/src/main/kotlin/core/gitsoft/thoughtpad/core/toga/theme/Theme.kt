@@ -88,7 +88,6 @@ fun ThoughtPadTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-    val colors = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    MaterialTheme(colorScheme = colors, content = content)
+    MaterialTheme(colorScheme = colorScheme, content = content)
 }

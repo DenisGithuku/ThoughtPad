@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5ea6c06c7d86138b03376cd531f5b8ec",
+    "identityHash": "35429467115c8c5a5dca922715582f2b",
     "entities": [
       {
         "tableName": "notes_table",
@@ -158,13 +158,13 @@
       },
       {
         "tableName": "checklist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`checkListItemId` INTEGER PRIMARY KEY AUTOINCREMENT, `noteId` INTEGER, `text` TEXT, `isChecked` INTEGER NOT NULL, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`checkListItemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteId` INTEGER, `text` TEXT, `isChecked` INTEGER NOT NULL, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "checkListItemId",
             "columnName": "checkListItemId",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "noteId",
@@ -220,7 +220,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ea6c06c7d86138b03376cd531f5b8ec')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35429467115c8c5a5dca922715582f2b')"
     ]
   }
 }

@@ -1,0 +1,2 @@
+int string add_note 0x0
+int string save 0x0
