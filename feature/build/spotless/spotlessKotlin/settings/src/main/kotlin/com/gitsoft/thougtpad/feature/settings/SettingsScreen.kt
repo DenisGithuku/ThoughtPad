@@ -24,22 +24,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,12 +43,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.feature.settings.R
-import core.gitsoft.thoughtpad.core.toga.components.TogaStandardScaffold
+import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaContentDialog
+import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -66,6 +62,7 @@ fun SettingsRoute(onNavigateBack: () -> Unit, viewModel: SettingsViewModel = koi
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsScreen(
     state: SettingsUiState,
@@ -89,13 +86,19 @@ internal fun SettingsScreen(
                         ),
                 exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
             ) {
-                CLibAlertContentDialog(
+                TogaContentDialog(
                     title = { Text(text = "Select theme", style = MaterialTheme.typography.headlineSmall) },
                     content = {
                         Column {
                             state.availableThemes.forEach { availableTheme ->
                                 Row(
-                                    modifier = Modifier.clickable { onToggleTheme(availableTheme) }.fillMaxWidth(),
+                                    modifier =
+                                        Modifier.clickable(
+                                                role = Role.RadioButton,
+                                                enabled = true,
+                                                onClick = { onToggleTheme(availableTheme) }
+                                            )
+                                            .fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
@@ -184,45 +187,5 @@ fun SettingsItem(
             }
         }
         if (trailing != null) trailing()
-    }
-}
-
-@Composable
-fun CLibAlertContentDialog(
-    icon: (@Composable () -> Unit)? = null,
-    title: @Composable () -> Unit,
-    content: @Composable () -> Unit,
-    onDismissRequest: () -> Unit
-) {
-    Dialog(
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-        onDismissRequest = { onDismissRequest() }
-    ) {
-        Box(
-            modifier =
-                Modifier.fillMaxWidth(fraction = 0.8f)
-                    .wrapContentHeight()
-                    .background(
-                        color = AlertDialogDefaults.containerColor,
-                        shape = MaterialTheme.shapes.large
-                    )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                if (icon != null) {
-                    icon()
-                }
-                title()
-                content()
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismissRequest) {
-                        Text(text = stringResource(id = R.string.confirm))
-                    }
-                }
-            }
-        }
     }
 }

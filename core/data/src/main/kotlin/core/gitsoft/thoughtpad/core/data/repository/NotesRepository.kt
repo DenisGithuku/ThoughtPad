@@ -16,8 +16,10 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.Tag
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {
@@ -29,5 +31,21 @@ interface NotesRepository {
 
     suspend fun delete(note: Note)
 
-    suspend fun update(note: Note)
+    suspend fun updateNoteWithDetails(
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    )
+
+    suspend fun insertNoteWithDetails(
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    )
+
+    suspend fun insertTags(tags: List<Tag>)
+
+    suspend fun getTagById(tagId: Long): Tag
+
+    suspend fun getAllTags(): List<Tag>
 }

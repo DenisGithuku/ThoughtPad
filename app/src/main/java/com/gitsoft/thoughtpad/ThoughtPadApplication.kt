@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad
 import android.app.Application
 import com.gitsoft.thoughtpad.core.database.databaseModule
 import com.gitsoft.thoughtpad.core.datastore.prefsModule
+import com.gitsoft.thoughtpad.feature.addnote.addNoteModule
 import com.gitsoft.thoughtpad.feature.notelist.noteListModule
 import com.gitsoft.thougtpad.feature.settings.settingsModule
 import core.gitsoft.thoughtpad.core.data.dataModule
@@ -33,7 +34,15 @@ class ThoughtPadApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@ThoughtPadApplication)
-            modules(appModule, dataModule, databaseModule, prefsModule, settingsModule, noteListModule)
+            modules(
+                appModule,
+                dataModule,
+                databaseModule,
+                prefsModule,
+                settingsModule,
+                noteListModule,
+                addNoteModule
+            )
         }
     }
 }

@@ -38,7 +38,7 @@ internal val PoppinsFamily =
     )
 
 /** ThoughtPad typography. */
-internal val CLibTypography =
+internal val ThoughtPadTypography =
     Typography(
         displayLarge =
             TextStyle(

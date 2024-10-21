@@ -1,6 +1,9 @@
 R_DEF: Internal format may change without notice
 local
+drawable ic_add_circle
 drawable ic_arrow_left
+drawable ic_close
+drawable ic_search
 font poppins_black
 font poppins_bold
 font poppins_light
@@ -11,3 +14,7 @@ font poppins_thin
 font roboto
 font roboto_medium
 string back
+string clear
+string confirm
+string ok
+string search

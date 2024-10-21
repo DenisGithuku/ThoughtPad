@@ -25,11 +25,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
-data class NoteListUiState(val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList())
+data class NoteListUiState(
+    val isLoading: Boolean = false,
+    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
+)
 
 class NoteListViewModel(notesRepository: NotesRepository) : ViewModel() {
     val state: StateFlow<NoteListUiState> =
         notesRepository.allNotes
-            .mapLatest { NoteListUiState(notes = it) }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState())
+            .mapLatest { NoteListUiState(isLoading = false, notes = it) }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                NoteListUiState(isLoading = true)
+            )
 }

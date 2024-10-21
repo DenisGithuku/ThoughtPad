@@ -5,4 +5,6 @@
     <string name="add_note">Add note</string>
     <string name="no_notes_found">No notes found</string>
     <string name="no_notes_available">No notes available.</string>
+    <string name="clear">Clear search</string>
+    <string name="search">Search</string>
 </resources>

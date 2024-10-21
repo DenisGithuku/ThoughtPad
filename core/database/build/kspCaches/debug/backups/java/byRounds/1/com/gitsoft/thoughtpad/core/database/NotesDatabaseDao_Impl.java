@@ -10,6 +10,7 @@ import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
 import androidx.room.RoomDatabaseKt;
 import androidx.room.RoomSQLiteQuery;
+import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.room.util.RelationUtil;
@@ -19,6 +20,7 @@ import com.gitsoft.thoughtpad.core.model.CheckListItem;
 import com.gitsoft.thoughtpad.core.model.Converters;
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags;
 import com.gitsoft.thoughtpad.core.model.Note;
+import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef;
 import com.gitsoft.thoughtpad.core.model.Tag;
 import java.lang.Class;
 import java.lang.Exception;
@@ -49,6 +51,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
 
   private final EntityInsertionAdapter<Tag> __insertionAdapterOfTag;
 
+  private final EntityInsertionAdapter<NoteTagCrossRef> __insertionAdapterOfNoteTagCrossRef;
+
+  private final EntityInsertionAdapter<NoteTagCrossRef> __insertionAdapterOfNoteTagCrossRef_1;
+
   private final EntityDeletionOrUpdateAdapter<Note> __deletionAdapterOfNote;
 
   private final EntityDeletionOrUpdateAdapter<CheckListItem> __deletionAdapterOfCheckListItem;
@@ -60,6 +66,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   private final EntityDeletionOrUpdateAdapter<CheckListItem> __updateAdapterOfCheckListItem;
 
   private final EntityDeletionOrUpdateAdapter<Tag> __updateAdapterOfTag;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteNoteTagCrossRefsForNoteId;
 
   public NotesDatabaseDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
@@ -98,11 +106,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         statement.bindLong(6, _tmp);
         final int _tmp_1 = entity.isArchived() ? 1 : 0;
         statement.bindLong(7, _tmp_1);
-        if (entity.getColor() == null) {
-          statement.bindNull(8);
-        } else {
-          statement.bindString(8, entity.getColor());
-        }
+        statement.bindLong(8, entity.getColor());
         final int _tmp_2 = entity.isFavorite() ? 1 : 0;
         statement.bindLong(9, _tmp_2);
         final int _tmp_3 = entity.isDeleted() ? 1 : 0;
@@ -147,28 +151,51 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `noteTags` (`tagId`,`noteId`,`name`,`color`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR REPLACE INTO `noteTags` (`tagId`,`name`,`color`) VALUES (nullif(?, 0),?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final Tag entity) {
         statement.bindLong(1, entity.getTagId());
-        if (entity.getNoteId() == null) {
+        if (entity.getName() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindLong(2, entity.getNoteId());
-        }
-        if (entity.getName() == null) {
-          statement.bindNull(3);
-        } else {
-          statement.bindString(3, entity.getName());
+          statement.bindString(2, entity.getName());
         }
         if (entity.getColor() == null) {
-          statement.bindNull(4);
+          statement.bindNull(3);
         } else {
-          statement.bindString(4, entity.getColor());
+          statement.bindLong(3, entity.getColor());
         }
+      }
+    };
+    this.__insertionAdapterOfNoteTagCrossRef = new EntityInsertionAdapter<NoteTagCrossRef>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "INSERT OR IGNORE INTO `NoteTagCrossRef` (`noteId`,`tagId`) VALUES (?,?)";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final NoteTagCrossRef entity) {
+        statement.bindLong(1, entity.getNoteId());
+        statement.bindLong(2, entity.getTagId());
+      }
+    };
+    this.__insertionAdapterOfNoteTagCrossRef_1 = new EntityInsertionAdapter<NoteTagCrossRef>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "INSERT OR REPLACE INTO `NoteTagCrossRef` (`noteId`,`tagId`) VALUES (?,?)";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final NoteTagCrossRef entity) {
+        statement.bindLong(1, entity.getNoteId());
+        statement.bindLong(2, entity.getTagId());
       }
     };
     this.__deletionAdapterOfNote = new EntityDeletionOrUpdateAdapter<Note>(__db) {
@@ -245,11 +272,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         statement.bindLong(6, _tmp);
         final int _tmp_1 = entity.isArchived() ? 1 : 0;
         statement.bindLong(7, _tmp_1);
-        if (entity.getColor() == null) {
-          statement.bindNull(8);
-        } else {
-          statement.bindString(8, entity.getColor());
-        }
+        statement.bindLong(8, entity.getColor());
         final int _tmp_2 = entity.isFavorite() ? 1 : 0;
         statement.bindLong(9, _tmp_2);
         final int _tmp_3 = entity.isDeleted() ? 1 : 0;
@@ -296,29 +319,32 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `noteTags` SET `tagId` = ?,`noteId` = ?,`name` = ?,`color` = ? WHERE `tagId` = ?";
+        return "UPDATE OR ABORT `noteTags` SET `tagId` = ?,`name` = ?,`color` = ? WHERE `tagId` = ?";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final Tag entity) {
         statement.bindLong(1, entity.getTagId());
-        if (entity.getNoteId() == null) {
+        if (entity.getName() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindLong(2, entity.getNoteId());
-        }
-        if (entity.getName() == null) {
-          statement.bindNull(3);
-        } else {
-          statement.bindString(3, entity.getName());
+          statement.bindString(2, entity.getName());
         }
         if (entity.getColor() == null) {
-          statement.bindNull(4);
+          statement.bindNull(3);
         } else {
-          statement.bindString(4, entity.getColor());
+          statement.bindLong(3, entity.getColor());
         }
-        statement.bindLong(5, entity.getTagId());
+        statement.bindLong(4, entity.getTagId());
+      }
+    };
+    this.__preparedStmtOfDeleteNoteTagCrossRefsForNoteId = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM NoteTagCrossRef WHERE noteId = ?";
+        return _query;
       }
     };
   }
@@ -369,6 +395,62 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         __db.beginTransaction();
         try {
           __insertionAdapterOfTag.insert(tags);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object insertTag(final Tag tag, final Continuation<? super Long> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
+      @Override
+      @NonNull
+      public Long call() throws Exception {
+        __db.beginTransaction();
+        try {
+          final Long _result = __insertionAdapterOfTag.insertAndReturnId(tag);
+          __db.setTransactionSuccessful();
+          return _result;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object insertNoteTagCrossRefs(final List<NoteTagCrossRef> crossRefs,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __insertionAdapterOfNoteTagCrossRef.insert(crossRefs);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object insertNoteTagCrossRef(final NoteTagCrossRef noteTagCrossRef,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __insertionAdapterOfNoteTagCrossRef_1.insert(noteTagCrossRef);
           __db.setTransactionSuccessful();
           return Unit.INSTANCE;
         } finally {
@@ -489,6 +571,24 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
+  public Object updateTag(final Tag tag, final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __updateAdapterOfTag.handle(tag);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object insertNoteWithDetails(final Note note, final List<CheckListItem> checklistItems,
       final List<Tag> tags, final Continuation<? super Unit> $completion) {
     return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.insertNoteWithDetails(NotesDatabaseDao_Impl.this, note, checklistItems, tags, __cont), $completion);
@@ -498,6 +598,32 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   public Object updateNoteWithDetails(final Note note, final List<CheckListItem> checklistItems,
       final List<Tag> tags, final Continuation<? super Unit> $completion) {
     return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.updateNoteWithDetails(NotesDatabaseDao_Impl.this, note, checklistItems, tags, __cont), $completion);
+  }
+
+  @Override
+  public Object deleteNoteTagCrossRefsForNoteId(final long noteId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, noteId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.release(_stmt);
+        }
+      }
+    }, $completion);
   }
 
   @Override
@@ -582,12 +708,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
               final int _tmp_1;
               _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
               _tmpIsArchived = _tmp_1 != 0;
-              final String _tmpColor;
-              if (_cursor.isNull(_cursorIndexOfColor)) {
-                _tmpColor = null;
-              } else {
-                _tmpColor = _cursor.getString(_cursorIndexOfColor);
-              }
+              final long _tmpColor;
+              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
               final boolean _tmpIsFavorite;
               final int _tmp_2;
               _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
@@ -718,12 +840,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
               final int _tmp_1;
               _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
               _tmpIsArchived = _tmp_1 != 0;
-              final String _tmpColor;
-              if (_cursor.isNull(_cursorIndexOfColor)) {
-                _tmpColor = null;
-              } else {
-                _tmpColor = _cursor.getString(_cursorIndexOfColor);
-              }
+              final long _tmpColor;
+              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
               final boolean _tmpIsFavorite;
               final int _tmp_2;
               _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
@@ -773,6 +891,94 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
+  public Object getTags(final Continuation<? super List<Tag>> $completion) {
+    final String _sql = "SELECT * FROM noteTags";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<Tag>>() {
+      @Override
+      @NonNull
+      public List<Tag> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfTagId = CursorUtil.getColumnIndexOrThrow(_cursor, "tagId");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfColor = CursorUtil.getColumnIndexOrThrow(_cursor, "color");
+          final List<Tag> _result = new ArrayList<Tag>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final Tag _item;
+            final long _tmpTagId;
+            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Long _tmpColor;
+            if (_cursor.isNull(_cursorIndexOfColor)) {
+              _tmpColor = null;
+            } else {
+              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+            }
+            _item = new Tag(_tmpTagId,_tmpName,_tmpColor);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object getTag(final long id, final Continuation<? super Tag> $completion) {
+    final String _sql = "SELECT * FROM noteTags WHERE tagId = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, id);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<Tag>() {
+      @Override
+      @NonNull
+      public Tag call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfTagId = CursorUtil.getColumnIndexOrThrow(_cursor, "tagId");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfColor = CursorUtil.getColumnIndexOrThrow(_cursor, "color");
+          final Tag _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpTagId;
+            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Long _tmpColor;
+            if (_cursor.isNull(_cursorIndexOfColor)) {
+              _tmpColor = null;
+            } else {
+              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+            }
+            _result = new Tag(_tmpTagId,_tmpName,_tmpColor);
+          } else {
+            _result = null;
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object getChecklistItemsForNoteId(final long noteId,
       final Continuation<? super List<CheckListItem>> $completion) {
     final String _sql = "SELECT * FROM checklist WHERE noteId = ?";
@@ -812,59 +1018,6 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
             _tmp = _cursor.getInt(_cursorIndexOfIsChecked);
             _tmpIsChecked = _tmp != 0;
             _item = new CheckListItem(_tmpCheckListItemId,_tmpNoteId,_tmpText,_tmpIsChecked);
-            _result.add(_item);
-          }
-          return _result;
-        } finally {
-          _cursor.close();
-          _statement.release();
-        }
-      }
-    }, $completion);
-  }
-
-  @Override
-  public Object getTagsForNoteId(final long noteId,
-      final Continuation<? super List<Tag>> $completion) {
-    final String _sql = "SELECT * FROM noteTags WHERE noteId = ?";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
-    int _argIndex = 1;
-    _statement.bindLong(_argIndex, noteId);
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<Tag>>() {
-      @Override
-      @NonNull
-      public List<Tag> call() throws Exception {
-        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
-        try {
-          final int _cursorIndexOfTagId = CursorUtil.getColumnIndexOrThrow(_cursor, "tagId");
-          final int _cursorIndexOfNoteId = CursorUtil.getColumnIndexOrThrow(_cursor, "noteId");
-          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
-          final int _cursorIndexOfColor = CursorUtil.getColumnIndexOrThrow(_cursor, "color");
-          final List<Tag> _result = new ArrayList<Tag>(_cursor.getCount());
-          while (_cursor.moveToNext()) {
-            final Tag _item;
-            final long _tmpTagId;
-            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
-            final Long _tmpNoteId;
-            if (_cursor.isNull(_cursorIndexOfNoteId)) {
-              _tmpNoteId = null;
-            } else {
-              _tmpNoteId = _cursor.getLong(_cursorIndexOfNoteId);
-            }
-            final String _tmpName;
-            if (_cursor.isNull(_cursorIndexOfName)) {
-              _tmpName = null;
-            } else {
-              _tmpName = _cursor.getString(_cursorIndexOfName);
-            }
-            final String _tmpColor;
-            if (_cursor.isNull(_cursorIndexOfColor)) {
-              _tmpColor = null;
-            } else {
-              _tmpColor = _cursor.getString(_cursorIndexOfColor);
-            }
-            _item = new Tag(_tmpTagId,_tmpNoteId,_tmpName,_tmpColor);
             _result.add(_item);
           }
           return _result;
@@ -969,7 +1122,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
       return;
     }
     final StringBuilder _stringBuilder = StringUtil.newStringBuilder();
-    _stringBuilder.append("SELECT `tagId`,`noteId`,`name`,`color` FROM `noteTags` WHERE `noteId` IN (");
+    _stringBuilder.append("SELECT `noteTags`.`tagId` AS `tagId`,`noteTags`.`name` AS `name`,`noteTags`.`color` AS `color`,_junction.`noteId` FROM `NoteTagCrossRef` AS _junction INNER JOIN `noteTags` ON (_junction.`tagId` = `noteTags`.`tagId`) WHERE _junction.`noteId` IN (");
     final int _inputSize = _map.size();
     StringUtil.appendPlaceholders(_stringBuilder, _inputSize);
     _stringBuilder.append(")");
@@ -984,48 +1137,36 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
     }
     final Cursor _cursor = DBUtil.query(__db, _stmt, false, null);
     try {
-      final int _itemKeyIndex = CursorUtil.getColumnIndex(_cursor, "noteId");
+      // _junction.noteId;
+      final int _itemKeyIndex = 3;
       if (_itemKeyIndex == -1) {
         return;
       }
       final int _cursorIndexOfTagId = 0;
-      final int _cursorIndexOfNoteId = 1;
-      final int _cursorIndexOfName = 2;
-      final int _cursorIndexOfColor = 3;
+      final int _cursorIndexOfName = 1;
+      final int _cursorIndexOfColor = 2;
       while (_cursor.moveToNext()) {
-        final Long _tmpKey;
-        if (_cursor.isNull(_itemKeyIndex)) {
-          _tmpKey = null;
-        } else {
-          _tmpKey = _cursor.getLong(_itemKeyIndex);
-        }
-        if (_tmpKey != null) {
-          final ArrayList<Tag> _tmpRelation = _map.get(_tmpKey);
-          if (_tmpRelation != null) {
-            final Tag _item_1;
-            final long _tmpTagId;
-            _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
-            final Long _tmpNoteId;
-            if (_cursor.isNull(_cursorIndexOfNoteId)) {
-              _tmpNoteId = null;
-            } else {
-              _tmpNoteId = _cursor.getLong(_cursorIndexOfNoteId);
-            }
-            final String _tmpName;
-            if (_cursor.isNull(_cursorIndexOfName)) {
-              _tmpName = null;
-            } else {
-              _tmpName = _cursor.getString(_cursorIndexOfName);
-            }
-            final String _tmpColor;
-            if (_cursor.isNull(_cursorIndexOfColor)) {
-              _tmpColor = null;
-            } else {
-              _tmpColor = _cursor.getString(_cursorIndexOfColor);
-            }
-            _item_1 = new Tag(_tmpTagId,_tmpNoteId,_tmpName,_tmpColor);
-            _tmpRelation.add(_item_1);
+        final long _tmpKey;
+        _tmpKey = _cursor.getLong(_itemKeyIndex);
+        final ArrayList<Tag> _tmpRelation = _map.get(_tmpKey);
+        if (_tmpRelation != null) {
+          final Tag _item_1;
+          final long _tmpTagId;
+          _tmpTagId = _cursor.getLong(_cursorIndexOfTagId);
+          final String _tmpName;
+          if (_cursor.isNull(_cursorIndexOfName)) {
+            _tmpName = null;
+          } else {
+            _tmpName = _cursor.getString(_cursorIndexOfName);
           }
+          final Long _tmpColor;
+          if (_cursor.isNull(_cursorIndexOfColor)) {
+            _tmpColor = null;
+          } else {
+            _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+          }
+          _item_1 = new Tag(_tmpTagId,_tmpName,_tmpColor);
+          _tmpRelation.add(_item_1);
         }
       }
     } finally {

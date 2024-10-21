@@ -1,4 +1,7 @@
+int drawable ic_add_circle 0x0
 int drawable ic_arrow_left 0x0
+int drawable ic_close 0x0
+int drawable ic_search 0x0
 int font poppins_black 0x0
 int font poppins_bold 0x0
 int font poppins_light 0x0
@@ -9,3 +12,7 @@ int font poppins_thin 0x0
 int font roboto 0x0
 int font roboto_medium 0x0
 int string back 0x0
+int string clear 0x0
+int string confirm 0x0
+int string ok 0x0
+int string search 0x0

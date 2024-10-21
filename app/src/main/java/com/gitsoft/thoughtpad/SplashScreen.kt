@@ -49,7 +49,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import core.gitsoft.thoughtpad.core.toga.components.TogaBasicScaffold
+import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
 import kotlinx.coroutines.delay
 
 @Composable

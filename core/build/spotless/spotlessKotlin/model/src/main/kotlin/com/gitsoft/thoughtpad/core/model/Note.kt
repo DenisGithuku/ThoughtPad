@@ -18,6 +18,9 @@ package com.gitsoft.thoughtpad.core.model
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.Junction
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.TypeConverter
@@ -26,14 +29,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "notes_table")
 data class Note(
-    @PrimaryKey(autoGenerate = true) val noteId: Long,
+    @PrimaryKey(autoGenerate = true) val noteId: Long = 0,
     val noteTitle: String? = null,
     val noteText: String? = null,
     val createdAt: Long? = null,
     val updatedAt: Long? = null,
     val isPinned: Boolean = false,
     val isArchived: Boolean = false,
-    val color: String? = null,
+    val color: Long = 4294967295,
     val isFavorite: Boolean = false,
     val isDeleted: Boolean = false,
     val isCheckList: Boolean = false,
@@ -58,9 +61,35 @@ class Converters {
     }
 }
 
+@Entity(
+    primaryKeys = ["noteId", "tagId"],
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = Note::class,
+                parentColumns = ["noteId"],
+                childColumns = ["noteId"],
+                onDelete = ForeignKey.CASCADE
+            ),
+            ForeignKey(
+                entity = Tag::class,
+                parentColumns = ["tagId"],
+                childColumns = ["tagId"],
+                onDelete = ForeignKey.CASCADE
+            )
+        ],
+    indices = [Index(value = ["tagId"])]
+)
+data class NoteTagCrossRef(val noteId: Long, val tagId: Long)
+
 data class DataWithNotesCheckListItemsAndTags(
     @Embedded val note: Note,
     @Relation(parentColumn = "noteId", entityColumn = "noteId")
     val checkListItems: List<CheckListItem> = emptyList(),
-    @Relation(parentColumn = "noteId", entityColumn = "noteId") val tags: List<Tag> = emptyList()
+    @Relation(
+        parentColumn = "noteId",
+        entityColumn = "tagId",
+        associateBy = Junction(NoteTagCrossRef::class)
+    )
+    val tags: List<Tag> = emptyList()
 )

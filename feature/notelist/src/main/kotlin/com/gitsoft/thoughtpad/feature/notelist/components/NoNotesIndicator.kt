@@ -16,8 +16,11 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +40,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gitsoft.thoughtpad.feature.notelist.R
 
 @Composable
-fun NoNotesIndicator() {
+fun NoNotesIndicator(modifier: Modifier = Modifier) {
     // Load the Lottie animation
     val composition by
         rememberLottieComposition(
@@ -45,20 +48,30 @@ fun NoNotesIndicator() {
         ) // Replace with your Lottie file
     val progress by animateLottieCompositionAsState(composition)
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // Display the Lottie animation
-        LottieAnimation(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.size(120.dp)
-        )
+    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.weight(1f))
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Display the Lottie animation
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(150.dp)
+            )
 
-        // Display the text message
-        Text(
-            text = stringResource(R.string.no_notes_available),
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Display the text message
+            Text(
+                text = stringResource(R.string.no_notes_available),
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
