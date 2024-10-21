@@ -18,15 +18,22 @@ package com.gitsoft.thoughtpad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
 
-class MainViewModel(userPrefsRepository: UserPrefsRepository) : ViewModel() {
+class MainViewModel(
+    userPrefsRepository: UserPrefsRepository,
+    private val notesRepository: NotesRepository
+) : ViewModel() {
 
     val uiState =
         userPrefsRepository.userPrefs
@@ -36,4 +43,25 @@ class MainViewModel(userPrefsRepository: UserPrefsRepository) : ViewModel() {
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = MainUiState()
             )
+
+    init {
+        checkTags()
+    }
+
+    private fun checkTags() {
+        viewModelScope.launch {
+            notesRepository.getAllTags().collectLatest {
+                if (it.isEmpty()) {
+                    val defaultTags =
+                        listOf(
+                            Tag(name = "Work", color = 0xFF2196F3), // Blue
+                            Tag(name = "Personal", color = 0xFF4CAF50), // Green
+                            Tag(name = "Urgent", color = 0xFFFF5722) // Orange
+                        )
+
+                    notesRepository.insertTags(defaultTags)
+                }
+            }
+        }
+    }
 }

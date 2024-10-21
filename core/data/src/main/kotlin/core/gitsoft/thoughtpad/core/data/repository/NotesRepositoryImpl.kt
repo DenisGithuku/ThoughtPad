@@ -57,8 +57,8 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
         return notesDatabaseDao.getTag(tagId)
     }
 
-    override suspend fun getAllTags(): List<Tag> {
-        return notesDatabaseDao.getTags()
+    override suspend fun getAllTags(): Flow<List<Tag>> {
+        return flow { emit(notesDatabaseDao.getTags()) }
     }
 
     override suspend fun insertNoteWithDetails(

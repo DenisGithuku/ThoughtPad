@@ -47,5 +47,5 @@ interface NotesRepository {
 
     suspend fun getTagById(tagId: Long): Tag
 
-    suspend fun getAllTags(): List<Tag>
+    suspend fun getAllTags(): Flow<List<Tag>>
 }
