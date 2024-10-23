@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -63,65 +64,60 @@ data class AddNoteUiState(
     val hasReminder: Boolean = false,
     val timeDialogIsVisible: Boolean = false,
     val dateDialogIsVisible: Boolean = false,
-    val selectedDate: Long = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, this.get(Calendar.HOUR_OF_DAY) + 1)
-        set(Calendar.MINUTE, 30)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis,
+    val selectedDate: Long =
+        Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, this.get(Calendar.HOUR_OF_DAY) + 1)
+                set(Calendar.MINUTE, 30)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            .timeInMillis,
     val hasTags: Boolean = false,
     val systemInDarkMode: Boolean = false,
-    val noteColors: List<Color> = if (systemInDarkMode) {
-        listOf(
-            DarkGray,
-            DeepBlue,
-            OliveGreen,
-            BurntOrange,
-            DeepLavender,
-            MustardYellow,
-            ForestGreen,
-            DarkCoral,
-            TealCyan,
-            DuskyPink
-        )
-    } else {
-        listOf(
-            SnowDrift,
-            SoftBlue,
-            PaleGreen,
-            Peach,
-            LightLavender,
-            LightYellow,
-            MintGreen,
-            SoftCoral,
-            LightCyan,
-            BlushPink
-        )
-
-    },
-    val tagColors: List<Color> = if (systemInDarkMode) {
-        listOf(
-            TagRed,
-            TagOrange,
-            TagYellow,
-            TagGreen,
-            TagTeal,
-            TagBlue,
-            TagPurple,
-            TagBrown
-        )
-    } else {
-        listOf(
-            TagRedDark,
-            TagOrangeDark,
-            TagYellowDark,
-            TagGreenDark,
-            TagTealDark,
-            TagBlueDark,
-            TagPurpleDark,
-            TagBrownDark
-        )
-    },
+    val noteColors: List<Color> =
+        if (systemInDarkMode) {
+            listOf(
+                DarkGray,
+                DeepBlue,
+                OliveGreen,
+                BurntOrange,
+                DeepLavender,
+                MustardYellow,
+                ForestGreen,
+                DarkCoral,
+                TealCyan,
+                DuskyPink
+            )
+        } else {
+            listOf(
+                SnowDrift,
+                SoftBlue,
+                PaleGreen,
+                Peach,
+                LightLavender,
+                LightYellow,
+                MintGreen,
+                SoftCoral,
+                LightCyan,
+                BlushPink
+            )
+        },
+    val tagColors: List<Color> =
+        if (systemInDarkMode) {
+            listOf(TagRed, TagOrange, TagYellow, TagGreen, TagTeal, TagBlue, TagPurple, TagBrown)
+        } else {
+            listOf(
+                TagRedDark,
+                TagOrangeDark,
+                TagYellowDark,
+                TagGreenDark,
+                TagTealDark,
+                TagBlueDark,
+                TagPurpleDark,
+                TagBrownDark
+            )
+        },
     val selectedNoteColor: Color = noteColors.first(),
     val selectedTagColor: Color = tagColors.first(),
     val checkListItems: List<CheckListItem> = emptyList(),

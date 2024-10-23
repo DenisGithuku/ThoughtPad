@@ -52,7 +52,7 @@ sealed interface AddNoteEvent {
     data class CheckListItemCheckedChange(val checkListItem: CheckListItem, val checked: Boolean) :
         AddNoteEvent
 
-    data class ToggleTagSheet(val isVisible: Boolean): AddNoteEvent
+    data class ToggleTagSheet(val isVisible: Boolean) : AddNoteEvent
 
     data class ToggleDateDialog(val value: Boolean) : AddNoteEvent
 

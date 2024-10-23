@@ -6,6 +6,10 @@ plugins {
     alias(libs.plugins.thoughtpad.android.application)
     alias(libs.plugins.thoughtpad.compose.application)
     alias(libs.plugins.thoughtpad.android.koin)
+    alias(libs.plugins.thoughtpad.google.firebase.application)
+    alias(libs.plugins.gms)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.performance)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ksp)
 }

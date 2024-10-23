@@ -16,11 +16,6 @@
 */
 package com.gitsoft.thoughtpad
 
-import android.util.Log
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.toColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Tag
@@ -30,6 +25,7 @@ import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import core.gitsoft.thoughtpad.core.toga.theme.TagBlue
 import core.gitsoft.thoughtpad.core.toga.theme.TagGreen
 import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
+import core.gitsoft.thoughtpad.core.toga.theme.toComposeLong
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapLatest
@@ -59,19 +55,12 @@ class MainViewModel(
     private fun checkTags() {
         viewModelScope.launch {
             notesRepository.allTags.collectLatest {
-                Log.d("Colors", it.map {
-                    it.color?.let {
-                        Color(it.toULong() shl 32)
-                    } ?: {
-                        Color.Unspecified
-                    }
-                }.toString())
                 if (it.isEmpty()) {
                     val defaultTags =
                         listOf(
-                            Tag(name = "Work", color = TagBlue.toArgb().toLong()), // Blue
-                            Tag(name = "Personal", color = TagGreen.toArgb().toLong()), // Green
-                            Tag(name = "Urgent", color = TagOrange.toArgb().toLong()) // Orange
+                            Tag(name = "Work", color = TagBlue.toComposeLong()), // Blue
+                            Tag(name = "Personal", color = TagGreen.toComposeLong()), // Green
+                            Tag(name = "Urgent", color = TagOrange.toComposeLong()) // Orange
                         )
 
                     notesRepository.insertTags(defaultTags)

@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -16,7 +17,6 @@
 package com.gitsoft.thoughtpad.feature.addnote
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -46,17 +46,18 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -79,13 +80,15 @@ import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffol
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
-import org.koin.androidx.compose.koinViewModel
+import core.gitsoft.thoughtpad.core.toga.theme.toComposeLong
 import java.util.Calendar
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinViewModel()) {
     val state: AddNoteUiState by viewModel.state.collectAsState()
-    AddNoteScreen(state = state,
+    AddNoteScreen(
+        state = state,
         onNavigateBack = onNavigateBack,
         onSave = { viewModel.onEvent(AddNoteEvent.Save) },
         onChangeTitle = { viewModel.onEvent(AddNoteEvent.ChangeTitle(it)) },
@@ -96,13 +99,7 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
         onToggleTags = { viewModel.onEvent(AddNoteEvent.ToggleTags(it)) },
         onAddCheckListItem = { viewModel.onEvent(AddNoteEvent.AddCheckListItem(it)) },
         onRemoveCheckListItem = { viewModel.onEvent(AddNoteEvent.RemoveCheckListItem(it)) },
-        onToggleTagSelection = { tag ->
-            viewModel.onEvent(
-                AddNoteEvent.ToggleTagSelection(
-                    tag
-                )
-            )
-        },
+        onToggleTagSelection = { tag -> viewModel.onEvent(AddNoteEvent.ToggleTagSelection(tag)) },
         onRemoveTag = { viewModel.onEvent(AddNoteEvent.RemoveTag(it)) },
         onToggleColorBar = { viewModel.onEvent(AddNoteEvent.ToggleColorBar(it)) },
         onTogglePin = { viewModel.onEvent(AddNoteEvent.TogglePin(it)) },
@@ -115,7 +112,8 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
         onToggleTagSheet = { viewModel.onEvent(AddNoteEvent.ToggleTagSheet(it)) },
         onToggleTimeDialog = { viewModel.onEvent(AddNoteEvent.ToggleTimeDialog(it)) },
         onChangeDate = { viewModel.onEvent(AddNoteEvent.ChangeDate(it)) },
-        onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) })
+        onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,58 +143,71 @@ internal fun AddNoteScreen(
     onToggleTagSheet: (Boolean) -> Unit,
     onCheckListItemCheckedChange: (CheckListItem, Boolean) -> Unit
 ) {
-    TogaStandardScaffold(onNavigateBack = onNavigateBack,
+    TogaStandardScaffold(
+        onNavigateBack = onNavigateBack,
         title = R.string.add_note,
         actions = {
-            TogaIconButton(icon = if (state.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
+            TogaIconButton(
+                icon = if (state.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
                 contentDescription = R.string.pin,
-                tint = if (state.note.isPinned) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground
-                },
-                onClick = { onTogglePin(!state.note.isPinned) })
+                tint =
+                    if (state.note.isPinned) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    },
+                onClick = { onTogglePin(!state.note.isPinned) }
+            )
             TogaTextButton(text = R.string.save, enabled = state.noteIsValid, onClick = onSave)
         },
         bottomBar = {
-            TogaBottomAppBar(containerColor = state.selectedNoteColor, actions = {
-                TogaIconButton(
-                    icon = R.drawable.ic_paint,
-                    onClick = { onToggleColorBar(!state.isColorVisible) },
-                    contentDescription = R.string.color_bar
-                )
+            TogaBottomAppBar(
+                containerColor = state.selectedNoteColor,
+                actions = {
+                    TogaIconButton(
+                        icon = R.drawable.ic_paint,
+                        onClick = { onToggleColorBar(!state.isColorVisible) },
+                        contentDescription = R.string.color_bar
+                    )
 
-                TogaIconButton(
-                    icon = if (!state.hasReminder) {
-                        R.drawable.ic_notifications_outlined
-                    } else R.drawable.ic_notifications_filled,
-                    onClick = { onToggleReminder(!state.hasReminder) },
-                    contentDescription = R.string.toggle_reminder,
-                    tint = if (!state.hasReminder) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else MaterialTheme.colorScheme.primary
-                )
-            })
+                    TogaIconButton(
+                        icon =
+                            if (!state.hasReminder) {
+                                R.drawable.ic_notifications_outlined
+                            } else R.drawable.ic_notifications_filled,
+                        onClick = { onToggleReminder(!state.hasReminder) },
+                        contentDescription = R.string.toggle_reminder,
+                        tint =
+                            if (!state.hasReminder) {
+                                MaterialTheme.colorScheme.onBackground
+                            } else MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
         },
-        appBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = state.selectedNoteColor)
+        appBarColors =
+            TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = state.selectedNoteColor)
     ) { innerPadding ->
         if (state.timeDialogIsVisible) {
-            TogaTimePickerDialog(selectedDate = state.selectedDate, onConfirm = { timePickerState ->
-                val selectedTimeMillis = getTimeInMillisFromPicker(timePickerState)
-                onChangeTime(selectedTimeMillis) // Pass the calculated timestamp
-                onToggleTimeDialog(false)
-            }, onDismiss = {
-                onToggleTimeDialog(false)
-            })
+            TogaTimePickerDialog(
+                selectedDate = state.selectedDate,
+                onConfirm = { timePickerState ->
+                    val selectedTimeMillis = getTimeInMillisFromPicker(timePickerState)
+                    onChangeTime(selectedTimeMillis) // Pass the calculated timestamp
+                    onToggleTimeDialog(false)
+                },
+                onDismiss = { onToggleTimeDialog(false) }
+            )
         }
 
         if (state.dateDialogIsVisible) {
-            TogaDatePickerDialog(onDateSelected = {
-                onChangeDate(it ?: return@TogaDatePickerDialog)
-                onToggleDateDialog(false)
-            }, onDismiss = {
-                onToggleDateDialog(false)
-            })
+            TogaDatePickerDialog(
+                onDateSelected = {
+                    onChangeDate(it ?: return@TogaDatePickerDialog)
+                    onToggleDateDialog(false)
+                },
+                onDismiss = { onToggleDateDialog(false) }
+            )
         }
 
         if (state.isTagSheetVisible) {
@@ -214,23 +225,23 @@ internal fun AddNoteScreen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        val navigateToNoteList by rememberUpdatedState(onNavigateBack)
+
+        LaunchedEffect(state.insertionSuccessful) {
+            if (state.insertionSuccessful) {
+                navigateToNoteList()
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             LazyColumn(
-                modifier = Modifier
-                    .matchParentSize()
-                    .align(Alignment.TopStart)
-                    .background(state.selectedNoteColor),
+                modifier =
+                    Modifier.matchParentSize().align(Alignment.TopStart).background(state.selectedNoteColor),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
                     TogaTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         value = state.note.noteTitle ?: "",
                         onValueChange = onChangeTitle,
                         textStyle = MaterialTheme.typography.titleMedium,
@@ -240,9 +251,7 @@ internal fun AddNoteScreen(
                 }
                 item {
                     TogaTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         value = state.note.noteText ?: "",
                         onValueChange = onChangeContent,
                         textStyle = MaterialTheme.typography.bodyMedium,
@@ -251,15 +260,11 @@ internal fun AddNoteScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Checkbox(
-                            checked = state.note.isCheckList, onCheckedChange = onToggleCheckList
-                        )
+                        Checkbox(checked = state.note.isCheckList, onCheckedChange = onToggleCheckList)
                         TogaLargeLabel(R.string.has_checklist)
                     }
                 }
@@ -275,19 +280,13 @@ internal fun AddNoteScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(checked = state.hasTags, onCheckedChange = onToggleTags)
-                        TogaLargeLabel(
-                            R.string.has_tags, modifier = Modifier.weight(1f)
-                        )
-                        AnimatedVisibility(
-                            visible = state.hasTags, modifier = Modifier
-                        ) {
+                        TogaLargeLabel(R.string.has_tags, modifier = Modifier.weight(1f))
+                        AnimatedVisibility(visible = state.hasTags, modifier = Modifier) {
                             TogaIconButton(
                                 icon = R.drawable.ic_add,
                                 onClick = { onToggleTagSheet(true) },
@@ -298,24 +297,17 @@ internal fun AddNoteScreen(
                 }
                 item {
                     AnimatedVisibility(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
                         visible = state.hasTags,
                         enter = scaleIn(initialScale = 0.5f) + fadeIn(initialAlpha = 0.3f),
-                        exit = scaleOut(targetScale = 0.5f) + fadeOut(targetAlpha = 0.3f),
+                        exit = scaleOut(targetScale = 0.5f) + fadeOut(targetAlpha = 0.3f)
                     ) {
-                        TagList(
-                            tags = state.selectedTags,
-                            onDeleteTag = onRemoveTag,
-                        )
+                        TagList(tags = state.selectedTags, onDeleteTag = onRemoveTag)
                     }
                 }
                 item {
                     AnimatedVisibility(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
                         visible = state.hasReminder,
                         enter = scaleIn() + slideInVertically(),
                         exit = scaleOut() + slideOutVertically()
@@ -344,7 +336,6 @@ internal fun AddNoteScreen(
     }
 }
 
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagSelectionBottomSheet(
@@ -360,21 +351,18 @@ fun TagSelectionBottomSheet(
     var tagNameState by rememberSaveable { mutableStateOf("") }
     val context: Context = LocalContext.current
 
-    val tagIsValid = remember(tagNameState) {
-        derivedStateOf {
-            tagNameState.isNotBlank() && existingTags.none { it.name.equals(tagNameState, true) }
+    val tagIsValid =
+        remember(tagNameState) {
+            derivedStateOf {
+                tagNameState.isNotBlank() && existingTags.none { it.name.equals(tagNameState, true) }
+            }
         }
-    }
 
     Column(
-        modifier = Modifier.padding(
-            start = 16.dp, end = 16.dp, bottom = 16.dp
-        ),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.weight(1f))
             TogaDefaultText("Select Tags", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.weight(1f))
@@ -395,19 +383,18 @@ fun TagSelectionBottomSheet(
                 TogaInputChip(
                     text = tag.name ?: "",
                     isSelected = selectedTags.any { it isTheSameAs tag },
-                    onSelectChanged = {
-                        onToggleTagSelection(tag)
-                    },
+                    onSelectChanged = { onToggleTagSelection(tag) },
                     color = tag.color
-                    )
+                )
             }
         }
 
         // New tag input
         TogaTextField(
-            value = tagNameState, onValueChange = { input ->
-                tagNameState = input
-            }, label = R.string.add_new_tag, modifier = Modifier.fillMaxWidth()
+            value = tagNameState,
+            onValueChange = { input -> tagNameState = input },
+            label = R.string.add_new_tag,
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Tag colors
@@ -425,17 +412,16 @@ fun TagSelectionBottomSheet(
 
         // Add button
         TogaPrimaryButton(
-            enabled = tagIsValid.value, onClick = {
-                val newTag = Tag(
-                    name = tagNameState, color = selectedTagColor.value.toLong()
-                )
+            enabled = tagIsValid.value,
+            onClick = {
+                val newTag = Tag(name = tagNameState, color = selectedTagColor.toComposeLong())
                 onNewTagAdded(newTag)
                 onChangeTagColor(tagColors.first())
                 tagNameState = ""
-                Toast.makeText(
-                    context, context.getString(R.string.new_tag_added), Toast.LENGTH_SHORT
-                ).show()
-            }, modifier = Modifier.align(Alignment.End)
+                Toast.makeText(context, context.getString(R.string.new_tag_added), Toast.LENGTH_SHORT)
+                    .show()
+            },
+            modifier = Modifier.align(Alignment.End)
         ) {
             TogaButtonText(text = stringResource(id = R.string.add_tag))
         }
@@ -444,7 +430,6 @@ fun TagSelectionBottomSheet(
 
 @Composable
 fun TagColorPicker(selectedColor: Color, colors: List<Color>, onColorSelected: (Color) -> Unit) {
-
     LazyRow(
         modifier = Modifier.padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -471,7 +456,6 @@ fun getTimeInMillisFromPicker(timePickerState: TimePickerState): Long {
     // Return the timestamp in milliseconds
     return calendar.timeInMillis
 }
-
 
 // Helper function for checking if two tags are the same
 infix fun Tag.isTheSameAs(other: Tag): Boolean = this.name.equals(other.name, true)

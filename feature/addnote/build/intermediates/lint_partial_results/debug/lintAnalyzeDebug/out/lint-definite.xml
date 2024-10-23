@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.5.2" type="incidents">
+
+    <incident
+        id="VectorPath"
+        severity="warning"
+        message="Very long vector path (3912 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_pin.xml"
+            line="3"
+            column="57"
+            startOffset="251"
+            endLine="3"
+            endColumn="3969"
+            endOffset="4163"/>
+    </incident>
+
+    <incident
+        id="VectorPath"
+        severity="warning"
+        message="Very long vector path (811 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_pin_filled.xml"
+            line="3"
+            column="57"
+            startOffset="251"
+            endLine="3"
+            endColumn="868"
+            endOffset="1062"/>
+    </incident>
+
+    <incident
+        id="VectorPath"
+        severity="warning"
+        message="Very long vector path (1164 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_update.xml"
+            line="3"
+            column="84"
+            startOffset="278"
+            endLine="3"
+            endColumn="1248"
+            endOffset="1442"/>
+    </incident>
+
+</incidents>

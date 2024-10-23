@@ -1,3 +1,19 @@
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.feature.addnote.components
 
 import androidx.compose.foundation.layout.Column
@@ -36,31 +52,30 @@ fun CheckList(
         // Display existing checklist items
         checklistItems.forEach { item ->
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(checked = item.isChecked,
-                    onCheckedChange = { checked -> onCheckedChange(item, checked) })
+                Checkbox(
+                    checked = item.isChecked,
+                    onCheckedChange = { checked -> onCheckedChange(item, checked) }
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 TogaMediumLabel(
                     text = item.text ?: "",
                     modifier = Modifier.weight(1f) // Ensures the text takes the remaining space
                 )
-                TogaIconButton(icon = R.drawable.ic_delete,
+                TogaIconButton(
+                    icon = R.drawable.ic_delete,
                     contentDescription = R.string.delete,
-                    onClick = { onDeleteItem(item) })
+                    onClick = { onDeleteItem(item) }
+                )
             }
-
         }
 
         // TextField to add new checklist items
         var newItemText by remember { mutableStateOf("") }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TogaTextField(
@@ -69,15 +84,20 @@ fun CheckList(
                 label = R.string.add_new_item,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = {
-                    if (newItemText.isNotEmpty()) {
-                        onAddItem(CheckListItem(text = newItemText))
-                        newItemText = ""
-                    }
-                }) // Takes up the rest of the row
+                keyboardOptions =
+                    KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Done
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
+                            if (newItemText.isNotEmpty()) {
+                                onAddItem(CheckListItem(text = newItemText))
+                                newItemText = ""
+                            }
+                        }
+                    ) // Takes up the rest of the row
             )
             TogaIconButton(
                 onClick = {
@@ -85,7 +105,9 @@ fun CheckList(
                         onAddItem(CheckListItem(text = newItemText))
                         newItemText = ""
                     }
-                }, icon = R.drawable.ic_add, contentDescription = R.string.add_new_item
+                },
+                icon = R.drawable.ic_add,
+                contentDescription = R.string.add_new_item
             )
         }
     }

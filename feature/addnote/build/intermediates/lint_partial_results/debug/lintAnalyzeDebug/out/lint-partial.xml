@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.5.2" type="partial_results">
+    <map id="UnusedResources">
+        <location id="R.string.has_reminder"
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="18"
+            column="13"
+            startOffset="779"
+            endLine="18"
+            endColumn="32"
+            endOffset="798"/>
+        <location id="R.drawable.ic_update"
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_update.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="5"
+            endColumn="10"
+            endOffset="1456"/>
+        <location id="R.string.update"
+            file="${:feature:addnote*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="19"
+            column="13"
+            startOffset="833"
+            endLine="19"
+            endColumn="26"
+            endOffset="846"/>
+        <entry
+            name="model"
+            string="drawable[ic_add(U),ic_close(U),ic_delete(U),ic_notifications_filled(U),ic_notifications_outlined(U),ic_paint(U),ic_pin(U),ic_pin_filled(U),ic_update(D)],string[add_note(U),save(U),note_title(U),note_content(U),color_bar(U),pin(U),toggle_reminder(U),add_new_item(U),has_checklist(U),add_new_tag(U),add_tag(U),has_tags(U),close(U),delete(U),no_tags(U),has_reminder(D),update(D),reminder_me_at(U),at(U),new_tag_added(U)];;;;"/>
+    </map>
+
+</incidents>

@@ -17,6 +17,7 @@
 package core.gitsoft.thoughtpad.core.toga.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 // Light Theme
 val SavvyBlue = Color(0xFF0A4DE0)
@@ -85,4 +86,8 @@ val MustardYellow = Color(0xFFCFB53B) // Mustard Yellow
 val ForestGreen = Color(0xFF228B22) // Forest Green
 val DarkCoral = Color(0xFFCD5B45) // Dark Coral
 val TealCyan = Color(0xFF008B8B) // Teal Cyan
-val DuskyPink = Color(0xFFB22222) // Dusky Pinke
+val DuskyPink = Color(0xFFB22222) // Dusky Pinky
+
+fun Color.toComposeLong(): Long = this.toArgb().toLong()
+
+fun Long.toComposeColor(): Color = Color(this.toULong() shl 32)

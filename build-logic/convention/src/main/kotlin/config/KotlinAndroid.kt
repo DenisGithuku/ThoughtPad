@@ -35,7 +35,6 @@ internal fun Project.configureKotlinAndroid(
         add("coreLibraryDesugaring", libs.findLibrary("android.desugar.jdk.libs").get())
         add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
         add("implementation", libs.findLibrary("androidx.core.ktx").get())
-        add("implementation", libs.findLibrary("material").get())
     }
 }
 

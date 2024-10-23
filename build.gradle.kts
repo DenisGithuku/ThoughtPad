@@ -4,7 +4,9 @@ import io.gitlab.arturbosch.detekt.Detekt
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        classpath(libs.androidx.navigation.safeargs)
+        classpath(libs.firebase.performance.gradle.plugin)
+        classpath(libs.firebase.crashlytics.gradle.plugin)
+        classpath(libs.google.services.plugin)
     }
 }
 
@@ -14,6 +16,10 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.com.diffplug.spotless) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.firebase.performance) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.gms) apply false
+    alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
 }

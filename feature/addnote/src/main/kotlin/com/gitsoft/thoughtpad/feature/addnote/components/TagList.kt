@@ -1,3 +1,19 @@
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.feature.addnote.components
 
 import androidx.compose.animation.AnimatedContent
@@ -25,21 +41,19 @@ import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 fun TagList(
     modifier: Modifier = Modifier,
     tags: List<Tag>,
-    onDeleteTag: (Tag) -> Unit, // Handle tag deletion
+    onDeleteTag: (Tag) -> Unit // Handle tag deletion
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-    ) {
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         // Display existing tags
-        AnimatedContent(tags.isEmpty(), label = "Tags", transitionSpec = {
-            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-        }) { isEmpty ->
+        AnimatedContent(
+            tags.isEmpty(),
+            label = "Tags",
+            transitionSpec = {
+                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+            }
+        ) { isEmpty ->
             if (isEmpty) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     TogaLargeLabel(R.string.no_tags)
                 }
             } else {

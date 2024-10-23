@@ -36,6 +36,7 @@ navigation-ui-ktx = "2.8.1"
 nav-version = "2.8.1"
 room = "2.6.1"
 spotless-plugin-gradle = "6.25.0"
+timber = "5.0.1"
 
 [libraries]
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-lib" }
@@ -88,13 +89,16 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose"}
 material = { module = "com.google.android.material:material", version.ref = "material" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
 
 #build-logic dependencies
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 firebase-crashlytics-gradle-plugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-plugin" }
+firebase-performance-gradle-plugin = { module = "com.google.firebase:perf-plugin", version.ref = "firebase-performance-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+google-services-plugin = { module = "com.google.gms:google-services", version.ref = "google-services" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -102,7 +106,9 @@ android-test = { id = "com.android.test", version.ref = "agp"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin"}
+firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-performance-plugin" }
+gms = { id = "com.google.gms.google-services", version.ref = "google-services"}
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

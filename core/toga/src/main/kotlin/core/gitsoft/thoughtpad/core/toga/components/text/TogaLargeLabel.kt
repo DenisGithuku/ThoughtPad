@@ -24,10 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun TogaLargeLabel(
-    @StringRes text: Int,
-    modifier: Modifier = Modifier
-) {
+fun TogaLargeLabel(@StringRes text: Int, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = stringResource(id = text),

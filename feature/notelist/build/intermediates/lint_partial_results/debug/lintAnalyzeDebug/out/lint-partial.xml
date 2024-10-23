@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.5.2" type="partial_results">
+    <map id="UnusedResources">
+        <location id="R.drawable.ic_search"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_search.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="13"
+            endColumn="10"
+            endOffset="745"/>
+        <location id="R.drawable.ic_close"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_close.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="5"
+            endColumn="10"
+            endOffset="482"/>
+        <location id="R.string.search"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="9"
+            column="13"
+            startOffset="381"
+            endLine="9"
+            endColumn="26"
+            endOffset="394"/>
+        <location id="R.drawable.ic_add"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/drawable/ic_add.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="7"
+            endColumn="10"
+            endOffset="582"/>
+        <location id="R.string.notes_list_title"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="3"
+            column="13"
+            startOffset="63"
+            endLine="3"
+            endColumn="36"
+            endOffset="86"/>
+        <location id="R.string.no_notes_found"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="6"
+            column="13"
+            startOffset="209"
+            endLine="6"
+            endColumn="34"
+            endOffset="230"/>
+        <entry
+            name="model"
+            string="drawable[ic_add(D),ic_add_circle(U),ic_close(D),ic_search(D),ic_settings(U)],raw[no_notes(U)],string[notes_list_title(D),settings(U),add_note(U),no_notes_found(D),no_notes_available(U),clear(D),search(D)];;;;"/>
+        <location id="R.string.clear"
+            file="${:feature:notelist*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="8"
+            column="13"
+            startOffset="334"
+            endLine="8"
+            endColumn="25"
+            endOffset="346"/>
+    </map>
+
+</incidents>

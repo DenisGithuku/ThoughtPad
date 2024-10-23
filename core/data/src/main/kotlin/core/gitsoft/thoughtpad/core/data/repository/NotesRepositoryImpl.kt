@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -32,7 +33,9 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
     }
 
     override suspend fun updateNoteWithDetails(
-        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
     ) {
         notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
     }
@@ -55,7 +58,9 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
         }
 
     override suspend fun insertNoteWithDetails(
-        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
     ) {
         notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
     }

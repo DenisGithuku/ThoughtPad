@@ -1,3 +1,19 @@
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.feature.addnote.components
 
 import androidx.compose.foundation.background
@@ -32,12 +48,8 @@ fun ReminderRow(
     onChangeDate: (Boolean) -> Unit,
     onChangeTime: (Boolean) -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        TogaMediumLabel(
-            text = stringResource(id = R.string.reminder_me_at),
-        )
+    Column(modifier = modifier.fillMaxWidth()) {
+        TogaMediumLabel(text = stringResource(id = R.string.reminder_me_at))
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -52,19 +64,17 @@ fun ReminderRow(
 }
 
 @Composable
-fun ReminderItem(
-    value: String, onClick: () -> Unit
-) {
+fun ReminderItem(value: String, onClick: () -> Unit) {
     Box(
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.small)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { onClick() },
+        modifier =
+            Modifier.clip(MaterialTheme.shapes.small)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { onClick() }
     ) {
         TogaDefaultText(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             text = value,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall
         )
     }
 }
@@ -73,9 +83,9 @@ fun Long.toFormattedDate(): String {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = this
 
-    val today = Calendar.getInstance()  // Current date and time
-    val yesterday = Calendar.getInstance().apply { add(Calendar.DATE, -1) }  // Yesterday's date
-    val tomorrow = Calendar.getInstance().apply { add(Calendar.DATE, 1) }  // Tomorrow's date
+    val today = Calendar.getInstance() // Current date and time
+    val yesterday = Calendar.getInstance().apply { add(Calendar.DATE, -1) } // Yesterday's date
+    val tomorrow = Calendar.getInstance().apply { add(Calendar.DATE, 1) } // Tomorrow's date
 
     return when {
         isSameDay(calendar, yesterday) -> "Yesterday"
@@ -90,13 +100,11 @@ fun Long.toFormattedDate(): String {
 
 // Helper function to check if two Calendar instances represent the same day
 fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
-    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(
-        Calendar.DAY_OF_YEAR
-    )
+    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+        cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 }
 
 fun Long.toFormattedTime(): String {
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    return timeFormat.format(this)  // 'this' is the Long value in milliseconds
+    return timeFormat.format(this) // 'this' is the Long value in milliseconds
 }
-

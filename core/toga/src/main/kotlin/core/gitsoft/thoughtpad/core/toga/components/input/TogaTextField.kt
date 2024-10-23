@@ -48,9 +48,9 @@ fun TogaTextField(
         onValueChange = onValueChange,
         textStyle = textStyle,
         singleLine = singleLine,
-        keyboardOptions = keyboardOptions ?: KeyboardOptions.Default.copy(
-            capitalization = KeyboardCapitalization.Sentences
-        ),
+        keyboardOptions =
+            keyboardOptions
+                ?: KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),
         keyboardActions = keyboardActions ?: KeyboardActions.Default,
         minLines = minLines,
         label = { label?.let { TogaMediumLabel(text = stringResource(id = it)) } },
