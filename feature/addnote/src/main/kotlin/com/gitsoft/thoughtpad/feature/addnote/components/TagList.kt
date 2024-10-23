@@ -1,12 +1,10 @@
 package com.gitsoft.thoughtpad.feature.addnote.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -30,19 +28,18 @@ fun TagList(
     onDeleteTag: (Tag) -> Unit, // Handle tag deletion
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
     ) {
         // Display existing tags
-        AnimatedContent(
-            tags.isEmpty(),
-            label = "Tags",
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-            }
-        ) { isEmpty ->
+        AnimatedContent(tags.isEmpty(), label = "Tags", transitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        }) { isEmpty ->
             if (isEmpty) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
                     TogaLargeLabel(R.string.no_tags)
                 }
             } else {
@@ -51,10 +48,11 @@ fun TagList(
                     horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between items
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    tags.forEach { tag ->
+                    tags.forEach {
                         TogaFilterChip(
-                            text = tag.name ?: return@forEach,
-                            onDelete = { onDeleteTag(tag) },
+                            text = it.name ?: return@forEach,
+                            onDelete = { onDeleteTag(it) },
+                            color = it.color
                         )
                     }
                 }

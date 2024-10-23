@@ -21,23 +21,27 @@ import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.Tag
 
 sealed interface AddNoteEvent {
-    data class ChangeNoteTitle(val value: String) : AddNoteEvent
+    data class ChangeTitle(val value: String) : AddNoteEvent
 
-    data class ChangeNoteText(val value: String) : AddNoteEvent
+    data class ChangeText(val value: String) : AddNoteEvent
 
-    data class AddNoteCheckListItem(val checkListItem: CheckListItem) : AddNoteEvent
+    data class AddCheckListItem(val checkListItem: CheckListItem) : AddNoteEvent
 
-    data class AddNoteTag(val tag: Tag) : AddNoteEvent
+    data class ToggleTagSelection(val tag: Tag) : AddNoteEvent
+
+    data class AddTag(val tag: Tag) : AddNoteEvent
 
     data class RemoveTag(val tag: Tag) : AddNoteEvent
 
-    data class ToggleNoteTags(val value: Boolean) : AddNoteEvent
+    data class ToggleTags(val value: Boolean) : AddNoteEvent
 
     data class RemoveCheckListItem(val checkListItem: CheckListItem) : AddNoteEvent
 
-    data class ToggleNoteCheckList(val value: Boolean) : AddNoteEvent
+    data class ToggleCheckList(val value: Boolean) : AddNoteEvent
 
     data class ChangeNoteColor(val value: Color) : AddNoteEvent
+
+    data class ChangeTagColor(val value: Color) : AddNoteEvent
 
     data class ToggleColorBar(val value: Boolean) : AddNoteEvent
 
@@ -45,10 +49,18 @@ sealed interface AddNoteEvent {
 
     data class ToggleReminders(val value: Boolean) : AddNoteEvent
 
-    data class ChangeReminder(val value: Long?) : AddNoteEvent
-
     data class CheckListItemCheckedChange(val checkListItem: CheckListItem, val checked: Boolean) :
         AddNoteEvent
+
+    data class ToggleTagSheet(val isVisible: Boolean): AddNoteEvent
+
+    data class ToggleDateDialog(val value: Boolean) : AddNoteEvent
+
+    data class ToggleTimeDialog(val value: Boolean) : AddNoteEvent
+
+    data class ChangeDate(val value: Long) : AddNoteEvent
+
+    data class ChangeTime(val value: Long) : AddNoteEvent
 
     data object Save : AddNoteEvent
 }

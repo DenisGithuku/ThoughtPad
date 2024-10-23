@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -16,65 +15,150 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
+import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
-class AddNoteViewModel(private val notesRepository: NotesRepository) : ViewModel() {
+class AddNoteViewModel(
+    private val notesRepository: NotesRepository,
+    userPrefsRepository: UserPrefsRepository
+) : ViewModel() {
 
     private val _state: MutableStateFlow<AddNoteUiState> = MutableStateFlow(AddNoteUiState())
-    val state: StateFlow<AddNoteUiState> = _state.asStateFlow()
+
+
+    val state: StateFlow<AddNoteUiState> = combine(
+        _state,
+        notesRepository.allTags,
+        userPrefsRepository.userPrefs
+    ) { state, tags, userPrefs ->
+        state.copy(defaultTags = tags, systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddNoteUiState())
 
     fun onEvent(event: AddNoteEvent) {
         when (event) {
-            is AddNoteEvent.AddNoteCheckListItem -> addNoteCheckList(event.checkListItem)
-            is AddNoteEvent.AddNoteTag -> addNoteTag(event.tag)
+            is AddNoteEvent.AddCheckListItem -> addCheckListItem(event.checkListItem)
+            is AddNoteEvent.AddTag -> addTag(event.tag)
             is AddNoteEvent.ChangeNoteColor -> changeNoteColor(event.value)
-            is AddNoteEvent.ChangeNoteText -> changeNoteText(event.value)
-            is AddNoteEvent.ChangeNoteTitle -> changeNoteTitle(event.value)
+            is AddNoteEvent.ChangeTagColor -> changeTagColor(event.value)
+            is AddNoteEvent.ChangeText -> changeText(event.value)
+            is AddNoteEvent.ChangeTitle -> changeTitle(event.value)
             is AddNoteEvent.RemoveCheckListItem -> removeCheckListItem(event.checkListItem)
-            is AddNoteEvent.RemoveTag -> removeNoteTag(event.tag)
-            is AddNoteEvent.ToggleNoteCheckList -> toggleNoteCheckList(event.value)
-            is AddNoteEvent.ToggleNoteTags -> toggleNoteTags(event.value)
+            is AddNoteEvent.RemoveTag -> removeTag(event.tag)
+            is AddNoteEvent.ToggleCheckList -> toggleCheckList(event.value)
+            is AddNoteEvent.ToggleTags -> toggleTags(event.value)
             is AddNoteEvent.ToggleColorBar -> toggleColorBar(event.value)
             is AddNoteEvent.TogglePin -> togglePin(event.value)
             is AddNoteEvent.ToggleReminders -> toggleReminders(event.value)
-            is AddNoteEvent.ChangeReminder -> changeReminderTime(event.value)
-            is AddNoteEvent.CheckListItemCheckedChange ->
-                onCheckedChange(event.checkListItem, event.checked)
+            is AddNoteEvent.CheckListItemCheckedChange -> onCheckedChange(
+                event.checkListItem, event.checked
+            )
+
+            is AddNoteEvent.ToggleTagSheet -> toggleTagSheet(event.isVisible)
+            is AddNoteEvent.ToggleTagSelection -> toggleTagSelection(event.tag)
+            is AddNoteEvent.ToggleDateDialog -> toggleDateDialog(event.value)
+            is AddNoteEvent.ToggleTimeDialog -> toggleTimeDialog(event.value)
+            is AddNoteEvent.ChangeDate -> changeDate(event.value)
+            is AddNoteEvent.ChangeTime -> changeTime(event.value)
             AddNoteEvent.Save -> save()
         }
     }
 
-    private fun addNoteCheckList(checkListItem: CheckListItem) {
+    private fun addCheckListItem(checkListItem: CheckListItem) {
         _state.update {
             it.copy(
-                checkListItems =
-                    it.checkListItems + checkListItem.copy(checkListItemId = it.checkListItems.size.toLong())
+                checkListItems = it.checkListItems + checkListItem.copy(checkListItemId = it.checkListItems.size.toLong())
             )
         }
     }
 
     private fun onCheckedChange(checkListItem: CheckListItem, checked: Boolean) {
         _state.update { prevState ->
-            val index =
-                prevState.checkListItems.indexOfFirst {
-                    it.checkListItemId == checkListItem.checkListItemId
-                }
+            val index = prevState.checkListItems.indexOfFirst {
+                it.checkListItemId == checkListItem.checkListItemId
+            }
             if (index != -1) {
-                val updatedItems = prevState.checkListItems.toMutableList() // Convert to mutable list
+                val updatedItems =
+                    prevState.checkListItems.toMutableList() // Convert to mutable list
                 updatedItems[index] = updatedItems[index].copy(isChecked = checked)
                 prevState.copy(checkListItems = updatedItems)
             } else {
                 prevState // No changes if item not found
             }
         }
+    }
+
+    private fun toggleTimeDialog(value: Boolean) {
+        _state.update { it.copy(timeDialogIsVisible = value) }
+    }
+
+    private fun changeDate(value: Long) {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = value // Set to the new date value (should only have date)
+        }
+
+        // Retain the time and update the state with the new date
+        val updatedDate = Calendar.getInstance().apply {
+            timeInMillis = _state.value.selectedDate // Get the current selected date
+            set(Calendar.YEAR, calendar.get(Calendar.YEAR)) // Update year
+            set(Calendar.MONTH, calendar.get(Calendar.MONTH)) // Update month
+            set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)) // Update day
+        }.timeInMillis
+
+        _state.update { it.copy(selectedDate = updatedDate) }
+    }
+
+    private fun changeTime(value: Long) {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = _state.value.selectedDate // Start with the current selected date
+            timeInMillis = value // Set to the new time value (which should only have time)
+
+            set(Calendar.SECOND, 0) // Ensure seconds are set to 0
+            set(Calendar.MILLISECOND, 0) // Ensure milliseconds are set to 0
+        }
+
+        // Retain the date and update the state with the new time
+        val updatedTime = Calendar.getInstance().apply {
+            timeInMillis = _state.value.selectedDate // Get the current selected date
+            set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)) // Update hour
+            set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)) // Update minute
+            set(Calendar.SECOND, 0) // Reset seconds
+            set(Calendar.MILLISECOND, 0) // Reset milliseconds
+        }.timeInMillis
+
+        _state.update { it.copy(selectedDate = updatedTime) }
+    }
+
+
+    private fun toggleDateDialog(value: Boolean) {
+        _state.update { it.copy(dateDialogIsVisible = value) }
+    }
+
+    private fun toggleTagSelection(tag: Tag) {
+        if (tag in _state.value.selectedTags) {
+            removeTag(tag)
+        } else {
+            addTag(tag)
+        }
+    }
+
+    private fun toggleTagSheet(isVisible: Boolean) {
+        _state.update { it.copy(isTagSheetVisible = isVisible) }
     }
 
     private fun removeCheckListItem(checkListItem: CheckListItem) {
@@ -87,14 +171,10 @@ class AddNoteViewModel(private val notesRepository: NotesRepository) : ViewModel
     }
 
     private fun toggleReminders(value: Boolean) {
-        _state.update { it.copy(isReminderDialogVisible = value) }
+        _state.update { it.copy(hasReminder = value) }
     }
 
-    private fun changeReminderTime(value: Long?) {
-        _state.update { it.copy(note = it.note.copy(reminderTime = value)) }
-    }
-
-    private fun changeNoteText(value: String) {
+    private fun changeText(value: String) {
         _state.update { it.copy(note = it.note.copy(noteText = value)) }
     }
 
@@ -106,29 +186,61 @@ class AddNoteViewModel(private val notesRepository: NotesRepository) : ViewModel
         _state.update { it.copy(isColorVisible = value) }
     }
 
-    private fun toggleNoteTags(value: Boolean) {
+    private fun toggleTags(value: Boolean) {
         _state.update { it.copy(hasTags = value) }
     }
 
-    private fun toggleNoteCheckList(value: Boolean) {
+    private fun toggleCheckList(value: Boolean) {
         _state.update { it.copy(note = it.note.copy(isCheckList = value)) }
     }
 
-    private fun addNoteTag(tag: Tag) {
-        _state.update { it.copy(tags = it.tags + tag) }
+    private fun addTag(tag: Tag) {
+        if (_state.value.defaultTags.none { it.name.equals(tag.name, true) }) storeTag(tag)
+        _state.update { it.copy(selectedTags = it.selectedTags + tag) }
     }
 
-    private fun removeNoteTag(tag: Tag) {
-        _state.update { it.copy(tags = it.tags - tag) }
+    private fun removeTag(tag: Tag) {
+        _state.update { it.copy(selectedTags = it.selectedTags - tag) }
     }
 
     private fun changeNoteColor(color: Color) {
-        _state.update { it.copy(selectedColor = color) }
+        _state.update { it.copy(selectedNoteColor = color) }
     }
 
-    private fun save() {}
+    private fun changeTagColor(color: Color) {
+        _state.update { it.copy(selectedTagColor = color) }
+    }
 
-    private fun changeNoteTitle(value: String) {
+    private fun save() {
+        viewModelScope.launch {
+            val timeMillis = Calendar.getInstance().timeInMillis
+            val note = _state.value.note.copy(
+                createdAt = timeMillis,
+                updatedAt = timeMillis,
+                color = _state.value.selectedNoteColor.toArgb().toLong(),
+                reminderTime = _state.value.selectedDate,
+            )
+            notesRepository.insertNoteWithDetails(
+                note = note,
+                checklistItems = _state.value.checkListItems,
+                tags = _state.value.selectedTags
+            )
+            _state.update { it.copy(insertionSuccessful = true) }
+        }
+    }
+
+    private fun changeTitle(value: String) {
         _state.update { it.copy(note = it.note.copy(noteTitle = value)) }
+    }
+
+    private fun storeTag(tag: Tag) {
+        viewModelScope.launch {
+            notesRepository.insertTag(tag)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _state.update { AddNoteUiState() }
     }
 }

@@ -1,6 +1,7 @@
 com.gitsoft.thoughtpad.core.toga
 drawable ic_add_circle
 drawable ic_arrow_left
+drawable ic_check
 drawable ic_close
 drawable ic_search
 font poppins_black
@@ -15,5 +16,6 @@ font roboto_medium
 string back
 string clear
 string confirm
+string dimiss
 string ok
 string search

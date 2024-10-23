@@ -21,12 +21,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun TogaDefaultText(
-    modifier: Modifier = Modifier,
     text: String,
-    color: Color = MaterialTheme.colorScheme.onBackground
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    Text(modifier = modifier, style = MaterialTheme.typography.bodyMedium, text = text, color = color)
+    Text(modifier = modifier, style = style, text = text, color = color)
 }

@@ -22,7 +22,7 @@ fun ColorPill(color: Color, isSelected: Boolean, onSelect: (Color) -> Unit) {
             MaterialTheme.colorScheme.onBackground
         } else {
             Color.Transparent
-        }
+        }, label = "Color pill"
     )
     Box(modifier = Modifier
         .size(40.dp)

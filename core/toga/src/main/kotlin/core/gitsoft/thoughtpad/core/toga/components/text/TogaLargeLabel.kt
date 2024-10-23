@@ -20,11 +20,16 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun TogaLargeLabel(@StringRes text: Int) {
+fun TogaLargeLabel(
+    @StringRes text: Int,
+    modifier: Modifier = Modifier
+) {
     Text(
+        modifier = modifier,
         text = stringResource(id = text),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant

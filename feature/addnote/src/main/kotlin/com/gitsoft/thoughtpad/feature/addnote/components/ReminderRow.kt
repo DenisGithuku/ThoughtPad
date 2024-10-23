@@ -33,14 +33,14 @@ fun ReminderRow(
     onChangeTime: (Boolean) -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth(),
     ) {
         TogaMediumLabel(
             text = stringResource(id = R.string.reminder_me_at),
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {

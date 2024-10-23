@@ -23,7 +23,7 @@ fun TogaInfoChip(
             .background(Color(color ?: 0xFFE0E0E0))
     ) {
         TogaMediumLabel(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             text = text,
             color = MaterialTheme.colorScheme.onSurface,
         )

@@ -63,7 +63,7 @@ val TagBlueDark = Color(0xFF1E88E5)
 val TagPurpleDark = Color(0xFF8E24AA)
 val TagBrownDark = Color(0xFF6D4C41)
 
-// Background Colors
+// Light Background Colors
 val LightGray = Color(0xFFF5F5F5) // Light Gray
 val SoftBlue = Color(0xFF84C9FB) // Soft Blue
 val PaleGreen = Color(0xFFD9EAD3) // Pale Green
@@ -74,3 +74,15 @@ val MintGreen = Color(0xFFB2F2B2) // Mint Green
 val SoftCoral = Color(0xFFFF6F61) // Soft Coral
 val LightCyan = Color(0xFFE0F7FA) // Light Cyan
 val BlushPink = Color(0xFFF8D2D0) // Blush Pink
+
+// Dark Background Colors
+val DarkGray = Color(0xFF2C2C2C) // Dark Gray
+val DeepBlue = Color(0xFF336699) // Deep Blue
+val OliveGreen = Color(0xFF6B8E23) // Olive Green
+val BurntOrange = Color(0xFFCC5500) // Burnt Orange
+val DeepLavender = Color(0xFF9370DB) // Deep Lavender
+val MustardYellow = Color(0xFFCFB53B) // Mustard Yellow
+val ForestGreen = Color(0xFF228B22) // Forest Green
+val DarkCoral = Color(0xFFCD5B45) // Dark Coral
+val TealCyan = Color(0xFF008B8B) // Teal Cyan
+val DuskyPink = Color(0xFFB22222) // Dusky Pinke

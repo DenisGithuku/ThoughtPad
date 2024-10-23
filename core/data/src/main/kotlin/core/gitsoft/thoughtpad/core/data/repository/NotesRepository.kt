@@ -27,10 +27,6 @@ interface NotesRepository {
 
     suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags
 
-    suspend fun insert(note: Note)
-
-    suspend fun delete(note: Note)
-
     suspend fun updateNoteWithDetails(
         note: Note,
         checklistItems: List<CheckListItem>,
@@ -45,7 +41,9 @@ interface NotesRepository {
 
     suspend fun insertTags(tags: List<Tag>)
 
+    suspend fun insertTag(tag: Tag)
+
     suspend fun getTagById(tagId: Long): Tag
 
-    suspend fun getAllTags(): Flow<List<Tag>>
+    val allTags: Flow<List<Tag>>
 }

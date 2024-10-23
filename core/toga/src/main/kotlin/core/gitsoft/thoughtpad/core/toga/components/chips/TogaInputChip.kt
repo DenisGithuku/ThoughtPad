@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,22 +32,24 @@ fun TogaInputChip(
     modifier: Modifier = Modifier,
     text: String,
     isSelected: Boolean,
-    onSelected: (Boolean) -> Unit,
+    onSelectChanged: (Boolean) -> Unit,
     color: Long? = null
 ) {
-    val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) Color(color ?: 0xFFE0E0E0) else Color(color ?: 0xFFE0E0E0).copy(alpha = 0.8f)
-    )
     Box(
         modifier = modifier
             .clip(MaterialTheme.shapes.extraLarge)
-            .background(backgroundColor)
-            .clickable(onClick = { onSelected(!isSelected) })
-        ,
+            .background(
+                if (color != null) {
+                    Color(color.toULong() shl 32)
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
+            )
+            .clickable(onClick = { onSelectChanged(!isSelected) }),
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -75,9 +76,5 @@ fun TogaInputChip(
 @Preview
 @Composable
 private fun TogaFilterChipPrev() {
-    TogaInputChip(
-        text = "Work",
-        isSelected = true,
-        onSelected = {}
-    )
+    TogaInputChip(text = "Work", isSelected = true, onSelectChanged = {}, color = 3326114816)
 }

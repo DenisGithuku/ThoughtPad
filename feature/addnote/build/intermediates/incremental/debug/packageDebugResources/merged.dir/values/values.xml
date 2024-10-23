@@ -11,6 +11,7 @@
     <string name="has_checklist">Has checklist</string>
     <string name="has_reminder">Has reminder</string>
     <string name="has_tags">Has tags</string>
+    <string name="new_tag_added">New tag added</string>
     <string name="no_tags">No tags selected</string>
     <string name="note_content">Content</string>
     <string name="note_title">Title</string>

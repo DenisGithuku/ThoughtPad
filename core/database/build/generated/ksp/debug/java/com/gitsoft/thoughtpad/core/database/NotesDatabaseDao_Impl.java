@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
+import kotlinx.coroutines.flow.Flow;
 
 @Generated("androidx.room.RoomProcessor")
 @SuppressWarnings({"unchecked", "deprecation"})
@@ -627,12 +628,11 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object loadAllNotes(
-      final Continuation<? super List<DataWithNotesCheckListItemsAndTags>> $completion) {
+  public Flow<List<DataWithNotesCheckListItemsAndTags>> loadAllNotes() {
     final String _sql = "SELECT * FROM notes_table order by noteId desc";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, true, _cancellationSignal, new Callable<List<DataWithNotesCheckListItemsAndTags>>() {
+    return CoroutinesRoom.createFlow(__db, true, new String[] {"checklist", "NoteTagCrossRef",
+        "noteTags", "notes_table"}, new Callable<List<DataWithNotesCheckListItemsAndTags>>() {
       @Override
       @NonNull
       public List<DataWithNotesCheckListItemsAndTags> call() throws Exception {
@@ -748,13 +748,17 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
             return _result;
           } finally {
             _cursor.close();
-            _statement.release();
           }
         } finally {
           __db.endTransaction();
         }
       }
-    }, $completion);
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
   }
 
   @Override
@@ -891,11 +895,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object getTags(final Continuation<? super List<Tag>> $completion) {
+  public Flow<List<Tag>> getTags() {
     final String _sql = "SELECT * FROM noteTags";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<Tag>>() {
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"noteTags"}, new Callable<List<Tag>>() {
       @Override
       @NonNull
       public List<Tag> call() throws Exception {
@@ -927,10 +930,14 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           return _result;
         } finally {
           _cursor.close();
-          _statement.release();
         }
       }
-    }, $completion);
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
   }
 
   @Override
@@ -979,14 +986,12 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object getChecklistItemsForNoteId(final long noteId,
-      final Continuation<? super List<CheckListItem>> $completion) {
+  public Flow<List<CheckListItem>> getChecklistItemsForNoteId(final long noteId) {
     final String _sql = "SELECT * FROM checklist WHERE noteId = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
     _statement.bindLong(_argIndex, noteId);
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<CheckListItem>>() {
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"checklist"}, new Callable<List<CheckListItem>>() {
       @Override
       @NonNull
       public List<CheckListItem> call() throws Exception {
@@ -1023,10 +1028,14 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           return _result;
         } finally {
           _cursor.close();
-          _statement.release();
         }
       }
-    }, $completion);
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
   }
 
   @NonNull

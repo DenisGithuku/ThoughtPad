@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -16,93 +15,107 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.feature.addnote.components.CheckList
+import com.gitsoft.thoughtpad.feature.addnote.components.ColorPill
+import com.gitsoft.thoughtpad.feature.addnote.components.NoteColorPicker
+import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
+import com.gitsoft.thoughtpad.feature.addnote.components.TagList
 import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBottomAppBar
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import core.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
+import core.gitsoft.thoughtpad.core.toga.components.chips.TogaInputChip
+import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaDatePickerDialog
 import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaTimePickerDialog
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
 import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
-import java.util.Calendar
 import org.koin.androidx.compose.koinViewModel
+import java.util.Calendar
 
 @Composable
 fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinViewModel()) {
     val state: AddNoteUiState by viewModel.state.collectAsState()
-    AddNoteScreen(
-        state = state,
+    AddNoteScreen(state = state,
         onNavigateBack = onNavigateBack,
         onSave = { viewModel.onEvent(AddNoteEvent.Save) },
-        onChangeTitle = { viewModel.onEvent(AddNoteEvent.ChangeNoteTitle(it)) },
-        onChangeContent = { viewModel.onEvent(AddNoteEvent.ChangeNoteText(it)) },
-        onChangeColor = { viewModel.onEvent(AddNoteEvent.ChangeNoteColor(it)) },
-        onToggleCheckList = { viewModel.onEvent(AddNoteEvent.ToggleNoteCheckList(it)) },
-        onToggleTags = { viewModel.onEvent(AddNoteEvent.ToggleNoteTags(it)) },
-        onAddCheckListItem = { viewModel.onEvent(AddNoteEvent.AddNoteCheckListItem(it)) },
+        onChangeTitle = { viewModel.onEvent(AddNoteEvent.ChangeTitle(it)) },
+        onChangeContent = { viewModel.onEvent(AddNoteEvent.ChangeText(it)) },
+        onChangeNoteColor = { viewModel.onEvent(AddNoteEvent.ChangeNoteColor(it)) },
+        onChangeTagColor = { viewModel.onEvent(AddNoteEvent.ChangeTagColor(it)) },
+        onToggleCheckList = { viewModel.onEvent(AddNoteEvent.ToggleCheckList(it)) },
+        onToggleTags = { viewModel.onEvent(AddNoteEvent.ToggleTags(it)) },
+        onAddCheckListItem = { viewModel.onEvent(AddNoteEvent.AddCheckListItem(it)) },
         onRemoveCheckListItem = { viewModel.onEvent(AddNoteEvent.RemoveCheckListItem(it)) },
-        onAddTag = { viewModel.onEvent(AddNoteEvent.AddNoteTag(it)) },
+        onToggleTagSelection = { tag ->
+            viewModel.onEvent(
+                AddNoteEvent.ToggleTagSelection(
+                    tag
+                )
+            )
+        },
         onRemoveTag = { viewModel.onEvent(AddNoteEvent.RemoveTag(it)) },
         onToggleColorBar = { viewModel.onEvent(AddNoteEvent.ToggleColorBar(it)) },
         onTogglePin = { viewModel.onEvent(AddNoteEvent.TogglePin(it)) },
-        onToggleReminderDialog = { viewModel.onEvent(AddNoteEvent.ToggleReminders(it)) },
-        onChangeReminder = { viewModel.onEvent(AddNoteEvent.ChangeReminder(it)) },
+        onToggleDateDialog = { viewModel.onEvent(AddNoteEvent.ToggleDateDialog(it)) },
+        onToggleReminder = { viewModel.onEvent(AddNoteEvent.ToggleReminders(it)) },
         onCheckListItemCheckedChange = { item, checked ->
             viewModel.onEvent(AddNoteEvent.CheckListItemCheckedChange(item, checked))
-        }
-    )
+        },
+        onAddNewTag = { viewModel.onEvent(AddNoteEvent.AddTag(it)) },
+        onToggleTagSheet = { viewModel.onEvent(AddNoteEvent.ToggleTagSheet(it)) },
+        onToggleTimeDialog = { viewModel.onEvent(AddNoteEvent.ToggleTimeDialog(it)) },
+        onChangeDate = { viewModel.onEvent(AddNoteEvent.ChangeDate(it)) },
+        onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,86 +127,110 @@ internal fun AddNoteScreen(
     onChangeTitle: (String) -> Unit,
     onChangeContent: (String) -> Unit,
     onToggleColorBar: (Boolean) -> Unit,
-    onChangeColor: (Color) -> Unit,
+    onChangeNoteColor: (Color) -> Unit,
+    onChangeTagColor: (Color) -> Unit,
     onToggleCheckList: (Boolean) -> Unit,
     onToggleTags: (Boolean) -> Unit,
     onAddCheckListItem: (CheckListItem) -> Unit,
     onRemoveCheckListItem: (CheckListItem) -> Unit,
-    onAddTag: (Tag) -> Unit,
+    onToggleTagSelection: (Tag) -> Unit,
     onRemoveTag: (Tag) -> Unit,
+    onAddNewTag: (Tag) -> Unit,
     onTogglePin: (Boolean) -> Unit,
-    onChangeReminder: (Long?) -> Unit,
-    onToggleReminderDialog: (Boolean) -> Unit,
+    onToggleReminder: (Boolean) -> Unit,
+    onChangeDate: (Long) -> Unit,
+    onChangeTime: (Long) -> Unit,
+    onToggleDateDialog: (Boolean) -> Unit,
+    onToggleTimeDialog: (Boolean) -> Unit,
+    onToggleTagSheet: (Boolean) -> Unit,
     onCheckListItemCheckedChange: (CheckListItem, Boolean) -> Unit
 ) {
-    TogaStandardScaffold(
-        onNavigateBack = onNavigateBack,
+    TogaStandardScaffold(onNavigateBack = onNavigateBack,
         title = R.string.add_note,
         actions = {
-            TogaIconButton(
-                icon = if (state.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
+            TogaIconButton(icon = if (state.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
                 contentDescription = R.string.pin,
-                tint =
-                    if (state.note.isPinned) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onBackground
-                    },
-                onClick = { onTogglePin(!state.note.isPinned) }
-            )
+                tint = if (state.note.isPinned) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+                onClick = { onTogglePin(!state.note.isPinned) })
             TogaTextButton(text = R.string.save, enabled = state.noteIsValid, onClick = onSave)
         },
         bottomBar = {
-            TogaBottomAppBar(
-                containerColor = state.selectedColor,
-                actions = {
-                    TogaIconButton(
-                        icon = R.drawable.ic_paint,
-                        onClick = { onToggleColorBar(!state.isColorVisible) },
-                        contentDescription = R.string.color_bar
-                    )
+            TogaBottomAppBar(containerColor = state.selectedNoteColor, actions = {
+                TogaIconButton(
+                    icon = R.drawable.ic_paint,
+                    onClick = { onToggleColorBar(!state.isColorVisible) },
+                    contentDescription = R.string.color_bar
+                )
 
-                    TogaIconButton(
-                        icon =
-                            if (state.note.reminderTime == null) {
-                                R.drawable.ic_notifications_outlined
-                            } else R.drawable.ic_notifications_filled,
-                        onClick = { onToggleReminderDialog(true) },
-                        contentDescription = R.string.toggle_reminder,
-                        tint =
-                            if (state.note.reminderTime == null) {
-                                MaterialTheme.colorScheme.onBackground
-                            } else MaterialTheme.colorScheme.primary
-                    )
-                }
-            )
+                TogaIconButton(
+                    icon = if (!state.hasReminder) {
+                        R.drawable.ic_notifications_outlined
+                    } else R.drawable.ic_notifications_filled,
+                    onClick = { onToggleReminder(!state.hasReminder) },
+                    contentDescription = R.string.toggle_reminder,
+                    tint = if (!state.hasReminder) {
+                        MaterialTheme.colorScheme.onBackground
+                    } else MaterialTheme.colorScheme.primary
+                )
+            })
         },
-        appBarColors =
-            TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = state.selectedColor)
+        appBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = state.selectedNoteColor)
     ) { innerPadding ->
-        if (state.isReminderDialogVisible) {
-            TogaTimePickerDialog(
-                onConfirm = { timePickerState ->
-                    val selectedTimeMillis = getTimeInMillisFromPicker(timePickerState)
-                    onChangeReminder(selectedTimeMillis) // Pass the calculated timestamp
-                    onToggleReminderDialog(false)
-                },
-                onDismiss = {
-                    onChangeReminder(null)
-                    onToggleReminderDialog(false)
-                }
-            )
+        if (state.timeDialogIsVisible) {
+            TogaTimePickerDialog(selectedDate = state.selectedDate, onConfirm = { timePickerState ->
+                val selectedTimeMillis = getTimeInMillisFromPicker(timePickerState)
+                onChangeTime(selectedTimeMillis) // Pass the calculated timestamp
+                onToggleTimeDialog(false)
+            }, onDismiss = {
+                onToggleTimeDialog(false)
+            })
         }
 
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        if (state.dateDialogIsVisible) {
+            TogaDatePickerDialog(onDateSelected = {
+                onChangeDate(it ?: return@TogaDatePickerDialog)
+                onToggleDateDialog(false)
+            }, onDismiss = {
+                onToggleDateDialog(false)
+            })
+        }
+
+        if (state.isTagSheetVisible) {
+            ModalBottomSheet(onDismissRequest = { onToggleTagSheet(false) }) {
+                TagSelectionBottomSheet(
+                    existingTags = state.defaultTags,
+                    selectedTags = state.selectedTags,
+                    onToggleTagSelection = onToggleTagSelection,
+                    onNewTagAdded = onAddNewTag,
+                    onDismissRequest = { onToggleTagSheet(false) },
+                    selectedTagColor = state.selectedTagColor,
+                    tagColors = state.tagColors,
+                    onChangeTagColor = onChangeTagColor
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             LazyColumn(
-                modifier =
-                    Modifier.matchParentSize().align(Alignment.TopStart).background(state.selectedColor),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .matchParentSize()
+                    .align(Alignment.TopStart)
+                    .background(state.selectedNoteColor),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
                     TogaTextField(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         value = state.note.noteTitle ?: "",
                         onValueChange = onChangeTitle,
                         textStyle = MaterialTheme.typography.titleMedium,
@@ -203,7 +240,9 @@ internal fun AddNoteScreen(
                 }
                 item {
                     TogaTextField(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         value = state.note.noteText ?: "",
                         onValueChange = onChangeContent,
                         textStyle = MaterialTheme.typography.bodyMedium,
@@ -212,11 +251,15 @@ internal fun AddNoteScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Checkbox(checked = state.note.isCheckList, onCheckedChange = onToggleCheckList)
+                        Checkbox(
+                            checked = state.note.isCheckList, onCheckedChange = onToggleCheckList
+                        )
                         TogaLargeLabel(R.string.has_checklist)
                     }
                 }
@@ -232,21 +275,55 @@ internal fun AddNoteScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(checked = state.hasTags, onCheckedChange = onToggleTags)
-                        TogaLargeLabel(R.string.has_tags)
+                        TogaLargeLabel(
+                            R.string.has_tags, modifier = Modifier.weight(1f)
+                        )
+                        AnimatedVisibility(
+                            visible = state.hasTags, modifier = Modifier
+                        ) {
+                            TogaIconButton(
+                                icon = R.drawable.ic_add,
+                                onClick = { onToggleTagSheet(true) },
+                                contentDescription = R.string.add_tag
+                            )
+                        }
                     }
                 }
                 item {
-                    AnimatedVisibility(visible = state.hasTags) {
+                    AnimatedVisibility(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 16.dp),
+                        visible = state.hasTags,
+                        enter = scaleIn(initialScale = 0.5f) + fadeIn(initialAlpha = 0.3f),
+                        exit = scaleOut(targetScale = 0.5f) + fadeOut(targetAlpha = 0.3f),
+                    ) {
                         TagList(
-                            tags = state.tags,
-                            onAddTag = onAddTag,
+                            tags = state.selectedTags,
                             onDeleteTag = onRemoveTag,
-                            onSelectTagColor = {}
+                        )
+                    }
+                }
+                item {
+                    AnimatedVisibility(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 16.dp),
+                        visible = state.hasReminder,
+                        enter = scaleIn() + slideInVertically(),
+                        exit = scaleOut() + slideOutVertically()
+                    ) {
+                        ReminderRow(
+                            reminderTime = state.selectedDate,
+                            onChangeDate = onToggleDateDialog,
+                            onChangeTime = onToggleTimeDialog
                         )
                     }
                 }
@@ -257,216 +334,126 @@ internal fun AddNoteScreen(
                 enter = scaleIn() + slideInVertically(),
                 exit = scaleOut() + slideOutVertically()
             ) {
-                ColorRow(
-                    selectedColor = state.selectedColor,
-                    colors = state.colors,
-                    onChangeColor = onChangeColor
+                NoteColorPicker(
+                    selectedColor = state.selectedNoteColor,
+                    colors = state.noteColors,
+                    onChangeColor = onChangeNoteColor
                 )
             }
         }
     }
 }
 
-@Composable
-fun ColorRow(
-    modifier: Modifier = Modifier,
-    selectedColor: Color,
-    colors: List<Color>,
-    onChangeColor: (Color) -> Unit
-) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth().padding(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(items = colors) {
-            ColorPill(color = it, isSelected = it == selectedColor, onSelect = onChangeColor)
-        }
-    }
-}
-
-@Composable
-fun ColorPill(color: Color, isSelected: Boolean, onSelect: (Color) -> Unit) {
-    val borderColor by
-        animateColorAsState(
-            if (isSelected) {
-                MaterialTheme.colorScheme.onBackground
-            } else {
-                Color.Transparent
-            }
-        )
-    Box(
-        modifier =
-            Modifier.size(40.dp)
-                .clip(CircleShape)
-                .border(width = 3.dp, color = borderColor, shape = CircleShape)
-                .background(color)
-                .clickable { onSelect(color) }
-    )
-}
-
-@Composable
-fun CheckList(
-    checklistItems: List<CheckListItem>,
-    onCheckedChange: (CheckListItem, Boolean) -> Unit, // Handles check/uncheck
-    onAddItem: (CheckListItem) -> Unit, // Handles adding a new checklist item
-    onDeleteItem: (CheckListItem) -> Unit // Handles item deletion
-) {
-    Column {
-        // Display existing checklist items
-        checklistItems.forEach { item ->
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = item.isChecked,
-                    onCheckedChange = { checked -> onCheckedChange(item, checked) }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                TogaMediumLabel(
-                    text = item.text ?: "",
-                    modifier = Modifier.weight(1f) // Ensures the text takes the remaining space
-                )
-                IconButton(onClick = { onDeleteItem(item) }) {
-                    Icon(painter = painterResource(id = R.drawable.ic_delete), contentDescription = "Delete")
-                }
-            }
-        }
-
-        // TextField to add new checklist items
-        var newItemText by remember { mutableStateOf("") }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TogaTextField(
-                value = newItemText,
-                onValueChange = { newItemText = it },
-                label = R.string.add_new_item,
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions =
-                    KeyboardActions(
-                        onDone = {
-                            if (newItemText.isNotEmpty()) {
-                                onAddItem(CheckListItem(text = newItemText))
-                                newItemText = ""
-                            }
-                        }
-                    ) // Takes up the rest of the row
-            )
-            IconButton(
-                onClick = {
-                    if (newItemText.isNotEmpty()) {
-                        onAddItem(CheckListItem(text = newItemText))
-                        newItemText = ""
-                    }
-                }
-            ) {
-                Icon(painter = painterResource(id = R.drawable.ic_add), contentDescription = "Add Item")
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TagList(
-    tags: List<Tag>,
-    onAddTag: (Tag) -> Unit, // Handle adding a tag with a selected color
-    onDeleteTag: (Tag) -> Unit, // Handle tag deletion
-    onSelectTagColor: (Tag) -> Unit // Handle changing tag color
+fun TagSelectionBottomSheet(
+    existingTags: List<Tag>,
+    selectedTags: List<Tag>,
+    selectedTagColor: Color,
+    tagColors: List<Color>,
+    onToggleTagSelection: (Tag) -> Unit,
+    onNewTagAdded: (Tag) -> Unit,
+    onChangeTagColor: (Color) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
-    Column {
-        // Display existing tags
+    var tagNameState by rememberSaveable { mutableStateOf("") }
+    val context: Context = LocalContext.current
+
+    val tagIsValid = remember(tagNameState) {
+        derivedStateOf {
+            tagNameState.isNotBlank() && existingTags.none { it.name.equals(tagNameState, true) }
+        }
+    }
+
+    Column(
+        modifier = Modifier.padding(
+            start = 16.dp, end = 16.dp, bottom = 16.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            TogaDefaultText("Select Tags", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.weight(1f))
+            TogaIconButton(
+                icon = R.drawable.ic_close,
+                onClick = onDismissRequest,
+                contentDescription = R.string.close
+            )
+        }
+
+        // Show default tags
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between items
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            tags.forEach { tag ->
-                TagChip(
-                    tag = tag,
-                    onDelete = { onDeleteTag(tag) },
-                    onSelectColor = { onSelectTagColor(tag) }
-                )
+            existingTags.forEach { tag ->
+                TogaInputChip(
+                    text = tag.name ?: "",
+                    isSelected = selectedTags.any { it isTheSameAs tag },
+                    onSelectChanged = {
+                        onToggleTagSelection(tag)
+                    },
+                    color = tag.color
+                    )
             }
         }
 
-        // TextField to add new tags
-        var newTagText by remember { mutableStateOf("") }
-        var selectedColor by remember { mutableStateOf(0xFFFFFFFF) } // Default color
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TogaTextField(
-                value = newTagText,
-                onValueChange = { newTagText = it },
-                label = R.string.add_new_tag,
-                modifier = Modifier.weight(1f)
-            )
-            ColorPicker(
-                selectedColor = selectedColor,
-                onColorSelected = { color -> selectedColor = color }
-            )
-            IconButton(
-                onClick = {
-                    if (newTagText.isNotEmpty()) {
-                        onAddTag(Tag(name = newTagText, color = selectedColor))
-                        newTagText = ""
-                    }
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
-                    contentDescription = stringResource(R.string.add_tag)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun TagChip(tag: Tag, onDelete: () -> Unit, onSelectColor: () -> Unit) {
-    Row(
-        modifier =
-            Modifier.clip(CircleShape).background(Color(tag.color ?: return)).padding(8.dp).clickable {
-                onSelectColor()
-            }, // Click to change color
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TogaDefaultText(
-            text = tag.name ?: "",
-            color = Color.White,
-            modifier = Modifier.padding(end = 8.dp)
+        // New tag input
+        TogaTextField(
+            value = tagNameState, onValueChange = { input ->
+                tagNameState = input
+            }, label = R.string.add_new_tag, modifier = Modifier.fillMaxWidth()
         )
-        IconButton(onClick = { onDelete() }) {
-            Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Delete")
+
+        // Tag colors
+        AnimatedVisibility(
+            visible = tagIsValid.value,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically()
+        ) {
+            TagColorPicker(
+                selectedColor = selectedTagColor,
+                colors = tagColors,
+                onColorSelected = onChangeTagColor
+            )
+        }
+
+        // Add button
+        TogaPrimaryButton(
+            enabled = tagIsValid.value, onClick = {
+                val newTag = Tag(
+                    name = tagNameState, color = selectedTagColor.value.toLong()
+                )
+                onNewTagAdded(newTag)
+                onChangeTagColor(tagColors.first())
+                tagNameState = ""
+                Toast.makeText(
+                    context, context.getString(R.string.new_tag_added), Toast.LENGTH_SHORT
+                ).show()
+            }, modifier = Modifier.align(Alignment.End)
+        ) {
+            TogaButtonText(text = stringResource(id = R.string.add_tag))
         }
     }
 }
 
 @Composable
-fun ColorPicker(selectedColor: Long, onColorSelected: (Long) -> Unit) {
-    // Display a row of selectable colors (for simplicity, use fixed colors)
-    val colors = listOf(0xFFF44336, 0xFF2196F3, 0xFF4CAF50, 0xFFFFEB3B)
+fun TagColorPicker(selectedColor: Color, colors: List<Color>, onColorSelected: (Color) -> Unit) {
 
-    Row(
+    LazyRow(
         modifier = Modifier.padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        colors.forEach { colorValue ->
-            Box(
-                modifier =
-                    Modifier.size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(colorValue))
-                        .clickable { onColorSelected(colorValue) }
-                        .border(width = if (colorValue == selectedColor) 2.dp else 0.dp, color = Color.Black)
+        items(items = colors, key = { it.value.toLong() }) { colorValue ->
+            ColorPill(
+                color = colorValue,
+                isSelected = colorValue == selectedColor,
+                onSelect = onColorSelected
             )
         }
     }
@@ -484,3 +471,7 @@ fun getTimeInMillisFromPicker(timePickerState: TimePickerState): Long {
     // Return the timestamp in milliseconds
     return calendar.timeInMillis
 }
+
+
+// Helper function for checking if two tags are the same
+infix fun Tag.isTheSameAs(other: Tag): Boolean = this.name.equals(other.name, true)

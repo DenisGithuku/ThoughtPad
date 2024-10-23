@@ -28,13 +28,15 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef
 import com.gitsoft.thoughtpad.core.model.Tag
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 @Dao
 interface NotesDatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM notes_table order by noteId desc")
-    suspend fun loadAllNotes(): List<DataWithNotesCheckListItemsAndTags>
+    fun loadAllNotes(): Flow<List<DataWithNotesCheckListItemsAndTags>>
 
     @Transaction
     @Query("SELECT * FROM notes_table where noteId = :id")
@@ -62,7 +64,7 @@ interface NotesDatabaseDao {
 
     @Delete suspend fun deleteTags(tags: List<Tag>)
 
-    @Query("SELECT * FROM noteTags") suspend fun getTags(): List<Tag>
+    @Query("SELECT * FROM noteTags") fun getTags(): Flow<List<Tag>>
 
     @Update suspend fun updateTag(tag: Tag)
 
@@ -106,7 +108,7 @@ interface NotesDatabaseDao {
         updateNote(note)
 
         // Delete old checklist items and tags associated with the note
-        deleteChecklistItems(getChecklistItemsForNoteId(note.noteId))
+        deleteChecklistItems(getChecklistItemsForNoteId(note.noteId).first())
         // Assuming getTagsForNoteId method is not needed anymore as it just retrieves and does not
         // modify the tags
 
@@ -131,7 +133,7 @@ interface NotesDatabaseDao {
     suspend fun deleteNoteTagCrossRefsForNoteId(noteId: Long)
 
     @Query("SELECT * FROM checklist WHERE noteId = :noteId")
-    suspend fun getChecklistItemsForNoteId(noteId: Long): List<CheckListItem>
+    fun getChecklistItemsForNoteId(noteId: Long): Flow<List<CheckListItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNoteTagCrossRef(noteTagCrossRef: NoteTagCrossRef)

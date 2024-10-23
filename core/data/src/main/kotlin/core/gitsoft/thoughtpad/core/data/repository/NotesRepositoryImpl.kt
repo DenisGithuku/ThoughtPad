@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -22,29 +21,18 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) :
     NotesRepository {
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
-        get() = flow { emit(notesDatabaseDao.loadAllNotes()) }
+        get() = notesDatabaseDao.loadAllNotes()
 
     override suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags {
         return notesDatabaseDao.noteById(id)
     }
 
-    override suspend fun insert(note: Note) {
-        notesDatabaseDao.insertNote(note)
-    }
-
-    override suspend fun delete(note: Note) {
-        notesDatabaseDao.delete(note)
-    }
-
     override suspend fun updateNoteWithDetails(
-        note: Note,
-        checklistItems: List<CheckListItem>,
-        tags: List<Tag>
+        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
     ) {
         notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
     }
@@ -53,18 +41,21 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
         notesDatabaseDao.insertTags(tags)
     }
 
+    override suspend fun insertTag(tag: Tag) {
+        notesDatabaseDao.insertTag(tag)
+    }
+
     override suspend fun getTagById(tagId: Long): Tag {
         return notesDatabaseDao.getTag(tagId)
     }
 
-    override suspend fun getAllTags(): Flow<List<Tag>> {
-        return flow { emit(notesDatabaseDao.getTags()) }
-    }
+    override val allTags: Flow<List<Tag>>
+        get() {
+            return notesDatabaseDao.getTags()
+        }
 
     override suspend fun insertNoteWithDetails(
-        note: Note,
-        checklistItems: List<CheckListItem>,
-        tags: List<Tag>
+        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
     ) {
         notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
     }
