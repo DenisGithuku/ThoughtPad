@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -100,17 +101,15 @@ suspend inline fun <T> safeDbCall(crossinline call: suspend () -> T): T {
 }
 
 inline fun <T> Flow<T>.safeDbReactiveDataRead(crossinline fallback: () -> T): Flow<T> {
-    return this
-        .catch { e ->
-            // Log the specific error based on the exception type
-            when (e) {
-                is SQLiteConstraintException -> Log.e("FlowError", "Constraint violation: ${e.message}")
-                is SQLiteFullException -> Log.e("FlowError", "Disk full: ${e.message}")
-                // Handle additional specific exceptions as needed
-                else -> Log.e("FlowError", "Unknown error: ${e.message}")
-            }
-            // Emit a fallback value (could be empty list or other logic)
-            emit(fallback())
+    return this.catch { e ->
+        // Log the specific error based on the exception type
+        when (e) {
+            is SQLiteConstraintException -> Log.e("FlowError", "Constraint violation: ${e.message}")
+            is SQLiteFullException -> Log.e("FlowError", "Disk full: ${e.message}")
+            // Handle additional specific exceptions as needed
+            else -> Log.e("FlowError", "Unknown error: ${e.message}")
         }
+        // Emit a fallback value (could be empty list or other logic)
+        emit(fallback())
+    }
 }
-

@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -27,40 +28,32 @@ import kotlinx.coroutines.flow.Flow
 internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) :
     NotesRepository {
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
-        get() = notesDatabaseDao.loadAllNotes().safeDbReactiveDataRead {
-            emptyList()
-        }
-
+        get() = notesDatabaseDao.loadAllNotes().safeDbReactiveDataRead { emptyList() }
 
     override suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags = safeDbCall {
         notesDatabaseDao.noteById(id)
     }
 
     override suspend fun updateNoteWithDetails(
-        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
-    ): Unit = safeDbCall {
-        notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
-    }
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    ): Unit = safeDbCall { notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags) }
 
     override suspend fun insertTags(tags: List<Tag>) = safeDbCall {
         notesDatabaseDao.insertTags(tags)
     }
 
-    override suspend fun insertTag(tag: Tag): Long = safeDbCall {
-        notesDatabaseDao.insertTag(tag)
-    }
+    override suspend fun insertTag(tag: Tag): Long = safeDbCall { notesDatabaseDao.insertTag(tag) }
 
-    override suspend fun getTagById(tagId: Long): Tag = safeDbCall {
-        notesDatabaseDao.getTag(tagId)
-    }
+    override suspend fun getTagById(tagId: Long): Tag = safeDbCall { notesDatabaseDao.getTag(tagId) }
 
     override val allTags: Flow<List<Tag>>
         get() = notesDatabaseDao.getTags().safeDbReactiveDataRead { emptyList() }
 
-
     override suspend fun insertNoteWithDetails(
-        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
-    ): Long = safeDbCall {
-        notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
-    }
+        note: Note,
+        checklistItems: List<CheckListItem>,
+        tags: List<Tag>
+    ): Long = safeDbCall { notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags) }
 }
