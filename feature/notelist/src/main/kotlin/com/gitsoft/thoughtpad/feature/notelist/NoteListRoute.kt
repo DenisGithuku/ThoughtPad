@@ -16,6 +16,9 @@
 package com.gitsoft.thoughtpad.feature.notelist
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,8 +40,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -84,6 +89,20 @@ internal fun NoteListScreen(
 ) {
     var query: String by rememberSaveable { mutableStateOf("") }
 
+    val filteredNotes by remember(state.notes, query) {
+        derivedStateOf {
+            if (query.isNotEmpty()) {
+                state.notes.filter {
+                    it.note.noteTitle?.contains(
+                        query, true
+                    ) == true || it.note.noteText?.contains(query, true) == true
+                }
+            } else {
+                state.notes
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,17 +116,30 @@ internal fun NoteListScreen(
             onCreateNewNote = onCreateNewNote,
             onQueryChange = { query = it })
 
-        if (state.isLoading) LoadingIndicator()
+        if (state.isLoading) {
+            LoadingIndicator()
+            return@Column
+        }
 
         AnimatedContent(
-            targetState = state.notes.isEmpty(), label = "Note List Visibility State"
+            targetState = filteredNotes.isEmpty(), label = "Note List Visibility State"
         ) { isEmpty ->
             if (isEmpty) {
                 NoNotesIndicator(modifier = Modifier)
             } else {
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(items = state.notes, key = { it.note.noteId }) { noteData ->
-                        NoteItemCard(noteData = noteData,
+                    items(items = filteredNotes, key = { it.note.noteId }) { noteData ->
+                        NoteItemCard(modifier = Modifier.animateItem(
+                            fadeInSpec = tween(
+                                durationMillis = 300, delayMillis = 100
+                            ), fadeOutSpec = tween(
+                                durationMillis = 300, delayMillis = 100
+                            ), placementSpec = spring( // Controls the placement animation
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ),
+                            noteData = noteData,
                             onClick = { onOpenNoteDetail(noteData.note.noteId) },
                             onTogglePin = { onToggleNotePin(noteData.note.noteId, it) },
                             onToggleFavourite = { onToggleNoteFavourite(noteData.note.noteId, it) })
