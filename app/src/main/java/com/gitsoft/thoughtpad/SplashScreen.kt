@@ -16,34 +16,110 @@
 */
 package com.gitsoft.thoughtpad
 
-import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
+import kotlinx.coroutines.delay
 
-@AndroidEntryPoint
-class SplashScreen : AppCompatActivity() {
+@Composable
+fun SplashScreen(onProceed: () -> Unit) {
+    val proceed by rememberUpdatedState(onProceed)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    LaunchedEffect(Unit) {
+        delay(4000L)
+        proceed()
+    }
+    val text = stringResource(R.string.app_slogan)
 
-        setContentView(R.layout.activity_splash_screen)
+    var displayedText by remember { mutableStateOf("") }
+    var cursorVisible by remember { mutableStateOf(true) } // For cursor visibility
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
+    LaunchedEffect(text) {
+        displayedText = "" // Reset text on new input
+        cursorVisible = true // Show cursor
+        for (char in text) {
+            displayedText += char
+            delay(50) // Wait before adding the next character
+        }
+        cursorVisible = false // Hide cursor after typing
+    }
+
+    // Blinking cursor effect
+    val infiniteTransition = rememberInfiniteTransition()
+    val cursorAnimation by
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(durationMillis = 500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
         )
 
-        Handler()
-            .postDelayed(
-                {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                },
-                3000
-            )
+    TogaBasicScaffold { innerPadding ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.quill_drawing_a_line_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(120.dp),
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+                )
+                val sloganText = buildAnnotatedString {
+                    append(displayedText)
+                    if (cursorVisible) {
+                        withStyle(
+                            style =
+                                MaterialTheme.typography.bodyMedium
+                                    .copy(color = MaterialTheme.colorScheme.primary.copy(alpha = cursorAnimation))
+                                    .toSpanStyle()
+                        ) {
+                            append("|") // Cursor representation
+                        }
+                    }
+                }
+                Text(text = sloganText, textAlign = TextAlign.Center)
+            }
+        }
     }
 }

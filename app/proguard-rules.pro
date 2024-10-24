@@ -25,6 +25,6 @@
 -keepnames class * extends android.os.Parcelable
 -keepnames class * extends java.io.Serializable
 -keepnames class com.gitsoft.thoughtpad.model.*
--keep class com.gitsoft.thoughtpad.model.Note
+-keep class com.gitsoft.thoughtpad.core.model.Note
 -keep class * extends androidx.fragment.app.Fragment{}
 -keepnames class * extends androidx.fragment.app.FragmentContainerView

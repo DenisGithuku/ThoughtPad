@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1044232279221",
+    "project_id": "thoughtpad-31e94",
+    "storage_bucket": "thoughtpad-31e94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044232279221:android:d24c743d3d6c4be5bb9afc",
+        "android_client_info": {
+          "package_name": "com.gitsoft.thoughtpad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQmpjNitMDSviZts1Y3pobeHj_NKyqexA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044232279221:android:f1074c470c3681acbb9afc",
+        "android_client_info": {
+          "package_name": "com.gitsoft.thoughtpad.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQmpjNitMDSviZts1Y3pobeHj_NKyqexA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

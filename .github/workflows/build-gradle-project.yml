@@ -32,6 +32,9 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
 
+      - name: Create missing schema directory
+        run: mkdir -p core/model/schemas
+
       - name: Run build with Gradle Wrapper
         env:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}

@@ -18,26 +18,54 @@ package com.gitsoft.thoughtpad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gitsoft.thoughtpad.model.ThemeConfig
-import com.gitsoft.thoughtpad.repository.UserPrefsRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
+import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
+import core.gitsoft.thoughtpad.core.toga.theme.TagBlue
+import core.gitsoft.thoughtpad.core.toga.theme.TagGreen
+import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
+import core.gitsoft.thoughtpad.core.toga.theme.toComposeLong
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
 
-@HiltViewModel
-class MainViewModel @Inject constructor(private val userPrefsRepository: UserPrefsRepository) :
-    ViewModel() {
+class MainViewModel(
+    userPrefsRepository: UserPrefsRepository,
+    private val notesRepository: NotesRepository
+) : ViewModel() {
 
     val uiState =
-        userPrefsRepository.userPreferencesFlow
+        userPrefsRepository.userPrefs
             .mapLatest { MainUiState(it.themeConfig) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = MainUiState()
             )
+
+    init {
+        checkTags()
+    }
+
+    private fun checkTags() {
+        viewModelScope.launch {
+            notesRepository.allTags.collectLatest {
+                if (it.isEmpty()) {
+                    val defaultTags =
+                        listOf(
+                            Tag(name = "Work", color = TagBlue.toComposeLong()), // Blue
+                            Tag(name = "Personal", color = TagGreen.toComposeLong()), // Green
+                            Tag(name = "Urgent", color = TagOrange.toComposeLong()) // Orange
+                        )
+
+                    notesRepository.insertTags(defaultTags)
+                }
+            }
+        }
+    }
 }

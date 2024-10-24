@@ -1,0 +1,10 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_dark_mode
+drawable ic_light_mode
+string confirm
+string settings
+string theme_dark
+string theme_light
+string theme_system
+string theme_title
