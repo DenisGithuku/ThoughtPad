@@ -37,11 +37,11 @@ interface NotesRepository {
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
-    )
+    ): Long
 
     suspend fun insertTags(tags: List<Tag>)
 
-    suspend fun insertTag(tag: Tag)
+    suspend fun insertTag(tag: Tag): Long
 
     suspend fun getTagById(tagId: Long): Tag
 

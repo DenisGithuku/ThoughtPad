@@ -45,19 +45,17 @@ interface NotesDatabaseDao {
     // Insert operations
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertNote(note: Note): Long
 
-    @Delete suspend fun delete(note: Note)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChecklistItems(checklistItems: List<CheckListItem>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertTags(tags: List<Tag>)
 
     // Update operations
-    @Update suspend fun updateNote(note: Note)
+    @Update suspend fun updateNote(note: Note): Int
 
     @Update suspend fun updateChecklistItem(checklistItem: CheckListItem)
 
-    @Update suspend fun updateTags(tags: List<Tag>)
+    @Update suspend fun updateTags(tags: List<Tag>): Int
 
     // Delete operations if needed
     @Delete suspend fun deleteChecklistItems(checklistItems: List<CheckListItem>)
@@ -66,46 +64,58 @@ interface NotesDatabaseDao {
 
     @Query("SELECT * FROM noteTags") fun getTags(): Flow<List<Tag>>
 
-    @Update suspend fun updateTag(tag: Tag)
+    @Update suspend fun updateTag(tag: Tag): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertTag(tag: Tag): Long
 
     @Query("SELECT * FROM noteTags WHERE tagId = :id") suspend fun getTag(id: Long): Tag
 
-    // Example transaction for inserting all data (note + checklist items + tags)
+    /**
+     * Insert a note with its associated checklist items and tags.
+     *
+     * @param Note The note to be inserted.
+     * @param checklistItems The checklist items associated with the note.
+     * @param tags The tags associated with the note.
+     */
     @Transaction
     suspend fun insertNoteWithDetails(
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
-    ) {
+    ): Long {
         // Insert the note and get the generated noteId
         val noteId = insertNote(note)
+
 
         // Update the checklist items with the new noteId
         val updatedCheckListItems = checklistItems.map { it.copy(noteId = noteId) }
         insertChecklistItems(updatedCheckListItems)
 
-        // Insert the tags (this step ensures tags are in the tags_table)
-        insertTags(tags)
-
         // Now insert the relation between the note and the tags in the cross-reference table
         val noteTagCrossRefs = tags.map { tag -> NoteTagCrossRef(noteId = noteId, tagId = tag.tagId) }
         insertNoteTagCrossRefs(noteTagCrossRefs)
+
+        return noteId
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNoteTagCrossRefs(crossRefs: List<NoteTagCrossRef>)
 
-    // Example transaction for updating all data (note + checklist items + tags)
+    /**
+     * Update a note with its associated checklist items and tags.
+     *
+     * @param Note The note to be updated.
+     * @param checklistItems The checklist items associated with the note.
+     * @param tags The tags associated with the note.
+     */
     @Transaction
     suspend fun updateNoteWithDetails(
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
-    ) {
+    ): Int {
         // Update the note in the database
-        updateNote(note)
+        val id = updateNote(note)
 
         // Delete old checklist items and tags associated with the note
         deleteChecklistItems(getChecklistItemsForNoteId(note.noteId).first())
@@ -118,14 +128,12 @@ interface NotesDatabaseDao {
         // Insert the new checklist items
         insertChecklistItems(checklistItems)
 
-        // Insert the new tags
-        insertTags(tags)
-
         // Insert new associations for the note and its tags
         tags.forEach { tag ->
             // Create a new cross-reference for each tag associated with the note
             insertNoteTagCrossRef(NoteTagCrossRef(note.noteId, tag.tagId))
         }
+        return id
     }
 
     // Method to delete existing tag associations for the note
@@ -137,4 +145,27 @@ interface NotesDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNoteTagCrossRef(noteTagCrossRef: NoteTagCrossRef)
+
+    @Transaction
+    suspend fun deleteNoteWithDetails(noteId: Long): Int {
+        // Step 1: Delete checklist items associated with the note
+        deleteChecklistItemsByNoteId(noteId)
+
+        // Step 2: Delete note-tag cross-references for the note
+        deleteNoteTagCrossRefsByNoteId(noteId)
+
+        // Step 3: Finally, delete the note itself
+        return deleteNoteById(noteId)
+    }
+
+    // Deleting checklist items by noteId
+    @Query("DELETE FROM checklist WHERE noteId = :noteId")
+    suspend fun deleteChecklistItemsByNoteId(noteId: Long)
+
+    // Deleting cross-references between note and tags by noteId
+    @Query("DELETE FROM NoteTagCrossRef WHERE noteId = :noteId")
+    suspend fun deleteNoteTagCrossRefsByNoteId(noteId: Long)
+
+    // Deleting the note by its noteId
+    @Query("DELETE FROM notes_table WHERE noteId = :noteId") suspend fun deleteNoteById(noteId: Long): Int
 }

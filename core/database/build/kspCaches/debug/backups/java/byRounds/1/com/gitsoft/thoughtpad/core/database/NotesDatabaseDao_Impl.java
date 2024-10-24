@@ -24,6 +24,7 @@ import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef;
 import com.gitsoft.thoughtpad.core.model.Tag;
 import java.lang.Class;
 import java.lang.Exception;
+import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -56,8 +57,6 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
 
   private final EntityInsertionAdapter<NoteTagCrossRef> __insertionAdapterOfNoteTagCrossRef_1;
 
-  private final EntityDeletionOrUpdateAdapter<Note> __deletionAdapterOfNote;
-
   private final EntityDeletionOrUpdateAdapter<CheckListItem> __deletionAdapterOfCheckListItem;
 
   private final EntityDeletionOrUpdateAdapter<Tag> __deletionAdapterOfTag;
@@ -69,6 +68,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   private final EntityDeletionOrUpdateAdapter<Tag> __updateAdapterOfTag;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteNoteTagCrossRefsForNoteId;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteChecklistItemsByNoteId;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteNoteById;
 
   public NotesDatabaseDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
@@ -197,19 +200,6 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           @NonNull final NoteTagCrossRef entity) {
         statement.bindLong(1, entity.getNoteId());
         statement.bindLong(2, entity.getTagId());
-      }
-    };
-    this.__deletionAdapterOfNote = new EntityDeletionOrUpdateAdapter<Note>(__db) {
-      @Override
-      @NonNull
-      protected String createQuery() {
-        return "DELETE FROM `notes_table` WHERE `noteId` = ?";
-      }
-
-      @Override
-      protected void bind(@NonNull final SupportSQLiteStatement statement,
-          @NonNull final Note entity) {
-        statement.bindLong(1, entity.getNoteId());
       }
     };
     this.__deletionAdapterOfCheckListItem = new EntityDeletionOrUpdateAdapter<CheckListItem>(__db) {
@@ -348,6 +338,22 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         return _query;
       }
     };
+    this.__preparedStmtOfDeleteChecklistItemsByNoteId = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM checklist WHERE noteId = ?";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteNoteById = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM notes_table WHERE noteId = ?";
+        return _query;
+      }
+    };
   }
 
   @Override
@@ -462,24 +468,6 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object delete(final Note note, final Continuation<? super Unit> $completion) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
-      @Override
-      @NonNull
-      public Unit call() throws Exception {
-        __db.beginTransaction();
-        try {
-          __deletionAdapterOfNote.handle(note);
-          __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
-        } finally {
-          __db.endTransaction();
-        }
-      }
-    }, $completion);
-  }
-
-  @Override
   public Object deleteChecklistItems(final List<CheckListItem> checklistItems,
       final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
@@ -517,16 +505,17 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object updateNote(final Note note, final Continuation<? super Unit> $completion) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+  public Object updateNote(final Note note, final Continuation<? super Integer> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
       @Override
       @NonNull
-      public Unit call() throws Exception {
+      public Integer call() throws Exception {
+        int _total = 0;
         __db.beginTransaction();
         try {
-          __updateAdapterOfNote.handle(note);
+          _total += __updateAdapterOfNote.handle(note);
           __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
+          return _total;
         } finally {
           __db.endTransaction();
         }
@@ -554,16 +543,17 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object updateTags(final List<Tag> tags, final Continuation<? super Unit> $completion) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+  public Object updateTags(final List<Tag> tags, final Continuation<? super Integer> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
       @Override
       @NonNull
-      public Unit call() throws Exception {
+      public Integer call() throws Exception {
+        int _total = 0;
         __db.beginTransaction();
         try {
-          __updateAdapterOfTag.handleMultiple(tags);
+          _total += __updateAdapterOfTag.handleMultiple(tags);
           __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
+          return _total;
         } finally {
           __db.endTransaction();
         }
@@ -572,16 +562,17 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object updateTag(final Tag tag, final Continuation<? super Unit> $completion) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+  public Object updateTag(final Tag tag, final Continuation<? super Integer> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
       @Override
       @NonNull
-      public Unit call() throws Exception {
+      public Integer call() throws Exception {
+        int _total = 0;
         __db.beginTransaction();
         try {
-          __updateAdapterOfTag.handle(tag);
+          _total += __updateAdapterOfTag.handle(tag);
           __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
+          return _total;
         } finally {
           __db.endTransaction();
         }
@@ -591,14 +582,20 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
 
   @Override
   public Object insertNoteWithDetails(final Note note, final List<CheckListItem> checklistItems,
-      final List<Tag> tags, final Continuation<? super Unit> $completion) {
+      final List<Tag> tags, final Continuation<? super Long> $completion) {
     return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.insertNoteWithDetails(NotesDatabaseDao_Impl.this, note, checklistItems, tags, __cont), $completion);
   }
 
   @Override
   public Object updateNoteWithDetails(final Note note, final List<CheckListItem> checklistItems,
-      final List<Tag> tags, final Continuation<? super Unit> $completion) {
+      final List<Tag> tags, final Continuation<? super Integer> $completion) {
     return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.updateNoteWithDetails(NotesDatabaseDao_Impl.this, note, checklistItems, tags, __cont), $completion);
+  }
+
+  @Override
+  public Object deleteNoteWithDetails(final long noteId,
+      final Continuation<? super Integer> $completion) {
+    return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.deleteNoteWithDetails(NotesDatabaseDao_Impl.this, noteId, __cont), $completion);
   }
 
   @Override
@@ -622,6 +619,83 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           }
         } finally {
           __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteChecklistItemsByNoteId(final long noteId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteChecklistItemsByNoteId.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, noteId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteChecklistItemsByNoteId.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteNoteTagCrossRefsByNoteId(final long noteId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, noteId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteNoteById(final long noteId, final Continuation<? super Integer> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
+      @Override
+      @NonNull
+      public Integer call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteNoteById.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, noteId);
+        try {
+          __db.beginTransaction();
+          try {
+            final Integer _result = _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return _result;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteNoteById.release(_stmt);
         }
       }
     }, $completion);

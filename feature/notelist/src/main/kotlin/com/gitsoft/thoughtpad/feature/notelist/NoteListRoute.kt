@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -31,12 +32,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -78,35 +76,40 @@ internal fun NoteListScreen(
     var query: String by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(PaddingValues(horizontal = 16.dp))
+        modifier =
+            Modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(PaddingValues(horizontal = 16.dp))
     ) {
-        TopRow(query = query,
+        TopRow(
+            query = query,
             onOpenSettings = onOpenSettings,
             onCreateNewNote = onCreateNewNote,
-            onQueryChange = { query = it })
+            onQueryChange = { query = it }
+        )
 
         if (state.isLoading) LoadingIndicator()
 
-        AnimatedContent(
-            targetState = state.notes.isEmpty(), label = "Note List Visibility State"
-        ) { isEmpty ->
+        AnimatedContent(targetState = state.notes.isEmpty(), label = "Note List Visibility State") {
+            isEmpty ->
             if (isEmpty) {
                 NoNotesIndicator(modifier = Modifier)
             } else {
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
                     items(state.notes.size, key = { state.notes[it].note.noteId }) { index ->
                         val noteData = state.notes[index]
-                        NoteItem(note = NoteListItem(
-                            id = noteData.note.noteId,
-                            title = noteData.note.noteTitle ?: "",
-                            content = noteData.note.noteText ?: "",
-                            color = noteData.note.color.toComposeColor(),
-                        ), onClick = { onOpenNoteDetail(noteData.note.noteId) })
+                        NoteItem(
+                            note =
+                                NoteListItem(
+                                    id = noteData.note.noteId,
+                                    title = noteData.note.noteTitle ?: "",
+                                    content = noteData.note.noteText ?: "",
+                                    color = noteData.note.color.toComposeColor()
+                                ),
+                            onClick = { onOpenNoteDetail(noteData.note.noteId) }
+                        )
                     }
                 }
             }
@@ -117,29 +120,20 @@ internal fun NoteListScreen(
 @Composable
 fun NoteItem(note: NoteListItem, onClick: () -> Unit) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(shape = MaterialTheme.shapes.medium)
-            .border(
-                width = 0.8.dp,
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.04f)
-            )
-            .background(
-                color = note.color,
-                shape = MaterialTheme.shapes.medium
-            )
-            .clickable(onClick = onClick)
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(4.dp)
+                .clip(shape = MaterialTheme.shapes.medium)
+                .border(
+                    width = 0.8.dp,
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.04f)
+                )
+                .background(color = note.color, shape = MaterialTheme.shapes.medium)
+                .clickable(onClick = onClick)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            TogaSmallTitle(
-                text = note.title, maxLines = 1
-            )
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            TogaSmallTitle(text = note.title, maxLines = 1)
             Spacer(modifier = Modifier.height(8.dp))
             TogaSmallBody(text = note.content, maxLines = 3)
         }
@@ -154,15 +148,15 @@ fun TopRow(
     onQueryChange: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(PaddingValues(16.dp)),
+        modifier = Modifier.fillMaxWidth().padding(PaddingValues(16.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TogaSearchBar(modifier = Modifier.weight(1f),
+        TogaSearchBar(
+            modifier = Modifier.weight(1f),
             query = query,
             onQueryChange = onQueryChange,
-            onSearch = {})
+            onSearch = {}
+        )
         TogaIconButton(
             modifier = Modifier.sizeIn(24.dp),
             icon = R.drawable.ic_add_circle,

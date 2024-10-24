@@ -1,16 +1,16 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml:2:13-83
-INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml:2:13-83
+ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml:2:13-83
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml:2:13-83
 	package
-		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml
 	xmlns:android
-		ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml:2:23-81
+		ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml:2:23-81
 uses-sdk
-INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml reason: use-sdk injection requested
-INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml
-INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml reason: use-sdk injection requested
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml
 	android:targetSdkVersion
-		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml
 	android:minSdkVersion
-		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest4187135545299392700.xml
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/core/database/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest17989808127044741191.xml

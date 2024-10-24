@@ -394,6 +394,7 @@ fun TagSelectionBottomSheet(
             value = tagNameState,
             onValueChange = { input -> tagNameState = input },
             label = R.string.add_new_tag,
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 

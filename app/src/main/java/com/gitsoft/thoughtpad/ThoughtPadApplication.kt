@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -54,13 +55,14 @@ class ThoughtPadApplication : Application() {
     private fun initTimber() {
         when {
             BuildConfig.DEBUG -> {
-                Timber.plant(object : Timber.DebugTree() {
-                    override fun createStackElementTag(element: StackTraceElement): String {
-                        return super.createStackElementTag(element) + ":" + element.lineNumber
+                Timber.plant(
+                    object : Timber.DebugTree() {
+                        override fun createStackElementTag(element: StackTraceElement): String {
+                            return super.createStackElementTag(element) + ":" + element.lineNumber
+                        }
                     }
-                })
+                )
             }
-
             else -> {
                 Timber.plant(CrashlyticsTree())
             }

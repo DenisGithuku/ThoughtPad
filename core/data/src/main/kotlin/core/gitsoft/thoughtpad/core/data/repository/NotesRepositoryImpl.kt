@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -16,6 +15,8 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import com.gitsoft.thoughtpad.core.common.safeDbCall
+import com.gitsoft.thoughtpad.core.common.safeDbReactiveDataRead
 import com.gitsoft.thoughtpad.core.database.NotesDatabaseDao
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
@@ -26,42 +27,40 @@ import kotlinx.coroutines.flow.Flow
 internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) :
     NotesRepository {
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
-        get() = notesDatabaseDao.loadAllNotes()
+        get() = notesDatabaseDao.loadAllNotes().safeDbReactiveDataRead {
+            emptyList()
+        }
 
-    override suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags {
-        return notesDatabaseDao.noteById(id)
+
+    override suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags = safeDbCall {
+        notesDatabaseDao.noteById(id)
     }
 
     override suspend fun updateNoteWithDetails(
-        note: Note,
-        checklistItems: List<CheckListItem>,
-        tags: List<Tag>
-    ) {
+        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
+    ): Unit = safeDbCall {
         notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
     }
 
-    override suspend fun insertTags(tags: List<Tag>) {
+    override suspend fun insertTags(tags: List<Tag>) = safeDbCall {
         notesDatabaseDao.insertTags(tags)
     }
 
-    override suspend fun insertTag(tag: Tag) {
+    override suspend fun insertTag(tag: Tag): Long = safeDbCall {
         notesDatabaseDao.insertTag(tag)
     }
 
-    override suspend fun getTagById(tagId: Long): Tag {
-        return notesDatabaseDao.getTag(tagId)
+    override suspend fun getTagById(tagId: Long): Tag = safeDbCall {
+        notesDatabaseDao.getTag(tagId)
     }
 
     override val allTags: Flow<List<Tag>>
-        get() {
-            return notesDatabaseDao.getTags()
-        }
+        get() = notesDatabaseDao.getTags().safeDbReactiveDataRead { emptyList() }
+
 
     override suspend fun insertNoteWithDetails(
-        note: Note,
-        checklistItems: List<CheckListItem>,
-        tags: List<Tag>
-    ) {
+        note: Note, checklistItems: List<CheckListItem>, tags: List<Tag>
+    ): Long = safeDbCall {
         notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
     }
 }
