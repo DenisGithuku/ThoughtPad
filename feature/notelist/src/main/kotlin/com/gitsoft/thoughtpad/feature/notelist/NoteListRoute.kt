@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -34,6 +33,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,11 +48,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesIndicator
+import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
-import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -60,10 +60,17 @@ fun NoteListRoute(
     viewModel: NoteListViewModel = koinViewModel(),
     onCreateNewNote: () -> Unit,
     onOpenNoteDetail: (Long) -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
-    NoteListScreen(state = state, onCreateNewNote, onOpenNoteDetail, onOpenSettings)
+    NoteListScreen(
+        state = state,
+        onCreateNewNote,
+        onOpenNoteDetail,
+        onOpenSettings,
+        viewModel::onToggleNotePin,
+        viewModel::onToggleNoteFavourite
+    )
 }
 
 @Composable
@@ -71,45 +78,39 @@ internal fun NoteListScreen(
     state: NoteListUiState,
     onCreateNewNote: () -> Unit,
     onOpenNoteDetail: (Long) -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onToggleNotePin: (Long, Boolean) -> Unit,
+    onToggleNoteFavourite: (Long, Boolean) -> Unit,
 ) {
     var query: String by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .statusBarsPadding()
-                .navigationBarsPadding()
-                .padding(PaddingValues(horizontal = 16.dp))
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(PaddingValues(horizontal = 16.dp))
     ) {
-        TopRow(
-            query = query,
+        TopRow(query = query,
             onOpenSettings = onOpenSettings,
             onCreateNewNote = onCreateNewNote,
-            onQueryChange = { query = it }
-        )
+            onQueryChange = { query = it })
 
         if (state.isLoading) LoadingIndicator()
 
-        AnimatedContent(targetState = state.notes.isEmpty(), label = "Note List Visibility State") {
-            isEmpty ->
+        AnimatedContent(
+            targetState = state.notes.isEmpty(), label = "Note List Visibility State"
+        ) { isEmpty ->
             if (isEmpty) {
                 NoNotesIndicator(modifier = Modifier)
             } else {
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(state.notes.size, key = { state.notes[it].note.noteId }) { index ->
-                        val noteData = state.notes[index]
-                        NoteItem(
-                            note =
-                                NoteListItem(
-                                    id = noteData.note.noteId,
-                                    title = noteData.note.noteTitle ?: "",
-                                    content = noteData.note.noteText ?: "",
-                                    color = noteData.note.color.toComposeColor()
-                                ),
-                            onClick = { onOpenNoteDetail(noteData.note.noteId) }
-                        )
+                    items(items = state.notes, key = { it.note.noteId }) { noteData ->
+                        NoteItemCard(noteData = noteData,
+                            onClick = { onOpenNoteDetail(noteData.note.noteId) },
+                            onTogglePin = { onToggleNotePin(noteData.note.noteId, it) },
+                            onToggleFavourite = { onToggleNoteFavourite(noteData.note.noteId, it) })
                     }
                 }
             }
@@ -120,19 +121,23 @@ internal fun NoteListScreen(
 @Composable
 fun NoteItem(note: NoteListItem, onClick: () -> Unit) {
     Box(
-        modifier =
-            Modifier.fillMaxWidth()
-                .padding(4.dp)
-                .clip(shape = MaterialTheme.shapes.medium)
-                .border(
-                    width = 0.8.dp,
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.04f)
-                )
-                .background(color = note.color, shape = MaterialTheme.shapes.medium)
-                .clickable(onClick = onClick)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .clip(shape = MaterialTheme.shapes.medium)
+            .border(
+                width = 0.8.dp,
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.04f)
+            )
+            .background(color = note.color, shape = MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
             TogaSmallTitle(text = note.title, maxLines = 1)
             Spacer(modifier = Modifier.height(8.dp))
             TogaSmallBody(text = note.content, maxLines = 3)
@@ -148,15 +153,15 @@ fun TopRow(
     onQueryChange: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(PaddingValues(16.dp)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(PaddingValues(16.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TogaSearchBar(
-            modifier = Modifier.weight(1f),
+        TogaSearchBar(modifier = Modifier.weight(1f),
             query = query,
             onQueryChange = onQueryChange,
-            onSearch = {}
-        )
+            onSearch = {})
         TogaIconButton(
             modifier = Modifier.sizeIn(24.dp),
             icon = R.drawable.ic_add_circle,

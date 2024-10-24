@@ -836,7 +836,7 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
-  public Object noteById(final int id,
+  public Object noteDataById(final long id,
       final Continuation<? super DataWithNotesCheckListItemsAndTags> $completion) {
     final String _sql = "SELECT * FROM notes_table where noteId = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
@@ -963,6 +963,105 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           }
         } finally {
           __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object getNoteById(final long id, final Continuation<? super Note> $completion) {
+    final String _sql = "SELECT * FROM notes_table WHERE noteId = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, id);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<Note>() {
+      @Override
+      @NonNull
+      public Note call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfNoteId = CursorUtil.getColumnIndexOrThrow(_cursor, "noteId");
+          final int _cursorIndexOfNoteTitle = CursorUtil.getColumnIndexOrThrow(_cursor, "noteTitle");
+          final int _cursorIndexOfNoteText = CursorUtil.getColumnIndexOrThrow(_cursor, "noteText");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final int _cursorIndexOfUpdatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "updatedAt");
+          final int _cursorIndexOfIsPinned = CursorUtil.getColumnIndexOrThrow(_cursor, "isPinned");
+          final int _cursorIndexOfIsArchived = CursorUtil.getColumnIndexOrThrow(_cursor, "isArchived");
+          final int _cursorIndexOfColor = CursorUtil.getColumnIndexOrThrow(_cursor, "color");
+          final int _cursorIndexOfIsFavorite = CursorUtil.getColumnIndexOrThrow(_cursor, "isFavorite");
+          final int _cursorIndexOfIsDeleted = CursorUtil.getColumnIndexOrThrow(_cursor, "isDeleted");
+          final int _cursorIndexOfIsCheckList = CursorUtil.getColumnIndexOrThrow(_cursor, "isCheckList");
+          final int _cursorIndexOfReminderTime = CursorUtil.getColumnIndexOrThrow(_cursor, "reminderTime");
+          final int _cursorIndexOfAttachments = CursorUtil.getColumnIndexOrThrow(_cursor, "attachments");
+          final Note _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpNoteId;
+            _tmpNoteId = _cursor.getLong(_cursorIndexOfNoteId);
+            final String _tmpNoteTitle;
+            if (_cursor.isNull(_cursorIndexOfNoteTitle)) {
+              _tmpNoteTitle = null;
+            } else {
+              _tmpNoteTitle = _cursor.getString(_cursorIndexOfNoteTitle);
+            }
+            final String _tmpNoteText;
+            if (_cursor.isNull(_cursorIndexOfNoteText)) {
+              _tmpNoteText = null;
+            } else {
+              _tmpNoteText = _cursor.getString(_cursorIndexOfNoteText);
+            }
+            final Long _tmpCreatedAt;
+            if (_cursor.isNull(_cursorIndexOfCreatedAt)) {
+              _tmpCreatedAt = null;
+            } else {
+              _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            }
+            final Long _tmpUpdatedAt;
+            if (_cursor.isNull(_cursorIndexOfUpdatedAt)) {
+              _tmpUpdatedAt = null;
+            } else {
+              _tmpUpdatedAt = _cursor.getLong(_cursorIndexOfUpdatedAt);
+            }
+            final boolean _tmpIsPinned;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfIsPinned);
+            _tmpIsPinned = _tmp != 0;
+            final boolean _tmpIsArchived;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
+            _tmpIsArchived = _tmp_1 != 0;
+            final long _tmpColor;
+            _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+            final boolean _tmpIsFavorite;
+            final int _tmp_2;
+            _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
+            _tmpIsFavorite = _tmp_2 != 0;
+            final boolean _tmpIsDeleted;
+            final int _tmp_3;
+            _tmp_3 = _cursor.getInt(_cursorIndexOfIsDeleted);
+            _tmpIsDeleted = _tmp_3 != 0;
+            final boolean _tmpIsCheckList;
+            final int _tmp_4;
+            _tmp_4 = _cursor.getInt(_cursorIndexOfIsCheckList);
+            _tmpIsCheckList = _tmp_4 != 0;
+            final Long _tmpReminderTime;
+            if (_cursor.isNull(_cursorIndexOfReminderTime)) {
+              _tmpReminderTime = null;
+            } else {
+              _tmpReminderTime = _cursor.getLong(_cursorIndexOfReminderTime);
+            }
+            final List<String> _tmpAttachments;
+            final String _tmp_5;
+            _tmp_5 = _cursor.getString(_cursorIndexOfAttachments);
+            _tmpAttachments = __converters.toAttachmentsList(_tmp_5);
+            _result = new Note(_tmpNoteId,_tmpNoteTitle,_tmpNoteText,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsPinned,_tmpIsArchived,_tmpColor,_tmpIsFavorite,_tmpIsDeleted,_tmpIsCheckList,_tmpReminderTime,_tmpAttachments);
+          } else {
+            _result = null;
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
         }
       }
     }, $completion);

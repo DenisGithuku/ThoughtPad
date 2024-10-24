@@ -20,19 +20,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun TogaSmallBody(
     text: String,
     maxLines: Int = 1,
+    style: TextStyle = MaterialTheme.typography.bodySmall,
     color: Color = MaterialTheme.colorScheme.onBackground
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodySmall,
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis,
-        color = color
+        color = color,
+        style = style
     )
 }

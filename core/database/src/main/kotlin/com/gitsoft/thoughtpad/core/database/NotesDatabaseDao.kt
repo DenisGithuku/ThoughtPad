@@ -40,7 +40,7 @@ interface NotesDatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM notes_table where noteId = :id")
-    suspend fun noteById(id: Int): DataWithNotesCheckListItemsAndTags
+    suspend fun noteDataById(id: Long): DataWithNotesCheckListItemsAndTags
 
     // Insert operations
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertNote(note: Note): Long
@@ -52,6 +52,9 @@ interface NotesDatabaseDao {
 
     // Update operations
     @Update suspend fun updateNote(note: Note): Int
+
+    @Query("SELECT * FROM notes_table WHERE noteId = :id")
+    suspend fun getNoteById(id: Long): Note
 
     @Update suspend fun updateChecklistItem(checklistItem: CheckListItem)
 

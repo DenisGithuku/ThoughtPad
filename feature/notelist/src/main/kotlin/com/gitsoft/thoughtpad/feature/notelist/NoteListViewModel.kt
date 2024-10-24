@@ -24,13 +24,31 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class NoteListUiState(
     val isLoading: Boolean = false,
     val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
 )
 
-class NoteListViewModel(notesRepository: NotesRepository) : ViewModel() {
+class NoteListViewModel(private val notesRepository: NotesRepository) : ViewModel() {
+
+    fun onToggleNotePin(noteId: Long, isPinned: Boolean) {
+        viewModelScope.launch {
+            val note = notesRepository.getNoteById(noteId)
+            val updatedNote = note.copy(isPinned = isPinned)
+            notesRepository.updateNote(updatedNote)
+        }
+    }
+
+    fun onToggleNoteFavourite(noteId: Long, isFavourite: Boolean) {
+        viewModelScope.launch {
+            val note = notesRepository.getNoteById(noteId)
+            val updatedNote = note.copy(isFavorite = isFavourite)
+            notesRepository.updateNote(updatedNote)
+        }
+    }
+
     val state: StateFlow<NoteListUiState> =
         notesRepository.allNotes
             .mapLatest { NoteListUiState(isLoading = false, notes = it) }

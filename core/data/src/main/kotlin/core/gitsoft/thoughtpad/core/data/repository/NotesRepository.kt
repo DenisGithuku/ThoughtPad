@@ -25,13 +25,17 @@ import kotlinx.coroutines.flow.Flow
 interface NotesRepository {
     val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
 
-    suspend fun getNoteById(id: Int): DataWithNotesCheckListItemsAndTags
+    suspend fun getNoteWithDataById(id: Long): DataWithNotesCheckListItemsAndTags
+
+    suspend fun getNoteById(id: Long): Note
 
     suspend fun updateNoteWithDetails(
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
     )
+
+    suspend fun updateNote(note: Note): Int
 
     suspend fun insertNoteWithDetails(
         note: Note,
