@@ -16,7 +16,9 @@ string favourite
 string no_notes_available
 string no_notes_found
 string notes_list_title
+string other_notes
 string pin
+string pinned_notes
 string reminder
 string search
 string settings

@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
+import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
@@ -103,6 +105,22 @@ internal fun NoteListScreen(
         }
     }
 
+    val pinnedNotes by remember(filteredNotes, query) {
+        derivedStateOf {
+            filteredNotes.filter {
+                it.note.isPinned
+            }
+        }
+    }
+
+    val otherNotes by remember(filteredNotes, query) {
+        derivedStateOf {
+            filteredNotes.filter {
+                !it.note.isPinned
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -128,7 +146,37 @@ internal fun NoteListScreen(
                 NoNotesIndicator(modifier = Modifier)
             } else {
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(items = filteredNotes, key = { it.note.noteId }) { noteData ->
+                    item(
+                        span = StaggeredGridItemSpan.FullLine
+                    ) {
+                        SectionSeparator(
+                            modifier = Modifier.padding(4.dp), title = R.string.pinned_notes
+                        )
+                    }
+                    items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
+                        NoteItemCard(modifier = Modifier.animateItem(
+                            fadeInSpec = tween(
+                                durationMillis = 300, delayMillis = 100
+                            ), fadeOutSpec = tween(
+                                durationMillis = 300, delayMillis = 100
+                            ), placementSpec = spring( // Controls the placement animation
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ),
+                            noteData = noteData,
+                            onClick = { onOpenNoteDetail(noteData.note.noteId) },
+                            onTogglePin = { onToggleNotePin(noteData.note.noteId, it) },
+                            onToggleFavourite = { onToggleNoteFavourite(noteData.note.noteId, it) })
+                    }
+                    item(
+                        span = StaggeredGridItemSpan.FullLine
+                    ) {
+                        SectionSeparator(
+                            modifier = Modifier.padding(4.dp), title = R.string.other_notes
+                        )
+                    }
+                    items(items = otherNotes, key = { it.note.noteId }) { noteData ->
                         NoteItemCard(modifier = Modifier.animateItem(
                             fadeInSpec = tween(
                                 durationMillis = 300, delayMillis = 100

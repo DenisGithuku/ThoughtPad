@@ -12,4 +12,6 @@
     <string name="favourite">Favourite</string>
     <string name="unfavourite">Unfavourite</string>
     <string name="reminder">Reminder time</string>
+    <string name="pinned_notes">Pinned</string>
+    <string name="other_notes">Other</string>
 </resources>
