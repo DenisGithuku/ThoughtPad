@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBasicTopAppBar
 
@@ -28,11 +30,17 @@ import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBasicTopAppBar
 @Composable
 fun TogaBasicScaffold(
     @StringRes title: Int? = null,
+    snackbarHostState: SnackbarHostState? = null,
     actions: (@Composable RowScope.() -> Unit)? = null,
     floatingActionButton: (@Composable () -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
+        snackbarHost = {
+            if (snackbarHostState != null) {
+                SnackbarHost(hostState = snackbarHostState)
+            }
+        },
         topBar = {
             if (title != null) {
                 TogaBasicTopAppBar(title = title, actions = actions)

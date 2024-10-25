@@ -19,4 +19,7 @@
     <string name="delete">Delete</string>
     <string name="archive">Archive</string>
     <string name="share">Share</string>
+    <string name="note_deleted">Note deleted!</string>
+    <string name="note_archived">Note archived!</string>
+    <string name="undo">Undo</string>
 </resources>

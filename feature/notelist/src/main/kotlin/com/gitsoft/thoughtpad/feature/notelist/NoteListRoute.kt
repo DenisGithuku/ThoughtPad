@@ -33,17 +33,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -54,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
@@ -64,6 +67,7 @@ import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
+import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -81,8 +85,11 @@ fun NoteListRoute(
         onOpenSettings = onOpenSettings,
         onToggleNotePin = viewModel::onToggleNotePin,
         onToggleNoteFavourite = viewModel::onToggleNoteFavourite,
-        onOpenFilterDialog = viewModel::onOpenFilterDialog,
-        onToggleSelectedNote = viewModel::onToggleSelectNote
+        onToggleFilterDialog = viewModel::onOpenFilterDialog,
+        onToggleSelectedNote = viewModel::onToggleSelectNote,
+        onEditNote = onOpenNoteDetail,
+        onToggleDeleteNote = viewModel::onToggleDelete,
+        onToggleArchiveNote = viewModel::onToggleArchive
     )
 }
 
@@ -91,11 +98,14 @@ internal fun NoteListScreen(
     state: NoteListUiState,
     onToggleSelectedNote: (Note?) -> Unit,
     onCreateNewNote: () -> Unit,
-    onOpenFilterDialog: (Boolean) -> Unit,
+    onToggleFilterDialog: (Boolean) -> Unit,
     onOpenNoteDetail: (Long) -> Unit,
     onOpenSettings: () -> Unit,
     onToggleNotePin: (Long, Boolean) -> Unit,
-    onToggleNoteFavourite: (Long, Boolean) -> Unit
+    onToggleNoteFavourite: (Long, Boolean) -> Unit,
+    onEditNote: (Long) -> Unit,
+    onToggleArchiveNote: (ArchiveState) -> Unit,
+    onToggleDeleteNote: (DeleteState) -> Unit,
 ) {
     var query: String by rememberSaveable { mutableStateOf("") }
 
@@ -121,157 +131,242 @@ internal fun NoteListScreen(
         filteredNotes, query
     ) { derivedStateOf { filteredNotes.filter { !it.note.isPinned } } }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-    ) {
-        val noteListState = rememberLazyStaggeredGridState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        val isAddNoteButtonVisible by remember(noteListState) {
-            derivedStateOf {
-                // Always show button if within the pinned section (first few items)
-                (noteListState.firstVisibleItemIndex <= 2 && noteListState.firstVisibleItemScrollOffset <= 100) ||
-                        // Show button if at the beginning of the "Other" section (likely starts after pinned section)
-                        (noteListState.layoutInfo.totalItemsCount < 100 && noteListState.firstVisibleItemIndex == pinnedNotes.size + 1 && noteListState.firstVisibleItemScrollOffset == 0)
-            }
-        }
+    val context = LocalContext.current
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(PaddingValues(horizontal = 16.dp))
+    TogaBasicScaffold(
+        snackbarHostState = snackbarHostState
+    ) { innerPadding ->
+
+        LaunchedEffect(
+            state.archiveState, snackbarHostState
         ) {
-            TopRow(query = query,
-                onOpenSettings = onOpenSettings,
-                onFilter = onOpenFilterDialog,
-                onQueryChange = { query = it })
+            if (state.archiveState.isArchived && state.archiveState.noteId != null) {
 
-            if (state.isLoading) {
-                LoadingIndicator()
-                return@Column
-            }
-
-            if (state.isFilterDialogVisible) {
-                state.selectedNote?.let {
-                    NoteActionBottomSheet(noteId = state.selectedNote.noteId,
-                        isPinned = state.selectedNote.isPinned,
-                        onEdit = {},
-                        onTogglePin = onToggleNotePin,
-                        onShare = {},
-                        onArchive = {},
-                        onDelete = {},
-                        onDismiss = {
-                            onToggleSelectedNote(null)
-                            onOpenFilterDialog(false)
-                        })
+                val result = snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.note_archived),
+                    duration = SnackbarDuration.Short,
+                    actionLabel = context.getString(R.string.undo)
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> Unit
+                    SnackbarResult.ActionPerformed -> {
+                        onToggleArchiveNote(
+                            ArchiveState(
+                                isArchived = false, noteId = state.archiveState.noteId
+                            )
+                        )
+                    }
                 }
             }
 
-            AnimatedContent(
-                targetState = filteredNotes.isEmpty(), label = "Note List Visibility State"
-            ) { isEmpty ->
-                if (isEmpty) {
-                    NoNotesIndicator(modifier = Modifier)
-                } else {
-                    LazyVerticalStaggeredGrid(
-                        state = noteListState,
-                        columns = StaggeredGridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalItemSpacing = 8.dp,
-                    ) {
-                        item(span = StaggeredGridItemSpan.FullLine) {
-                            SectionSeparator(title = R.string.pinned_notes)
-                        }
-                        items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
-                            NoteItemCard(modifier = Modifier.animateItem(
-                                fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
-                                fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
-                                placementSpec = spring( // Controls the placement animation
-                                    dampingRatio = Spring.DampingRatioLowBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                )
-                            ),
-                                isSelected = state.selectedNote?.noteId == noteData.note.noteId,
-                                noteData = noteData,
-                                onClick = { onOpenNoteDetail(noteData.note.noteId) },
-                                onLongClick = {
-                                    onToggleSelectedNote(noteData.note)
-                                    onOpenFilterDialog(true)
-                                },
-                                onToggleFavourite = {
-                                    onToggleNoteFavourite(
-                                        noteData.note.noteId, it
-                                    )
-                                })
-                        }
-                        item(span = StaggeredGridItemSpan.FullLine) {
-                            SectionSeparator(
-                                modifier = Modifier.padding(4.dp), title = R.string.other_notes
+        }
+
+        LaunchedEffect(state.deleteState, snackbarHostState) {
+            if (state.deleteState.isDeleted && state.deleteState.noteId != null) {
+
+                val result = snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.note_deleted),
+                    duration = SnackbarDuration.Short,
+                    actionLabel = context.getString(R.string.undo)
+                )
+
+                when (result) {
+                    SnackbarResult.Dismissed -> Unit
+                    SnackbarResult.ActionPerformed -> {
+                        onToggleDeleteNote(
+                            DeleteState(
+                                isDeleted = false, noteId = state.deleteState.noteId
                             )
-                        }
-                        items(items = otherNotes, key = { it.note.noteId }) { noteData ->
-                            NoteItemCard(modifier = Modifier.animateItem(
-                                fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
-                                fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
-                                placementSpec = spring( // Controls the placement animation
-                                    dampingRatio = Spring.DampingRatioLowBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                )
-                            ),
-                                isSelected = state.selectedNote?.noteId == noteData.note.noteId,
-                                noteData = noteData,
-                                onClick = { onOpenNoteDetail(noteData.note.noteId) },
-                                onLongClick = {
-                                    onToggleSelectedNote(noteData.note)
-                                    onOpenFilterDialog(true)
-                                },
-                                onToggleFavourite = {
-                                    onToggleNoteFavourite(
-                                        noteData.note.noteId, it
-                                    )
-                                })
-                        }
+                        )
                     }
                 }
             }
         }
 
-        AnimatedVisibility(
-            visible = isAddNoteButtonVisible,
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp),
-            enter = scaleIn(
-                initialScale = 0.6f, // Start smaller for a zoom-in effect
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            ) + fadeIn(
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            ),
-            exit = scaleOut(
-                targetScale = 0.6f, // End smaller for a zoom-out effect
-                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-            ) + fadeOut(
-                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-            )
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            TogaFloatingActionButton(
-                icon = R.drawable.ic_add,
-                contentDescription = R.string.add_note,
-                onClick = onCreateNewNote
-            )
+            val noteListState = rememberLazyStaggeredGridState()
+
+            val isAddNoteButtonVisible by remember(noteListState) {
+                derivedStateOf {
+                    // Always show button if within the pinned section (first few items)
+                    (noteListState.firstVisibleItemIndex <= 2 && noteListState.firstVisibleItemScrollOffset <= 100) ||
+                            // Show button if at the beginning of the "Other" section (likely starts after pinned section)
+                            (noteListState.layoutInfo.totalItemsCount < 100 && noteListState.firstVisibleItemIndex == pinnedNotes.size + 1 && noteListState.firstVisibleItemScrollOffset == 0)
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(PaddingValues(horizontal = 16.dp))
+            ) {
+                TopRow(
+                    query = query,
+                    onOpenSettings = onOpenSettings,
+                    onQueryChange = { query = it })
+
+                if (state.isLoading) {
+                    LoadingIndicator()
+                    return@Column
+                }
+
+                if (state.isFilterDialogVisible) {
+                    state.selectedNote?.let {
+                        NoteActionBottomSheet(noteId = state.selectedNote.noteId,
+                            isPinned = state.selectedNote.isPinned,
+                            onEdit = {
+                                onEditNote(it)
+                                onToggleSelectedNote(null)
+                                onToggleFilterDialog(false)
+                            },
+                            onTogglePin = onToggleNotePin,
+                            onShare = {},
+                            onArchive = {
+                                onToggleArchiveNote(
+                                    ArchiveState(
+                                        isArchived = true, noteId = it
+                                    )
+                                )
+                                onToggleSelectedNote(null)
+                                onToggleFilterDialog(false)
+                            },
+                            onDelete = {
+                                onToggleDeleteNote(
+                                    DeleteState(
+                                        isDeleted = true, noteId = it
+                                    )
+                                )
+                                onToggleSelectedNote(null)
+                                onToggleFilterDialog(false)
+                            },
+                            onDismiss = {
+                                onToggleSelectedNote(null)
+                                onToggleFilterDialog(false)
+                            })
+                    }
+                }
+
+                AnimatedContent(
+                    targetState = filteredNotes.isEmpty(), label = "Note List Visibility State"
+                ) { isEmpty ->
+                    if (isEmpty) {
+                        NoNotesIndicator(modifier = Modifier)
+                    } else {
+                        LazyVerticalStaggeredGrid(
+                            state = noteListState,
+                            columns = StaggeredGridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalItemSpacing = 8.dp,
+                        ) {
+                            item(span = StaggeredGridItemSpan.FullLine) {
+                                AnimatedVisibility(visible = pinnedNotes.isNotEmpty()) {
+                                    SectionSeparator(title = R.string.pinned_notes)
+                                }
+                            }
+                            items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
+                                NoteItemCard(modifier = Modifier.animateItem(
+                                    fadeInSpec = tween(
+                                        durationMillis = 300, delayMillis = 100
+                                    ),
+                                    fadeOutSpec = tween(
+                                        durationMillis = 300, delayMillis = 100
+                                    ),
+                                    placementSpec = spring( // Controls the placement animation
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    )
+                                ),
+                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                    noteData = noteData,
+                                    onClick = { onOpenNoteDetail(noteData.note.noteId) },
+                                    onLongClick = {
+                                        onToggleSelectedNote(noteData.note)
+                                        onToggleFilterDialog(true)
+                                    },
+                                    onToggleFavourite = {
+                                        onToggleNoteFavourite(
+                                            noteData.note.noteId, it
+                                        )
+                                    })
+                            }
+                            item(span = StaggeredGridItemSpan.FullLine) {
+                                AnimatedVisibility(visible = otherNotes.isNotEmpty()) {
+                                    SectionSeparator(
+                                        modifier = Modifier.padding(4.dp),
+                                        title = R.string.other_notes
+                                    )
+                                }
+                            }
+
+                            items(items = otherNotes, key = { it.note.noteId }) { noteData ->
+                                NoteItemCard(modifier = Modifier.animateItem(
+                                    fadeInSpec = tween(
+                                        durationMillis = 300, delayMillis = 100
+                                    ),
+                                    fadeOutSpec = tween(
+                                        durationMillis = 300, delayMillis = 100
+                                    ),
+                                    placementSpec = spring( // Controls the placement animation
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    )
+                                ),
+                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                    noteData = noteData,
+                                    onClick = { onOpenNoteDetail(noteData.note.noteId) },
+                                    onLongClick = {
+                                        onToggleSelectedNote(noteData.note)
+                                        onToggleFilterDialog(true)
+                                    },
+                                    onToggleFavourite = {
+                                        onToggleNoteFavourite(
+                                            noteData.note.noteId, it
+                                        )
+                                    })
+                            }
+                        }
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = isAddNoteButtonVisible,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
+                enter = scaleIn(
+                    initialScale = 0.6f, // Start smaller for a zoom-in effect
+                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                ) + fadeIn(
+                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                ),
+                exit = scaleOut(
+                    targetScale = 0.6f, // End smaller for a zoom-out effect
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeOut(
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                )
+            ) {
+                TogaFloatingActionButton(
+                    icon = R.drawable.ic_add,
+                    contentDescription = R.string.add_note,
+                    onClick = onCreateNewNote
+                )
+            }
         }
     }
 }
 
 @Composable
 fun TopRow(
-    query: String,
-    onOpenSettings: () -> Unit,
-    onFilter: (Boolean) -> Unit,
-    onQueryChange: (String) -> Unit
+    query: String, onOpenSettings: () -> Unit, onQueryChange: (String) -> Unit
 ) {
     Row(
         modifier = Modifier

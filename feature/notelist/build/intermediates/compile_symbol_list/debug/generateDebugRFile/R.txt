@@ -23,6 +23,8 @@ int string favourite 0x0
 int string filter_notes 0x0
 int string no_notes_available 0x0
 int string no_notes_found 0x0
+int string note_archived 0x0
+int string note_deleted 0x0
 int string notes_list_title 0x0
 int string other_notes 0x0
 int string pin 0x0
@@ -31,5 +33,6 @@ int string reminder 0x0
 int string search 0x0
 int string settings 0x0
 int string share 0x0
+int string undo 0x0
 int string unfavourite 0x0
 int string unpin 0x0

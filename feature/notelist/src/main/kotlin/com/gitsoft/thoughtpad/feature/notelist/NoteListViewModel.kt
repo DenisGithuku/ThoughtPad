@@ -28,12 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class NoteListUiState(
-    val isLoading: Boolean = false,
-    val isFilterDialogVisible: Boolean = false,
-    val selectedNote: Note? = null,
-    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
-)
 
 class NoteListViewModel(private val notesRepository: NotesRepository) : ViewModel() {
 
@@ -74,15 +68,42 @@ class NoteListViewModel(private val notesRepository: NotesRepository) : ViewMode
         }
     }
 
+    fun onToggleDelete(deleteState: DeleteState) {
+        viewModelScope.launch {
+            val note = notesRepository.getNoteById(deleteState.noteId ?: return@launch)
+            notesRepository.updateNote(note.copy(isDeleted = deleteState.isDeleted))
+
+            // Update deleted state
+            _state.update {
+                it.copy(deleteState = deleteState)
+            }
+        }
+    }
+
+    fun onToggleArchive(archiveState: ArchiveState) {
+        viewModelScope.launch {
+            val note = notesRepository.getNoteById(archiveState.noteId ?: return@launch)
+            notesRepository.updateNote(note.copy(isArchived = archiveState.isArchived))
+
+            // Update archived state
+            _state.update {
+                it.copy(archiveState = archiveState)
+            }
+        }
+    }
+
     private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())
 
     val state: StateFlow<NoteListUiState> = combine(
         _state, notesRepository.allNotes
     ) { state, notes ->
-        state.copy(notes = notes, isLoading = false)
-    }.stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState(isLoading = true)
+        state.copy(notes = notes.filterNot {
+                it.note.isDeleted || it.note.isArchived
+            }, isLoading = false
         )
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState(isLoading = true)
+    )
 
     override fun onCleared() {
         super.onCleared()
