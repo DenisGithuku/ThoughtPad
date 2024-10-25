@@ -32,12 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.RenderMode
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gitsoft.thoughtpad.feature.notelist.R
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 
 @Composable
 fun NoNotesIndicator(modifier: Modifier = Modifier) {
@@ -45,8 +47,7 @@ fun NoNotesIndicator(modifier: Modifier = Modifier) {
     val composition by
         rememberLottieComposition(
             LottieCompositionSpec.RawRes(R.raw.no_notes)
-        ) // Replace with your Lottie file
-    val progress by animateLottieCompositionAsState(composition)
+        )
 
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.weight(1f))
@@ -59,17 +60,16 @@ fun NoNotesIndicator(modifier: Modifier = Modifier) {
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(150.dp),
+                renderMode = RenderMode.HARDWARE
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Display the text message
-            Text(
+            TogaMediumBody(
                 text = stringResource(R.string.no_notes_available),
                 modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
             )
         }
         Spacer(modifier = Modifier.weight(1f))

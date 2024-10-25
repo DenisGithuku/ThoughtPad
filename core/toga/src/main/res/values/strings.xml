@@ -7,4 +7,5 @@
     <string name="confirm">Okay</string>
     <string name="dimiss">Dismiss</string>
     <string name="add_note">Add note</string>
+    <string name="search_notes">Search by title, description, tags etc</string>
 </resources>

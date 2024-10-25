@@ -31,8 +31,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -45,6 +48,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.DisposableEffectScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -58,9 +63,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.model.LottieCompositionCache
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesIndicator
+import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesOnSearchIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteActionBottomSheet
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
@@ -112,10 +120,9 @@ internal fun NoteListScreen(
     val filteredNotes by remember(state.notes, query) {
         derivedStateOf {
             if (query.isNotEmpty()) {
-                state.notes.filter {
-                    it.note.noteTitle?.contains(query, true) == true || it.note.noteText?.contains(
-                        query, true
-                    ) == true
+                state.notes.filter { noteData ->
+                    noteData.note.noteTitle?.contains(query, true) == true ||
+                            noteData.note.noteText?.contains(query, true) == true || noteData.checkListItems.any { it.text?.contains(query, true) == true } || noteData.tags.any { it.name?.contains(query, true) == true }
                 }
             } else {
                 state.notes
@@ -134,6 +141,13 @@ internal fun NoteListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val context = LocalContext.current
+
+   DisposableEffect(Unit) {
+       LottieCompositionFactory.fromAsset(context, "no_notes.json")
+       onDispose {
+           LottieCompositionFactory.clearCache(context)
+       }
+   }
 
     TogaBasicScaffold(
         snackbarHostState = snackbarHostState
@@ -190,6 +204,9 @@ internal fun NoteListScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
+                .consumeWindowInsets(
+                    WindowInsets.ime
+                )
         ) {
             val noteListState = rememberLazyStaggeredGridState()
 
@@ -214,6 +231,11 @@ internal fun NoteListScreen(
 
                 if (state.isLoading) {
                     LoadingIndicator()
+                    return@Column
+                }
+
+                if (pinnedNotes.isEmpty() && otherNotes.isEmpty() && query.isNotEmpty()) {
+                    NoNotesOnSearchIndicator(modifier = Modifier)
                     return@Column
                 }
 
@@ -254,7 +276,7 @@ internal fun NoteListScreen(
                 }
 
                 AnimatedContent(
-                    targetState = filteredNotes.isEmpty(), label = "Note List Visibility State"
+                    targetState = pinnedNotes.isEmpty() && otherNotes.isEmpty(), label = "Note List Visibility State"
                 ) { isEmpty ->
                     if (isEmpty) {
                         NoNotesIndicator(modifier = Modifier)

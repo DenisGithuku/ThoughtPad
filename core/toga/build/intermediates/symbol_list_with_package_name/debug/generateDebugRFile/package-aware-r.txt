@@ -18,3 +18,4 @@ string confirm
 string dimiss
 string ok
 string search
+string search_notes

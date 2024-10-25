@@ -17,3 +17,4 @@ int string confirm 0x0
 int string dimiss 0x0
 int string ok 0x0
 int string search 0x0
+int string search_notes 0x0

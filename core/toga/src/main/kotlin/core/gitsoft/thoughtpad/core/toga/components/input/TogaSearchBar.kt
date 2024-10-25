@@ -30,6 +30,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.toga.R
@@ -47,7 +48,7 @@ fun TogaSearchBar(
         value = query,
         placeholder = {
             Text(
-                text = "Search notes",
+                text = stringResource(R.string.search_notes),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

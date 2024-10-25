@@ -22,4 +22,5 @@
     <string name="note_deleted">Note deleted!</string>
     <string name="note_archived">Note archived!</string>
     <string name="undo">Undo</string>
+    <string name="no_notes_on_search">No notes found. Please try a searching different keyword</string>
 </resources>

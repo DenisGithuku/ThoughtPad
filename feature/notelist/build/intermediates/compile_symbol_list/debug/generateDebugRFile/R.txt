@@ -23,6 +23,7 @@ int string favourite 0x0
 int string filter_notes 0x0
 int string no_notes_available 0x0
 int string no_notes_found 0x0
+int string no_notes_on_search 0x0
 int string note_archived 0x0
 int string note_deleted 0x0
 int string notes_list_title 0x0

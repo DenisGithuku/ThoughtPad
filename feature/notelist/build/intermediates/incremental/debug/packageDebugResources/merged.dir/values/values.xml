@@ -9,6 +9,7 @@
     <string name="filter_notes">Filter notes</string>
     <string name="no_notes_available">No notes available.</string>
     <string name="no_notes_found">No notes found</string>
+    <string name="no_notes_on_search">No notes found. Please try a searching different keyword</string>
     <string name="note_archived">Note archived!</string>
     <string name="note_deleted">Note deleted!</string>
     <string name="notes_list_title">My Notes</string>

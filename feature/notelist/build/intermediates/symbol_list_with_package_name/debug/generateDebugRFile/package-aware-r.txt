@@ -24,6 +24,7 @@ string favourite
 string filter_notes
 string no_notes_available
 string no_notes_found
+string no_notes_on_search
 string note_archived
 string note_deleted
 string notes_list_title
