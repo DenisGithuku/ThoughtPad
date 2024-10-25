@@ -53,8 +53,7 @@ interface NotesDatabaseDao {
     // Update operations
     @Update suspend fun updateNote(note: Note): Int
 
-    @Query("SELECT * FROM notes_table WHERE noteId = :id")
-    suspend fun getNoteById(id: Long): Note
+    @Query("SELECT * FROM notes_table WHERE noteId = :id") suspend fun getNoteById(id: Long): Note
 
     @Update suspend fun updateChecklistItem(checklistItem: CheckListItem)
 
@@ -88,7 +87,6 @@ interface NotesDatabaseDao {
     ): Long {
         // Insert the note and get the generated noteId
         val noteId = insertNote(note)
-
 
         // Update the checklist items with the new noteId
         val updatedCheckListItems = checklistItems.map { it.copy(noteId = noteId) }
@@ -170,5 +168,6 @@ interface NotesDatabaseDao {
     suspend fun deleteNoteTagCrossRefsByNoteId(noteId: Long)
 
     // Deleting the note by its noteId
-    @Query("DELETE FROM notes_table WHERE noteId = :noteId") suspend fun deleteNoteById(noteId: Long): Int
+    @Query("DELETE FROM notes_table WHERE noteId = :noteId")
+    suspend fun deleteNoteById(noteId: Long): Int
 }

@@ -82,6 +82,6 @@ fun TogaSearchBar(
             }
         },
         onValueChange = onQueryChange,
-        modifier = modifier.height(56.dp)
+        modifier = modifier
     )
 }

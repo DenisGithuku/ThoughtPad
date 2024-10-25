@@ -1,8 +1,28 @@
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.feature.notelist.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +41,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -28,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.feature.notelist.R
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
@@ -42,28 +63,65 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteItemCard(
-    noteData: DataWithNotesCheckListItemsAndTags,
     modifier: Modifier = Modifier,
+    noteData: DataWithNotesCheckListItemsAndTags,
+    isSelected: Boolean,
     onClick: () -> Unit,
-    onTogglePin: (Boolean) -> Unit,
-    onToggleFavourite: (Boolean) -> Unit,
+    onLongClick: () -> Unit,
+    onToggleFavourite: (Boolean) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .clip(shape = MaterialTheme.shapes.medium)
-            .background(
-                color = noteData.note.color.toComposeColor(),
-                shape = MaterialTheme.shapes.medium
-            )
-            .clickable { onClick() },
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        label = "border color"
+    )
+
+    val elevation by animateDpAsState(
+        targetValue = if (isSelected) 4.dp else 0.dp,
+        label = "elevation"
+    )
+
+    val borderWidth by animateDpAsState(
+        targetValue = if (isSelected) 2.dp else 0.dp,
+        label = "border width"
+    )
+
+    val ambientColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f) else Color.Transparent,
+        label = "ambient color"
+    )
+
+    val spotColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Transparent,
+        label = "spot color"
+    )
+
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .clip(shape = MaterialTheme.shapes.medium)
+        .shadow(
+            elevation = elevation,
+            shape = MaterialTheme.shapes.medium,
+            ambientColor = ambientColor,
+            spotColor = spotColor
+        )
+        .border(
+            border = BorderStroke(
+                width = borderWidth,
+                color = borderColor
+                ),
+            shape = MaterialTheme.shapes.medium
+        )
+        .background(
+            color = noteData.note.color.toComposeColor(), shape = MaterialTheme.shapes.medium
+        )
+        .combinedClickable(onClick= onClick, onLongClick = onLongClick)
+    )
+    {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -71,28 +129,23 @@ fun NoteItemCard(
             ) {
                 // Note title
                 noteData.note.noteTitle?.let { title ->
-                    TogaSmallTitle(
-                        modifier = Modifier.weight(1f),
-                        text = title,
-                        maxLines = 1,
-                    )
+                    TogaSmallTitle(modifier = Modifier.weight(1f), text = title, maxLines = 1)
                 }
 
                 TogaIconButton(
                     onClick = { onToggleFavourite(!noteData.note.isFavorite) },
-                    icon = if (noteData.note.isFavorite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite,
+                    icon = if (noteData.note.isFavorite) {
+                        R.drawable.ic_favourite_filled
+                    } else R.drawable.ic_favourite,
                     contentDescription = if (noteData.note.isFavorite) R.string.favourite else R.string.unfavourite,
-                    tint = if(noteData.note.isFavorite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = if (noteData.note.isFavorite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             // Note text
             noteData.note.noteText?.let { noteText ->
                 Spacer(modifier = Modifier.height(4.dp))
-                TogaMediumBody(
-                    text = noteText,
-                    maxLines = 2,
-                )
+                TogaSmallBody(text = noteText, maxLines = 2)
             }
 
             // Checklist (if available)
@@ -127,8 +180,13 @@ fun NoteItemCard(
 
                     // If there are more than 3 checklist items
                     if (noteData.checkListItems.size > 3) {
+                        val text = if (noteData.checkListItems.size - 3 > 1) {
+                            "+${noteData.checkListItems.size - 3} more items"
+                        } else {
+                            "+1 more item"
+                        }
                         TogaSmallLabel(
-                            text = "+ ${noteData.checkListItems.size - 3} more items",
+                            text = text
                         )
                     }
                 }
@@ -137,21 +195,10 @@ fun NoteItemCard(
             // Additional Info (e.g., pinned or reminder)
             Spacer(modifier = Modifier.height(6.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val pinColor by animateColorAsState(
-                    if (noteData.note.isPinned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
-                        alpha = 0.5f
-                    )
-                )
+            noteData.note.reminderTime?.let {
+                val formattedReminder = formatReminderDate(it)
 
-                noteData.note.reminderTime?.let {
-                    val formattedReminder = formatReminderDate(it)
-
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             modifier = Modifier.size(16.dp),
                             painter = painterResource(R.drawable.ic_reminder),
@@ -163,28 +210,14 @@ fun NoteItemCard(
                         )
                     }
                 }
-
-                val icon = if (noteData.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin
-                TogaIconButton(
-                    onClick = { onTogglePin(!noteData.note.isPinned) },
-                    icon = icon,
-                    contentDescription = if (noteData.note.isPinned) R.string.pin else R.string.unpin,
-                    tint = pinColor
-                )
             }
         }
-    }
-}
-
-// Helper function for date formatting (can be adapted to fit your needs)
-fun Long.formatAsDate(): String {
-    val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-    return sdf.format(Date(this))
 }
 
 fun formatReminderDate(reminderTime: Long): String {
     val currentDate = LocalDate.now()
-    val reminderDate = Instant.ofEpochMilli(reminderTime).atZone(ZoneId.systemDefault()).toLocalDate()
+    val reminderDate =
+        Instant.ofEpochMilli(reminderTime).atZone(ZoneId.systemDefault()).toLocalDate()
 
     return when {
         reminderDate.isEqual(currentDate) -> formatTime(reminderTime)

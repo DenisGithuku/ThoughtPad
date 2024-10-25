@@ -14,4 +14,9 @@
     <string name="reminder">Reminder time</string>
     <string name="pinned_notes">Pinned</string>
     <string name="other_notes">Other</string>
+    <string name="filter_notes">Filter notes</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="archive">Archive</string>
+    <string name="share">Share</string>
 </resources>

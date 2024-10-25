@@ -30,9 +30,10 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
         get() = notesDatabaseDao.loadAllNotes().safeDbReactiveDataRead { emptyList() }
 
-    override suspend fun getNoteWithDataById(id: Long): DataWithNotesCheckListItemsAndTags = safeDbCall {
-        notesDatabaseDao.noteDataById(id)
-    }
+    override suspend fun getNoteWithDataById(id: Long): DataWithNotesCheckListItemsAndTags =
+        safeDbCall {
+            notesDatabaseDao.noteDataById(id)
+        }
 
     override suspend fun updateNoteWithDetails(
         note: Note,
@@ -59,5 +60,7 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
 
     override suspend fun getNoteById(id: Long): Note = safeDbCall { notesDatabaseDao.getNoteById(id) }
 
-    override suspend fun updateNote(note: Note): Int = safeDbCall { notesDatabaseDao.updateNote(note) }
+    override suspend fun updateNote(note: Note): Int = safeDbCall {
+        notesDatabaseDao.updateNote(note)
+    }
 }

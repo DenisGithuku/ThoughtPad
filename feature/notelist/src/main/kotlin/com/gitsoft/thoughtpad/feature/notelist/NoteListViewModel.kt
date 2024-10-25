@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -19,15 +18,20 @@ package com.gitsoft.thoughtpad.feature.notelist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
+import com.gitsoft.thoughtpad.core.model.Note
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class NoteListUiState(
     val isLoading: Boolean = false,
+    val isFilterDialogVisible: Boolean = false,
+    val selectedNote: Note? = null,
     val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
 )
 
@@ -35,9 +39,18 @@ class NoteListViewModel(private val notesRepository: NotesRepository) : ViewMode
 
     fun onToggleNotePin(noteId: Long, isPinned: Boolean) {
         viewModelScope.launch {
+
+            // Fetch the note from the database
             val note = notesRepository.getNoteById(noteId)
             val updatedNote = note.copy(isPinned = isPinned)
+
+            // Update the note in the database
             notesRepository.updateNote(updatedNote)
+
+            // Update the selected note in the state
+            _state.update {
+                it.copy(selectedNote = it.selectedNote?.copy(isPinned = isPinned))
+            }
         }
     }
 
@@ -49,12 +62,32 @@ class NoteListViewModel(private val notesRepository: NotesRepository) : ViewMode
         }
     }
 
-    val state: StateFlow<NoteListUiState> =
-        notesRepository.allNotes
-            .mapLatest { NoteListUiState(isLoading = false, notes = it) }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                NoteListUiState(isLoading = true)
-            )
+    fun onOpenFilterDialog(isOpened: Boolean) {
+        _state.update {
+            it.copy(isFilterDialogVisible = isOpened)
+        }
+    }
+
+    fun onToggleSelectNote(note: Note?) {
+        _state.update {
+            it.copy(selectedNote = note)
+        }
+    }
+
+    private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())
+
+    val state: StateFlow<NoteListUiState> = combine(
+        _state, notesRepository.allNotes
+    ) { state, notes ->
+        state.copy(notes = notes, isLoading = false)
+    }.stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState(isLoading = true)
+        )
+
+    override fun onCleared() {
+        super.onCleared()
+        _state.update {
+            NoteListUiState()
+        }
+    }
 }

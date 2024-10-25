@@ -10,6 +10,7 @@ int font poppins_medium 0x0
 int font poppins_regular 0x0
 int font poppins_semibold 0x0
 int font poppins_thin 0x0
+int string add_note 0x0
 int string back 0x0
 int string clear 0x0
 int string confirm 0x0

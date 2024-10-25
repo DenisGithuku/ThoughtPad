@@ -30,10 +30,5 @@ fun TogaSmallLabel(
     style: TextStyle = MaterialTheme.typography.labelSmall,
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
-    Text(
-        text = text,
-        modifier = modifier,
-        color = color,
-        style = style
-    )
+    Text(text = text, modifier = modifier, color = color, style = style)
 }

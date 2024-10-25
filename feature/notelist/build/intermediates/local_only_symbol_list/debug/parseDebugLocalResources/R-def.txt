@@ -2,18 +2,27 @@ R_DEF: Internal format may change without notice
 local
 drawable ic_add
 drawable ic_add_circle
+drawable ic_archive
 drawable ic_close
+drawable ic_delete
+drawable ic_edit
 drawable ic_favourite
 drawable ic_favourite_filled
+drawable ic_filter
 drawable ic_pin
 drawable ic_pin_filled
 drawable ic_reminder
 drawable ic_search
 drawable ic_settings
+drawable ic_share
 raw no_notes
 string add_note
+string archive
 string clear
+string delete
+string edit
 string favourite
+string filter_notes
 string no_notes_available
 string no_notes_found
 string notes_list_title
@@ -23,5 +32,6 @@ string pinned_notes
 string reminder
 string search
 string settings
+string share
 string unfavourite
 string unpin

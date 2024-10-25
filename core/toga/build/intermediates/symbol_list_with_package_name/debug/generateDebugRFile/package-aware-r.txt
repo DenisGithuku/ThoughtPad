@@ -11,6 +11,7 @@ font poppins_medium
 font poppins_regular
 font poppins_semibold
 font poppins_thin
+string add_note
 string back
 string clear
 string confirm
