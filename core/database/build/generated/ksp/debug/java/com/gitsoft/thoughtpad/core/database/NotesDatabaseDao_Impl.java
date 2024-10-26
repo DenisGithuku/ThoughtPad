@@ -16,12 +16,16 @@ import androidx.room.util.DBUtil;
 import androidx.room.util.RelationUtil;
 import androidx.room.util.StringUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import com.gitsoft.thoughtpad.core.model.AttachmentTypeConverter;
 import com.gitsoft.thoughtpad.core.model.CheckListItem;
-import com.gitsoft.thoughtpad.core.model.Converters;
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags;
 import com.gitsoft.thoughtpad.core.model.Note;
+import com.gitsoft.thoughtpad.core.model.NoteColor;
+import com.gitsoft.thoughtpad.core.model.NoteColorConverter;
 import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef;
 import com.gitsoft.thoughtpad.core.model.Tag;
+import com.gitsoft.thoughtpad.core.model.TagColor;
+import com.gitsoft.thoughtpad.core.model.TagColorConverter;
 import java.lang.Class;
 import java.lang.Exception;
 import java.lang.Integer;
@@ -47,11 +51,15 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
 
   private final EntityInsertionAdapter<Note> __insertionAdapterOfNote;
 
-  private final Converters __converters = new Converters();
+  private final NoteColorConverter __noteColorConverter = new NoteColorConverter();
+
+  private final AttachmentTypeConverter __attachmentTypeConverter = new AttachmentTypeConverter();
 
   private final EntityInsertionAdapter<CheckListItem> __insertionAdapterOfCheckListItem;
 
   private final EntityInsertionAdapter<Tag> __insertionAdapterOfTag;
+
+  private final TagColorConverter __tagColorConverter = new TagColorConverter();
 
   private final EntityInsertionAdapter<NoteTagCrossRef> __insertionAdapterOfNoteTagCrossRef;
 
@@ -110,20 +118,21 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         statement.bindLong(6, _tmp);
         final int _tmp_1 = entity.isArchived() ? 1 : 0;
         statement.bindLong(7, _tmp_1);
-        statement.bindLong(8, entity.getColor());
-        final int _tmp_2 = entity.isFavorite() ? 1 : 0;
-        statement.bindLong(9, _tmp_2);
-        final int _tmp_3 = entity.isDeleted() ? 1 : 0;
-        statement.bindLong(10, _tmp_3);
-        final int _tmp_4 = entity.isCheckList() ? 1 : 0;
-        statement.bindLong(11, _tmp_4);
+        final String _tmp_2 = __noteColorConverter.fromNoteColor(entity.getColor());
+        statement.bindString(8, _tmp_2);
+        final int _tmp_3 = entity.isFavorite() ? 1 : 0;
+        statement.bindLong(9, _tmp_3);
+        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
+        statement.bindLong(10, _tmp_4);
+        final int _tmp_5 = entity.isCheckList() ? 1 : 0;
+        statement.bindLong(11, _tmp_5);
         if (entity.getReminderTime() == null) {
           statement.bindNull(12);
         } else {
           statement.bindLong(12, entity.getReminderTime());
         }
-        final String _tmp_5 = __converters.fromAttachmentsList(entity.getAttachments());
-        statement.bindString(13, _tmp_5);
+        final String _tmp_6 = __attachmentTypeConverter.fromAttachmentsList(entity.getAttachments());
+        statement.bindString(13, _tmp_6);
       }
     };
     this.__insertionAdapterOfCheckListItem = new EntityInsertionAdapter<CheckListItem>(__db) {
@@ -167,11 +176,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         } else {
           statement.bindString(2, entity.getName());
         }
-        if (entity.getColor() == null) {
-          statement.bindNull(3);
-        } else {
-          statement.bindLong(3, entity.getColor());
-        }
+        final String _tmp = __tagColorConverter.fromTagColor(entity.getColor());
+        statement.bindString(3, _tmp);
       }
     };
     this.__insertionAdapterOfNoteTagCrossRef = new EntityInsertionAdapter<NoteTagCrossRef>(__db) {
@@ -263,20 +269,21 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         statement.bindLong(6, _tmp);
         final int _tmp_1 = entity.isArchived() ? 1 : 0;
         statement.bindLong(7, _tmp_1);
-        statement.bindLong(8, entity.getColor());
-        final int _tmp_2 = entity.isFavorite() ? 1 : 0;
-        statement.bindLong(9, _tmp_2);
-        final int _tmp_3 = entity.isDeleted() ? 1 : 0;
-        statement.bindLong(10, _tmp_3);
-        final int _tmp_4 = entity.isCheckList() ? 1 : 0;
-        statement.bindLong(11, _tmp_4);
+        final String _tmp_2 = __noteColorConverter.fromNoteColor(entity.getColor());
+        statement.bindString(8, _tmp_2);
+        final int _tmp_3 = entity.isFavorite() ? 1 : 0;
+        statement.bindLong(9, _tmp_3);
+        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
+        statement.bindLong(10, _tmp_4);
+        final int _tmp_5 = entity.isCheckList() ? 1 : 0;
+        statement.bindLong(11, _tmp_5);
         if (entity.getReminderTime() == null) {
           statement.bindNull(12);
         } else {
           statement.bindLong(12, entity.getReminderTime());
         }
-        final String _tmp_5 = __converters.fromAttachmentsList(entity.getAttachments());
-        statement.bindString(13, _tmp_5);
+        final String _tmp_6 = __attachmentTypeConverter.fromAttachmentsList(entity.getAttachments());
+        statement.bindString(13, _tmp_6);
         statement.bindLong(14, entity.getNoteId());
       }
     };
@@ -322,11 +329,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         } else {
           statement.bindString(2, entity.getName());
         }
-        if (entity.getColor() == null) {
-          statement.bindNull(3);
-        } else {
-          statement.bindLong(3, entity.getColor());
-        }
+        final String _tmp = __tagColorConverter.fromTagColor(entity.getColor());
+        statement.bindString(3, _tmp);
         statement.bindLong(4, entity.getTagId());
       }
     };
@@ -782,20 +786,22 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
               final int _tmp_1;
               _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
               _tmpIsArchived = _tmp_1 != 0;
-              final long _tmpColor;
-              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+              final NoteColor _tmpColor;
+              final String _tmp_2;
+              _tmp_2 = _cursor.getString(_cursorIndexOfColor);
+              _tmpColor = __noteColorConverter.toNoteColor(_tmp_2);
               final boolean _tmpIsFavorite;
-              final int _tmp_2;
-              _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
-              _tmpIsFavorite = _tmp_2 != 0;
-              final boolean _tmpIsDeleted;
               final int _tmp_3;
-              _tmp_3 = _cursor.getInt(_cursorIndexOfIsDeleted);
-              _tmpIsDeleted = _tmp_3 != 0;
-              final boolean _tmpIsCheckList;
+              _tmp_3 = _cursor.getInt(_cursorIndexOfIsFavorite);
+              _tmpIsFavorite = _tmp_3 != 0;
+              final boolean _tmpIsDeleted;
               final int _tmp_4;
-              _tmp_4 = _cursor.getInt(_cursorIndexOfIsCheckList);
-              _tmpIsCheckList = _tmp_4 != 0;
+              _tmp_4 = _cursor.getInt(_cursorIndexOfIsDeleted);
+              _tmpIsDeleted = _tmp_4 != 0;
+              final boolean _tmpIsCheckList;
+              final int _tmp_5;
+              _tmp_5 = _cursor.getInt(_cursorIndexOfIsCheckList);
+              _tmpIsCheckList = _tmp_5 != 0;
               final Long _tmpReminderTime;
               if (_cursor.isNull(_cursorIndexOfReminderTime)) {
                 _tmpReminderTime = null;
@@ -803,9 +809,9 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
                 _tmpReminderTime = _cursor.getLong(_cursorIndexOfReminderTime);
               }
               final List<String> _tmpAttachments;
-              final String _tmp_5;
-              _tmp_5 = _cursor.getString(_cursorIndexOfAttachments);
-              _tmpAttachments = __converters.toAttachmentsList(_tmp_5);
+              final String _tmp_6;
+              _tmp_6 = _cursor.getString(_cursorIndexOfAttachments);
+              _tmpAttachments = __attachmentTypeConverter.toAttachmentsList(_tmp_6);
               _tmpNote = new Note(_tmpNoteId,_tmpNoteTitle,_tmpNoteText,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsPinned,_tmpIsArchived,_tmpColor,_tmpIsFavorite,_tmpIsDeleted,_tmpIsCheckList,_tmpReminderTime,_tmpAttachments);
               final ArrayList<CheckListItem> _tmpCheckListItemsCollection;
               final long _tmpKey_2;
@@ -918,20 +924,22 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
               final int _tmp_1;
               _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
               _tmpIsArchived = _tmp_1 != 0;
-              final long _tmpColor;
-              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+              final NoteColor _tmpColor;
+              final String _tmp_2;
+              _tmp_2 = _cursor.getString(_cursorIndexOfColor);
+              _tmpColor = __noteColorConverter.toNoteColor(_tmp_2);
               final boolean _tmpIsFavorite;
-              final int _tmp_2;
-              _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
-              _tmpIsFavorite = _tmp_2 != 0;
-              final boolean _tmpIsDeleted;
               final int _tmp_3;
-              _tmp_3 = _cursor.getInt(_cursorIndexOfIsDeleted);
-              _tmpIsDeleted = _tmp_3 != 0;
-              final boolean _tmpIsCheckList;
+              _tmp_3 = _cursor.getInt(_cursorIndexOfIsFavorite);
+              _tmpIsFavorite = _tmp_3 != 0;
+              final boolean _tmpIsDeleted;
               final int _tmp_4;
-              _tmp_4 = _cursor.getInt(_cursorIndexOfIsCheckList);
-              _tmpIsCheckList = _tmp_4 != 0;
+              _tmp_4 = _cursor.getInt(_cursorIndexOfIsDeleted);
+              _tmpIsDeleted = _tmp_4 != 0;
+              final boolean _tmpIsCheckList;
+              final int _tmp_5;
+              _tmp_5 = _cursor.getInt(_cursorIndexOfIsCheckList);
+              _tmpIsCheckList = _tmp_5 != 0;
               final Long _tmpReminderTime;
               if (_cursor.isNull(_cursorIndexOfReminderTime)) {
                 _tmpReminderTime = null;
@@ -939,9 +947,9 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
                 _tmpReminderTime = _cursor.getLong(_cursorIndexOfReminderTime);
               }
               final List<String> _tmpAttachments;
-              final String _tmp_5;
-              _tmp_5 = _cursor.getString(_cursorIndexOfAttachments);
-              _tmpAttachments = __converters.toAttachmentsList(_tmp_5);
+              final String _tmp_6;
+              _tmp_6 = _cursor.getString(_cursorIndexOfAttachments);
+              _tmpAttachments = __attachmentTypeConverter.toAttachmentsList(_tmp_6);
               _tmpNote = new Note(_tmpNoteId,_tmpNoteTitle,_tmpNoteText,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsPinned,_tmpIsArchived,_tmpColor,_tmpIsFavorite,_tmpIsDeleted,_tmpIsCheckList,_tmpReminderTime,_tmpAttachments);
               final ArrayList<CheckListItem> _tmpCheckListItemsCollection;
               final long _tmpKey_2;
@@ -1030,20 +1038,22 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
             final int _tmp_1;
             _tmp_1 = _cursor.getInt(_cursorIndexOfIsArchived);
             _tmpIsArchived = _tmp_1 != 0;
-            final long _tmpColor;
-            _tmpColor = _cursor.getLong(_cursorIndexOfColor);
+            final NoteColor _tmpColor;
+            final String _tmp_2;
+            _tmp_2 = _cursor.getString(_cursorIndexOfColor);
+            _tmpColor = __noteColorConverter.toNoteColor(_tmp_2);
             final boolean _tmpIsFavorite;
-            final int _tmp_2;
-            _tmp_2 = _cursor.getInt(_cursorIndexOfIsFavorite);
-            _tmpIsFavorite = _tmp_2 != 0;
-            final boolean _tmpIsDeleted;
             final int _tmp_3;
-            _tmp_3 = _cursor.getInt(_cursorIndexOfIsDeleted);
-            _tmpIsDeleted = _tmp_3 != 0;
-            final boolean _tmpIsCheckList;
+            _tmp_3 = _cursor.getInt(_cursorIndexOfIsFavorite);
+            _tmpIsFavorite = _tmp_3 != 0;
+            final boolean _tmpIsDeleted;
             final int _tmp_4;
-            _tmp_4 = _cursor.getInt(_cursorIndexOfIsCheckList);
-            _tmpIsCheckList = _tmp_4 != 0;
+            _tmp_4 = _cursor.getInt(_cursorIndexOfIsDeleted);
+            _tmpIsDeleted = _tmp_4 != 0;
+            final boolean _tmpIsCheckList;
+            final int _tmp_5;
+            _tmp_5 = _cursor.getInt(_cursorIndexOfIsCheckList);
+            _tmpIsCheckList = _tmp_5 != 0;
             final Long _tmpReminderTime;
             if (_cursor.isNull(_cursorIndexOfReminderTime)) {
               _tmpReminderTime = null;
@@ -1051,9 +1061,9 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
               _tmpReminderTime = _cursor.getLong(_cursorIndexOfReminderTime);
             }
             final List<String> _tmpAttachments;
-            final String _tmp_5;
-            _tmp_5 = _cursor.getString(_cursorIndexOfAttachments);
-            _tmpAttachments = __converters.toAttachmentsList(_tmp_5);
+            final String _tmp_6;
+            _tmp_6 = _cursor.getString(_cursorIndexOfAttachments);
+            _tmpAttachments = __attachmentTypeConverter.toAttachmentsList(_tmp_6);
             _result = new Note(_tmpNoteId,_tmpNoteTitle,_tmpNoteText,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsPinned,_tmpIsArchived,_tmpColor,_tmpIsFavorite,_tmpIsDeleted,_tmpIsCheckList,_tmpReminderTime,_tmpAttachments);
           } else {
             _result = null;
@@ -1091,12 +1101,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
             } else {
               _tmpName = _cursor.getString(_cursorIndexOfName);
             }
-            final Long _tmpColor;
-            if (_cursor.isNull(_cursorIndexOfColor)) {
-              _tmpColor = null;
-            } else {
-              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
-            }
+            final TagColor _tmpColor;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfColor);
+            _tmpColor = __tagColorConverter.toTagColor(_tmp);
             _item = new Tag(_tmpTagId,_tmpName,_tmpColor);
             _result.add(_item);
           }
@@ -1139,12 +1147,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
             } else {
               _tmpName = _cursor.getString(_cursorIndexOfName);
             }
-            final Long _tmpColor;
-            if (_cursor.isNull(_cursorIndexOfColor)) {
-              _tmpColor = null;
-            } else {
-              _tmpColor = _cursor.getLong(_cursorIndexOfColor);
-            }
+            final TagColor _tmpColor;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfColor);
+            _tmpColor = __tagColorConverter.toTagColor(_tmp);
             _result = new Tag(_tmpTagId,_tmpName,_tmpColor);
           } else {
             _result = null;
@@ -1209,6 +1215,50 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public List<CheckListItem> getCheckListForNote(final long noteId) {
+    final String _sql = "SELECT * FROM checklist WHERE noteId = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, noteId);
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+    try {
+      final int _cursorIndexOfCheckListItemId = CursorUtil.getColumnIndexOrThrow(_cursor, "checkListItemId");
+      final int _cursorIndexOfNoteId = CursorUtil.getColumnIndexOrThrow(_cursor, "noteId");
+      final int _cursorIndexOfText = CursorUtil.getColumnIndexOrThrow(_cursor, "text");
+      final int _cursorIndexOfIsChecked = CursorUtil.getColumnIndexOrThrow(_cursor, "isChecked");
+      final List<CheckListItem> _result = new ArrayList<CheckListItem>(_cursor.getCount());
+      while (_cursor.moveToNext()) {
+        final CheckListItem _item;
+        final long _tmpCheckListItemId;
+        _tmpCheckListItemId = _cursor.getLong(_cursorIndexOfCheckListItemId);
+        final Long _tmpNoteId;
+        if (_cursor.isNull(_cursorIndexOfNoteId)) {
+          _tmpNoteId = null;
+        } else {
+          _tmpNoteId = _cursor.getLong(_cursorIndexOfNoteId);
+        }
+        final String _tmpText;
+        if (_cursor.isNull(_cursorIndexOfText)) {
+          _tmpText = null;
+        } else {
+          _tmpText = _cursor.getString(_cursorIndexOfText);
+        }
+        final boolean _tmpIsChecked;
+        final int _tmp;
+        _tmp = _cursor.getInt(_cursorIndexOfIsChecked);
+        _tmpIsChecked = _tmp != 0;
+        _item = new CheckListItem(_tmpCheckListItemId,_tmpNoteId,_tmpText,_tmpIsChecked);
+        _result.add(_item);
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+      _statement.release();
+    }
   }
 
   @NonNull
@@ -1341,12 +1391,10 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           } else {
             _tmpName = _cursor.getString(_cursorIndexOfName);
           }
-          final Long _tmpColor;
-          if (_cursor.isNull(_cursorIndexOfColor)) {
-            _tmpColor = null;
-          } else {
-            _tmpColor = _cursor.getLong(_cursorIndexOfColor);
-          }
+          final TagColor _tmpColor;
+          final String _tmp;
+          _tmp = _cursor.getString(_cursorIndexOfColor);
+          _tmpColor = __tagColorConverter.toTagColor(_tmp);
           _item_1 = new Tag(_tmpTagId,_tmpName,_tmpColor);
           _tmpRelation.add(_item_1);
         }

@@ -19,11 +19,14 @@ package com.gitsoft.thoughtpad
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.gitsoft.thoughtpad.feature.addnote.AddNoteRoute
-import com.gitsoft.thoughtpad.feature.notedetail.NoteDetailRoute
 import com.gitsoft.thoughtpad.feature.notelist.NoteListRoute
 import com.gitsoft.thougtpad.feature.settings.SettingsRoute
 
@@ -54,19 +57,13 @@ fun MainNavGraph(appState: AppState) {
             route = ThoughtPadDestination.NoteList.route
         ) {
             NoteListRoute(
-                onOpenNoteDetail = {
-                    appState.navigate(
-                        ThoughtPadDestination.NoteDetail.route,
-                        ThoughtPadDestination.NoteDetail.route,
-                        true
-                    )
-                },
-                onCreateNewNote = {
-                    appState.navigate(
-                        ThoughtPadDestination.AddNote.route,
-                        ThoughtPadDestination.AddNote.route,
-                        true
-                    )
+                onCreateNewNote = { noteId ->
+                    // Replace {noteId} with the actual noteId and rebuild the route
+                    val route =
+                        ThoughtPadDestination.AddNote(noteId ?: -1L)
+                            .route
+                            .replace("{noteId}", noteId?.toString() ?: "${-1L}")
+                    appState.navigate(route, route, true)
                 },
                 onOpenSettings = {
                     appState.navigate(
@@ -79,39 +76,27 @@ fun MainNavGraph(appState: AppState) {
         }
 
         composable(
-            enterTransition = {
-                slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
-            },
-            exitTransition = {
-                slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) +
-                    fadeOut()
-            },
-            route = ThoughtPadDestination.NoteDetail.route
-        ) {
-            NoteDetailRoute(onNavigateBack = { appState.popBackStack() })
-        }
-
-        composable(
-            enterTransition = {
-                slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
-            },
-            exitTransition = {
-                slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) +
-                    fadeOut()
-            },
-            route = ThoughtPadDestination.AddNote.route
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) + fadeOut() },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) + fadeIn() },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+            route = ThoughtPadDestination.AddNote().route,
+            arguments =
+                listOf(
+                    navArgument(name = "noteId") {
+                        type = NavType.LongType
+                        defaultValue = -1L
+                    }
+                )
         ) {
             AddNoteRoute(onNavigateBack = { appState.popBackStack() })
         }
 
         composable(
-            enterTransition = {
-                slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
-            },
-            exitTransition = {
-                slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) +
-                    fadeOut()
-            },
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) + fadeOut() },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) + fadeIn() },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
             route = ThoughtPadDestination.Settings.route
         ) {
             SettingsRoute(onNavigateBack = { appState.popBackStack() })

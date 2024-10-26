@@ -16,9 +16,10 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
-import androidx.compose.ui.graphics.Color
 import com.gitsoft.thoughtpad.core.model.CheckListItem
+import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.model.TagColor
 
 sealed interface AddNoteEvent {
     data class ChangeTitle(val value: String) : AddNoteEvent
@@ -39,9 +40,9 @@ sealed interface AddNoteEvent {
 
     data class ToggleCheckList(val value: Boolean) : AddNoteEvent
 
-    data class ChangeNoteColor(val value: Color) : AddNoteEvent
+    data class ChangeNoteColor(val value: NoteColor) : AddNoteEvent
 
-    data class ChangeTagColor(val value: Color) : AddNoteEvent
+    data class ChangeTagColor(val value: TagColor) : AddNoteEvent
 
     data class ToggleColorBar(val value: Boolean) : AddNoteEvent
 

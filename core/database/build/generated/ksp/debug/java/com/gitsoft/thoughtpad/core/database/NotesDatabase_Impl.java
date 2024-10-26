@@ -35,14 +35,14 @@ public final class NotesDatabase_Impl extends NotesDatabase {
     final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS `notes_table` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `noteTags` (`tagId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `color` INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `notes_table` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `noteTags` (`tagId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `color` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `checklist` (`checkListItemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteId` INTEGER, `text` TEXT, `isChecked` INTEGER NOT NULL, FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_checklist_noteId` ON `checklist` (`noteId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `NoteTagCrossRef` (`noteId` INTEGER NOT NULL, `tagId` INTEGER NOT NULL, PRIMARY KEY(`noteId`, `tagId`), FOREIGN KEY(`noteId`) REFERENCES `notes_table`(`noteId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tagId`) REFERENCES `noteTags`(`tagId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_NoteTagCrossRef_tagId` ON `NoteTagCrossRef` (`tagId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ed9ea95fc4375522bd553fbfccf3e7c0')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24b251698b1e2c5fb743a4a6a19fd894')");
       }
 
       @Override
@@ -103,7 +103,7 @@ public final class NotesDatabase_Impl extends NotesDatabase {
         _columnsNotesTable.put("updatedAt", new TableInfo.Column("updatedAt", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNotesTable.put("isPinned", new TableInfo.Column("isPinned", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNotesTable.put("isArchived", new TableInfo.Column("isArchived", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsNotesTable.put("color", new TableInfo.Column("color", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsNotesTable.put("color", new TableInfo.Column("color", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNotesTable.put("isFavorite", new TableInfo.Column("isFavorite", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNotesTable.put("isDeleted", new TableInfo.Column("isDeleted", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNotesTable.put("isCheckList", new TableInfo.Column("isCheckList", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
@@ -121,7 +121,7 @@ public final class NotesDatabase_Impl extends NotesDatabase {
         final HashMap<String, TableInfo.Column> _columnsNoteTags = new HashMap<String, TableInfo.Column>(3);
         _columnsNoteTags.put("tagId", new TableInfo.Column("tagId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsNoteTags.put("name", new TableInfo.Column("name", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsNoteTags.put("color", new TableInfo.Column("color", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsNoteTags.put("color", new TableInfo.Column("color", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysNoteTags = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesNoteTags = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoNoteTags = new TableInfo("noteTags", _columnsNoteTags, _foreignKeysNoteTags, _indicesNoteTags);
@@ -164,7 +164,7 @@ public final class NotesDatabase_Impl extends NotesDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "ed9ea95fc4375522bd553fbfccf3e7c0", "4f6bb0ad170748804555338b1e448920");
+    }, "24b251698b1e2c5fb743a4a6a19fd894", "d0d2904997a85152267b8851829ef0c1");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

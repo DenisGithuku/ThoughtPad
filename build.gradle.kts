@@ -1,6 +1,7 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+import org.jetbrains.kotlin.js.inline.clean.removeUnusedImports
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -45,12 +46,14 @@ subprojects {
                         "ij_kotlin_allow_trailing_comma_on_call_site" to "false",
                     ),
                 )
-            ktfmt().googleStyle()
+            ktfmt().googleStyle().configure {
+                it.setRemoveUnusedImport(true)
+            }
             licenseHeaderFile("${project.rootProject.projectDir}/license-header.txt")
             trimTrailingWhitespace()
             indentWithTabs(2)
             indentWithSpaces(4)
-
+            toggleOffOn()
         }
 
         kotlinGradle {

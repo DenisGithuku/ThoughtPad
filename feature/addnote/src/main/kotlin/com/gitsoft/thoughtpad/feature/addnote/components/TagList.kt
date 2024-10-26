@@ -40,6 +40,7 @@ import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 @Composable
 fun TagList(
     modifier: Modifier = Modifier,
+    isSystemInDarkTheme: Boolean,
     tags: List<Tag>,
     onDeleteTag: (Tag) -> Unit // Handle tag deletion
 ) {
@@ -66,7 +67,7 @@ fun TagList(
                         TogaFilterChip(
                             text = it.name ?: return@forEach,
                             onDelete = { onDeleteTag(it) },
-                            color = it.color
+                            color = if (isSystemInDarkTheme) it.color.darkColor else it.color.lightColor
                         )
                     }
                 }

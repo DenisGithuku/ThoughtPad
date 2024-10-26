@@ -19,4 +19,4 @@ package com.gitsoft.thoughtpad.feature.notelist
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val noteListModule = module { viewModel<NoteListViewModel> { NoteListViewModel(get()) } }
+val noteListModule = module { viewModel<NoteListViewModel> { NoteListViewModel(get(), get()) } }

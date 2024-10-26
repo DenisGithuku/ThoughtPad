@@ -19,4 +19,4 @@ package com.gitsoft.thoughtpad.feature.addnote
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val addNoteModule = module { viewModel { AddNoteViewModel(get(), get()) } }
+val addNoteModule = module { viewModel { AddNoteViewModel(get(), get(), get()) } }

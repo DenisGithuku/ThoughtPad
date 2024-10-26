@@ -19,17 +19,19 @@ package com.gitsoft.thoughtpad.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.gitsoft.thoughtpad.core.model.AttachmentTypeConverter
 import com.gitsoft.thoughtpad.core.model.CheckListItem
-import com.gitsoft.thoughtpad.core.model.Converters
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.NoteColorConverter
 import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef
 import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.model.TagColorConverter
 
 @Database(
     entities = [Note::class, Tag::class, CheckListItem::class, NoteTagCrossRef::class],
     version = 2
 )
-@TypeConverters(Converters::class)
+@TypeConverters(AttachmentTypeConverter::class, NoteColorConverter::class, TagColorConverter::class)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun dao(): NotesDatabaseDao
 }

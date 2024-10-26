@@ -39,9 +39,9 @@ val OceanWaveDarkMode = Color(0xFF8CCBFF)
 val GentleBreeze = Color(0xFF84C9FB)
 val OceanWaveOnDark = Color(0xFF00366A)
 val OceanWaveContainerDark = Color(0xFF004B9D)
-val DarkBackground = Color(0xFF363636)
+val DarkBackground = Color(0xFF1D262F)
 val LightMist = Color(0xFFE0E0E0)
-val CharcoalSurface = Color(0xFF424242)
+val CharcoalSurface = Color(0xFF232D39)
 val PureWhite = Color(0xFFFFFFFF)
 
 // Light Theme Tag Colors
@@ -68,7 +68,7 @@ val TagBrownDark = Color(0xFF6D4C41)
 val LightGray = Color(0xFFF5F5F5) // Light Gray
 val SoftBlue = Color(0xFF84C9FB) // Soft Blue
 val PaleGreen = Color(0xFFD9EAD3) // Pale Green
-val Peach = Color(0xFFFFD3B6) // Peach
+val LightBurntOrange = Color(0xFFFFB84D) // Light Burnt Orange
 val LightLavender = Color(0xFFEAD1F7) // Light Lavender
 val LightYellow = Color(0xFFFFF9B1) // Light Yellow
 val MintGreen = Color(0xFFB2F2B2) // Mint Green
@@ -77,16 +77,16 @@ val LightCyan = Color(0xFFE0F7FA) // Light Cyan
 val BlushPink = Color(0xFFF8D2D0) // Blush Pink
 
 // Dark Background Colors
-val DarkGray = Color(0xFF2C2C2C) // Dark Gray
-val DeepBlue = Color(0xFF336699) // Deep Blue
-val OliveGreen = Color(0xFF6B8E23) // Olive Green
-val BurntOrange = Color(0xFFCC5500) // Burnt Orange
-val DeepLavender = Color(0xFF9370DB) // Deep Lavender
-val MustardYellow = Color(0xFFCFB53B) // Mustard Yellow
-val ForestGreen = Color(0xFF228B22) // Forest Green
-val DarkCoral = Color(0xFFCD5B45) // Dark Coral
-val TealCyan = Color(0xFF008B8B) // Teal Cyan
-val DuskyPink = Color(0xFFB22222) // Dusky Pinky
+val DarkGray = Color(0xFF1A1A1A) // Dark Gray
+val DeepBlue = Color(0xFF1F2C3D) // Deep Blue
+val OliveGreen = Color(0xFF4A5E1B) // Olive Green
+val DarkBurntOrange = Color(0xFF992200) // Burnt Orange
+val DeepLavender = Color(0xFF5A4C8C) // Deep Lavender
+val MustardYellow = Color(0xFF8A8C25) // Mustard Yellow
+val ForestGreen = Color(0xFF1B4A1B) // Forest Green
+val DarkCoral = Color(0xFF9A4C3A) // Dark Coral
+val TealCyan = Color(0xFF006B6B) // Teal Cyan
+val DuskyPink = Color(0xFF7E1E1E) // Dusky Pink
 
 fun Color.toComposeLong(): Long = this.toArgb().toLong()
 

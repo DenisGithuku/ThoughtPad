@@ -36,7 +36,7 @@ data class Note(
     val updatedAt: Long? = null,
     val isPinned: Boolean = false,
     val isArchived: Boolean = false,
-    val color: Long = 4294967295,
+    val color: NoteColor = NoteColor.Default,
     val isFavorite: Boolean = false,
     val isDeleted: Boolean = false,
     val isCheckList: Boolean = false,
@@ -44,7 +44,7 @@ data class Note(
     val attachments: List<String> = emptyList()
 )
 
-class Converters {
+class AttachmentTypeConverter {
 
     @TypeConverter
     fun fromAttachmentsList(attachments: List<String>?): String {
@@ -58,6 +58,18 @@ class Converters {
         } else {
             attachmentsString.split(",")
         }
+    }
+}
+
+class NoteColorConverter {
+    @TypeConverter
+    fun fromNoteColor(noteColor: NoteColor): String {
+        return noteColor.name
+    }
+
+    @TypeConverter
+    fun toNoteColor(noteColorName: String): NoteColor {
+        return NoteColor.valueOf(noteColorName)
     }
 }
 

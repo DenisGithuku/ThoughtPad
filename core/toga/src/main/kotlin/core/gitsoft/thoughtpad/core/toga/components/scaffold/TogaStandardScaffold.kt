@@ -31,7 +31,7 @@ import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaStandardTopAppBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TogaStandardScaffold(
-    @StringRes title: Int,
+    @StringRes title: Int? = null,
     onNavigateBack: () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -45,7 +45,7 @@ fun TogaStandardScaffold(
     Scaffold(
         topBar = {
             TogaStandardTopAppBar(
-                title = stringResource(id = title),
+                title = title?.let { stringResource(id = title) },
                 onNavigateBack = onNavigateBack,
                 actions = actions,
                 colors = appBarColors

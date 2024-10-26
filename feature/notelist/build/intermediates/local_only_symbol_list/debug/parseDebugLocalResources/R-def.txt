@@ -15,6 +15,7 @@ drawable ic_reminder
 drawable ic_search
 drawable ic_settings
 drawable ic_share
+drawable no_notes_on_search
 raw no_notes
 string add_note
 string archive

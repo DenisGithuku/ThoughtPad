@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.core.database
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -29,7 +30,6 @@ import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteTagCrossRef
 import com.gitsoft.thoughtpad.core.model.Tag
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 @Dao
 interface NotesDatabaseDao {
@@ -89,7 +89,13 @@ interface NotesDatabaseDao {
         val noteId = insertNote(note)
 
         // Update the checklist items with the new noteId
-        val updatedCheckListItems = checklistItems.map { it.copy(noteId = noteId) }
+        // Create a new checklist item to make sure the id is the default
+        val updatedCheckListItems =
+            checklistItems.map {
+                CheckListItem(noteId = noteId, text = it.text, isChecked = it.isChecked)
+            }
+
+        Log.d("NotesDatabaseDao", "Checklist items: $updatedCheckListItems")
         insertChecklistItems(updatedCheckListItems)
 
         // Now insert the relation between the note and the tags in the cross-reference table
@@ -119,7 +125,7 @@ interface NotesDatabaseDao {
         val id = updateNote(note)
 
         // Delete old checklist items and tags associated with the note
-        deleteChecklistItems(getChecklistItemsForNoteId(note.noteId).first())
+        deleteChecklistItems(getCheckListForNote(note.noteId))
         // Assuming getTagsForNoteId method is not needed anymore as it just retrieves and does not
         // modify the tags
 
@@ -127,7 +133,13 @@ interface NotesDatabaseDao {
         deleteNoteTagCrossRefsForNoteId(note.noteId)
 
         // Insert the new checklist items
-        insertChecklistItems(checklistItems)
+        val updatedCheckListItems =
+            checklistItems.map {
+                CheckListItem(noteId = note.noteId, text = it.text, isChecked = it.isChecked)
+            }
+
+        // Insert the new checklist items
+        insertChecklistItems(updatedCheckListItems)
 
         // Insert new associations for the note and its tags
         tags.forEach { tag ->
@@ -143,6 +155,9 @@ interface NotesDatabaseDao {
 
     @Query("SELECT * FROM checklist WHERE noteId = :noteId")
     fun getChecklistItemsForNoteId(noteId: Long): Flow<List<CheckListItem>>
+
+    @Query("SELECT * FROM checklist WHERE noteId = :noteId")
+    fun getCheckListForNote(noteId: Long): List<CheckListItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNoteTagCrossRef(noteTagCrossRef: NoteTagCrossRef)

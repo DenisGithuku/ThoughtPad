@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ed9ea95fc4375522bd553fbfccf3e7c0",
+    "identityHash": "24b251698b1e2c5fb743a4a6a19fd894",
     "entities": [
       {
         "tableName": "notes_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "noteId",
@@ -53,7 +53,7 @@
           {
             "fieldPath": "color",
             "columnName": "color",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -98,7 +98,7 @@
       },
       {
         "tableName": "noteTags",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tagId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `color` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tagId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `color` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "tagId",
@@ -115,8 +115,8 @@
           {
             "fieldPath": "color",
             "columnName": "color",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -252,7 +252,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ed9ea95fc4375522bd553fbfccf3e7c0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24b251698b1e2c5fb743a4a6a19fd894')"
     ]
   }
 }

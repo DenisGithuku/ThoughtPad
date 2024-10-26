@@ -25,5 +25,5 @@ import kotlinx.serialization.Serializable
 data class Tag(
     @PrimaryKey(autoGenerate = true) val tagId: Long = 0,
     val name: String? = null,
-    val color: Long? = null
+    val color: TagColor = TagColor.Blue
 )

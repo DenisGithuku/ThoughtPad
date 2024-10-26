@@ -60,12 +60,10 @@ fun rememberAppState(
         AppState(navController = navController, snackbarHostState = snackbarHostState)
     }
 
-sealed class ThoughtPadDestination(val route: String) {
+open class ThoughtPadDestination(val route: String) {
     data object NoteList : ThoughtPadDestination(route = "notelist")
 
-    data object NoteDetail : ThoughtPadDestination(route = "notedetail")
-
-    data object AddNote : ThoughtPadDestination(route = "addnote")
+    data class AddNote(val noteId: Long = -1L) : ThoughtPadDestination(route = "addnote/{noteId}")
 
     data object Splash : ThoughtPadDestination(route = "splash")
 

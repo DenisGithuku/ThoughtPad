@@ -34,7 +34,6 @@
             <option value="$PROJECT_DIR$/core/toga" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/addnote" />
-            <option value="$PROJECT_DIR$/feature/notedetail" />
             <option value="$PROJECT_DIR$/feature/notelist" />
             <option value="$PROJECT_DIR$/feature/settings" />
           </set>

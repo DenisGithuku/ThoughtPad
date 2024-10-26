@@ -63,7 +63,6 @@ android {
 dependencies {
     implementation(project(":feature:notelist"))
     implementation(project(":feature:addnote"))
-    implementation(project(":feature:notedetail"))
     implementation(project(":feature:settings"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))

@@ -5,7 +5,7 @@ plugins {
 
 android { namespace = "com.gitsoft.thoughtpad.core.model" }
 
-dependencies {}
+dependencies { implementation(project(":core:toga")) }
 
 val isCiBuild = System.getenv("CI")?.toBoolean() ?: false
 

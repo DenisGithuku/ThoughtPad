@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -21,7 +22,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,24 +48,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
+import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.feature.notelist.R
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
+import core.gitsoft.thoughtpad.core.toga.theme.MidnightInk
+import core.gitsoft.thoughtpad.core.toga.theme.SnowDrift
 import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
 import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteItemCard(
+    isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
     noteData: DataWithNotesCheckListItemsAndTags,
     isSelected: Boolean,
@@ -73,54 +74,63 @@ fun NoteItemCard(
     onLongClick: () -> Unit,
     onToggleFavourite: (Boolean) -> Unit
 ) {
-
-    val borderColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-        label = "border color"
-    )
-
-    val elevation by animateDpAsState(
-        targetValue = if (isSelected) 4.dp else 0.dp,
-        label = "elevation"
-    )
-
-    val borderWidth by animateDpAsState(
-        targetValue = if (isSelected) 2.dp else 0.dp,
-        label = "border width"
-    )
-
-    val ambientColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f) else Color.Transparent,
-        label = "ambient color"
-    )
-
-    val spotColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Transparent,
-        label = "spot color"
-    )
-
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .clip(shape = MaterialTheme.shapes.medium)
-        .shadow(
-            elevation = elevation,
-            shape = MaterialTheme.shapes.medium,
-            ambientColor = ambientColor,
-            spotColor = spotColor
+    val borderColor by
+        animateColorAsState(
+            targetValue =
+                when {
+                    isSelected -> MaterialTheme.colorScheme.primary
+                    noteData.note.color == NoteColor.Default && isDarkTheme -> SnowDrift
+                    noteData.note.color == NoteColor.Default && !isDarkTheme -> MidnightInk.copy(alpha = 0.1f)
+                    else -> Color.Transparent
+                },
+            label = "border color"
         )
-        .border(
-            border = BorderStroke(
-                width = borderWidth,
-                color = borderColor
-                ),
-            shape = MaterialTheme.shapes.medium
+
+    val elevation by
+        animateDpAsState(targetValue = if (isSelected) 4.dp else 0.dp, label = "elevation")
+
+    val borderWidth by
+        animateDpAsState(targetValue = if (isSelected) 3.dp else 1.dp, label = "border width")
+
+    val ambientColor by
+        animateColorAsState(
+            targetValue =
+                if (isSelected) {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                } else Color.Transparent,
+            label = "ambient color"
         )
-        .background(
-            color = noteData.note.color.toComposeColor(), shape = MaterialTheme.shapes.medium
+
+    val spotColor by
+        animateColorAsState(
+            targetValue = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Transparent,
+            label = "spot color"
         )
-        .combinedClickable(onClick= onClick, onLongClick = onLongClick)
-    )
-    {
+
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(shape = MaterialTheme.shapes.medium)
+                .shadow(
+                    elevation = elevation,
+                    shape = MaterialTheme.shapes.medium,
+                    ambientColor = ambientColor,
+                    spotColor = spotColor
+                )
+                .border(
+                    border = BorderStroke(width = borderWidth, color = borderColor),
+                    shape = MaterialTheme.shapes.medium
+                )
+                .background(
+                    color =
+                        if (isDarkTheme) {
+                            noteData.note.color.darkColor.toComposeColor()
+                        } else noteData.note.color.lightColor.toComposeColor(),
+                    shape = MaterialTheme.shapes.medium
+                )
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+    ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -134,11 +144,14 @@ fun NoteItemCard(
 
                 TogaIconButton(
                     onClick = { onToggleFavourite(!noteData.note.isFavorite) },
-                    icon = if (noteData.note.isFavorite) {
-                        R.drawable.ic_favourite_filled
-                    } else R.drawable.ic_favourite,
-                    contentDescription = if (noteData.note.isFavorite) R.string.favourite else R.string.unfavourite,
-                    tint = if (noteData.note.isFavorite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
+                    icon =
+                        if (noteData.note.isFavorite) {
+                            R.drawable.ic_favourite_filled
+                        } else R.drawable.ic_favourite,
+                    contentDescription =
+                        if (noteData.note.isFavorite) R.string.favourite else R.string.unfavourite,
+                    tint =
+                        if (noteData.note.isFavorite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -166,13 +179,15 @@ fun NoteItemCard(
                                 TogaSmallBody(
                                     text = it,
                                     maxLines = 1,
-                                    style = MaterialTheme.typography.bodySmall.copy(
-                                        textDecoration = if (checklistItem.isChecked) {
-                                            TextDecoration.LineThrough
-                                        } else {
-                                            TextDecoration.None
-                                        }
-                                    )
+                                    style =
+                                        MaterialTheme.typography.bodySmall.copy(
+                                            textDecoration =
+                                                if (checklistItem.isChecked) {
+                                                    TextDecoration.LineThrough
+                                                } else {
+                                                    TextDecoration.None
+                                                }
+                                        )
                                 )
                             }
                         }
@@ -180,14 +195,13 @@ fun NoteItemCard(
 
                     // If there are more than 3 checklist items
                     if (noteData.checkListItems.size > 3) {
-                        val text = if (noteData.checkListItems.size - 3 > 1) {
-                            "+${noteData.checkListItems.size - 3} more items"
-                        } else {
-                            "+1 more item"
-                        }
-                        TogaSmallLabel(
-                            text = text
-                        )
+                        val text =
+                            if (noteData.checkListItems.size - 3 > 1) {
+                                "+${noteData.checkListItems.size - 3} more items"
+                            } else {
+                                "+1 more item"
+                            }
+                        TogaSmallLabel(text = text)
                     }
                 }
             }
@@ -198,26 +212,23 @@ fun NoteItemCard(
             noteData.note.reminderTime?.let {
                 val formattedReminder = formatReminderDate(it)
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(R.drawable.ic_reminder),
-                            contentDescription = stringResource(R.string.reminder),
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        TogaSmallLabel(
-                            text = formattedReminder,
-                        )
-                    }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(R.drawable.ic_reminder),
+                        contentDescription = stringResource(R.string.reminder)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    TogaSmallLabel(text = formattedReminder)
                 }
             }
         }
+    }
 }
 
 fun formatReminderDate(reminderTime: Long): String {
     val currentDate = LocalDate.now()
-    val reminderDate =
-        Instant.ofEpochMilli(reminderTime).atZone(ZoneId.systemDefault()).toLocalDate()
+    val reminderDate = Instant.ofEpochMilli(reminderTime).atZone(ZoneId.systemDefault()).toLocalDate()
 
     return when {
         reminderDate.isEqual(currentDate) -> formatTime(reminderTime)

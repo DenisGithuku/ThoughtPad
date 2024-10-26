@@ -1,3 +1,19 @@
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.gitsoft.thoughtpad.feature.notelist.components
 
 import androidx.annotation.DrawableRes
@@ -18,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.feature.notelist.R
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 
@@ -34,14 +49,16 @@ fun NoteActionBottomSheet(
     onArchive: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val pinIconColor by
+        animateColorAsState(
+            targetValue =
+                if (isPinned) {
+                    MaterialTheme.colorScheme.primary
+                } else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            label = "pin icon color"
+        )
 
-    val pinIconColor by animateColorAsState(targetValue = if (isPinned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-        label = "pin icon color"
-    )
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-    ) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
         NoteAction(
             title = stringResource(R.string.edit),
             onClick = { onEdit(noteId) },
@@ -79,20 +96,10 @@ fun NoteAction(
     iconTint: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = title,
-            tint = iconTint
-        )
-        TogaMediumBody(
-            modifier = Modifier.padding(start = 8.dp),
-            text = title
-        )
+        Icon(painter = painterResource(id = icon), contentDescription = title, tint = iconTint)
+        TogaMediumBody(modifier = Modifier.padding(start = 8.dp), text = title)
     }
 }

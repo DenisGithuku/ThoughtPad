@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,7 +34,6 @@ import com.airbnb.lottie.RenderMode
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gitsoft.thoughtpad.feature.notelist.R
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
@@ -44,10 +41,7 @@ import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 @Composable
 fun NoNotesIndicator(modifier: Modifier = Modifier) {
     // Load the Lottie animation
-    val composition by
-        rememberLottieComposition(
-            LottieCompositionSpec.RawRes(R.raw.no_notes)
-        )
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.no_notes))
 
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.weight(1f))
@@ -69,7 +63,7 @@ fun NoNotesIndicator(modifier: Modifier = Modifier) {
             // Display the text message
             TogaMediumBody(
                 text = stringResource(R.string.no_notes_available),
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(16.dp)
             )
         }
         Spacer(modifier = Modifier.weight(1f))

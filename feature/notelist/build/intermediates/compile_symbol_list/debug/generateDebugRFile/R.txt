@@ -13,6 +13,7 @@ int drawable ic_reminder 0x0
 int drawable ic_search 0x0
 int drawable ic_settings 0x0
 int drawable ic_share 0x0
+int drawable no_notes_on_search 0x0
 int raw no_notes 0x0
 int string add_note 0x0
 int string archive 0x0

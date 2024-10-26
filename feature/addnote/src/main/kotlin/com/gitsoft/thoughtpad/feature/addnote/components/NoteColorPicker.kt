@@ -25,15 +25,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.model.NoteColor
+import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 
 @Composable
 fun NoteColorPicker(
+    isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
-    selectedColor: Color,
-    colors: List<Color>,
-    onChangeColor: (Color) -> Unit
+    selectedColor: NoteColor,
+    colors: List<NoteColor>,
+    onChangeColor: (NoteColor) -> Unit
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth().padding(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
@@ -41,7 +43,18 @@ fun NoteColorPicker(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = colors) {
-            ColorPill(color = it, isSelected = it == selectedColor, onSelect = onChangeColor)
+            ColorPill(
+                color = if (isDarkTheme) it.darkColor.toComposeColor() else it.lightColor.toComposeColor(),
+                isSelected = it == selectedColor,
+                onSelect = {
+                    onChangeColor(
+                        NoteColor.entries.find { noteColor ->
+                            noteColor.darkColor.toComposeColor() == it ||
+                                noteColor.lightColor.toComposeColor() == it
+                        } ?: NoteColor.entries.first()
+                    )
+                }
+            )
         }
     }
 }

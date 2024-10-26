@@ -20,16 +20,16 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import core.gitsoft.thoughtpad.core.toga.components.icon.TogaNavigationIcon
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TogaStandardTopAppBar(
-    title: String,
+    title: String? = null,
     onNavigateBack: () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     colors: TopAppBarColors =
@@ -38,7 +38,11 @@ fun TogaStandardTopAppBar(
         )
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = title, style = MaterialTheme.typography.titleMedium) },
+        title = {
+            if (title != null) {
+                TogaMediumTitle(text = title)
+            }
+        },
         navigationIcon = { TogaNavigationIcon(onNavigateBack = onNavigateBack) },
         actions = actions,
         colors = colors
