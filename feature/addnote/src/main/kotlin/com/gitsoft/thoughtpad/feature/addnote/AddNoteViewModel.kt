@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -100,6 +101,7 @@ class AddNoteViewModel(
             is AddNoteEvent.ToggleTimeDialog -> toggleTimeDialog(event.value)
             is AddNoteEvent.ChangeDate -> changeDate(event.value)
             is AddNoteEvent.ChangeTime -> changeTime(event.value)
+            is AddNoteEvent.DiscardNote -> onDiscardNote()
             AddNoteEvent.Save -> save()
         }
     }
@@ -108,8 +110,22 @@ class AddNoteViewModel(
         _state.update {
             it.copy(
                 checkListItems =
-                    it.checkListItems + checkListItem.copy(checkListItemId = it.checkListItems.size.toLong())
+                    it.checkListItems +
+                        checkListItem.copy(
+                            checkListItemId = it.checkListItems.size.toLong(),
+                            text = checkListItem.text?.trim()
+                        )
             )
+        }
+    }
+
+    private fun onDiscardNote() {
+        viewModelScope.launch {
+            Log.d("AddNoteViewModel", "onDiscardNote: ${_state.value.note}")
+            if (_state.value.note.noteId != 0L) {
+                notesRepository.deleteNoteById(_state.value.note.noteId)
+            }
+            _state.update { it.copy(deletedSuccessfully = true) }
         }
     }
 
@@ -247,13 +263,14 @@ class AddNoteViewModel(
     }
 
     private fun addTag(tag: Tag) {
-        if (_state.value.defaultTags.none { it.name.equals(tag.name, true) }) {
+        val trimmedTag = tag.copy(name = tag.name?.trim())
+        if (_state.value.defaultTags.none { it.name.equals(trimmedTag.name, true) }) {
             viewModelScope.launch {
-                val tagId = async { storeTag(tag) }.await()
-                _state.update { it.copy(selectedTags = it.selectedTags + tag.copy(tagId = tagId)) }
+                val tagId = async { storeTag(trimmedTag) }.await()
+                _state.update { it.copy(selectedTags = it.selectedTags + trimmedTag.copy(tagId = tagId)) }
             }
         } else {
-            _state.update { it.copy(selectedTags = it.selectedTags + tag) }
+            _state.update { it.copy(selectedTags = it.selectedTags + trimmedTag) }
         }
     }
 
@@ -276,7 +293,9 @@ class AddNoteViewModel(
                     _state.value.note.copy(
                         updatedAt = Calendar.getInstance().timeInMillis,
                         color = _state.value.selectedNoteColor,
-                        reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null
+                        reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
+                        noteTitle = _state.value.note.noteTitle?.trim(),
+                        noteText = _state.value.note.noteText?.trim()
                     ),
                 checklistItems = _state.value.checkListItems,
                 tags = _state.value.selectedTags
@@ -301,7 +320,9 @@ class AddNoteViewModel(
                     createdAt = timeMillis,
                     updatedAt = timeMillis,
                     color = _state.value.selectedNoteColor,
-                    reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null
+                    reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
+                    noteTitle = _state.value.note.noteTitle?.trim(),
+                    noteText = _state.value.note.noteText?.trim()
                 )
             notesRepository.insertNoteWithDetails(
                 note = note,

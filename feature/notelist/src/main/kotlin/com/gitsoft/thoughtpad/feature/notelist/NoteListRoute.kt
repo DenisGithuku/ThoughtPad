@@ -141,44 +141,46 @@ internal fun NoteListScreen(
         onDispose { LottieCompositionFactory.clearCache(context) }
     }
 
+    LaunchedEffect(state.archiveState, snackbarHostState) {
+        if (state.archiveState.isArchived && state.archiveState.noteId != null) {
+            val result =
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.note_archived),
+                    duration = SnackbarDuration.Short,
+                    actionLabel = context.getString(R.string.undo)
+                )
+            when (result) {
+                SnackbarResult.Dismissed -> {
+                    onToggleArchiveNote(ArchiveState(noteId = null))
+                }
+                SnackbarResult.ActionPerformed -> {
+                    onToggleArchiveNote(ArchiveState(isArchived = false, noteId = state.archiveState.noteId))
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(state.deleteState, snackbarHostState) {
+        if (state.deleteState.isDeleted && state.deleteState.noteId != null) {
+            val result =
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.note_deleted),
+                    duration = SnackbarDuration.Short,
+                    actionLabel = context.getString(R.string.undo)
+                )
+
+            when (result) {
+                SnackbarResult.Dismissed -> {
+                    onToggleDeleteNote(DeleteState(noteId = null))
+                }
+                SnackbarResult.ActionPerformed -> {
+                    onToggleDeleteNote(DeleteState(isDeleted = false, noteId = state.deleteState.noteId))
+                }
+            }
+        }
+    }
+
     TogaBasicScaffold(snackbarHostState = snackbarHostState) { innerPadding ->
-        LaunchedEffect(state.archiveState, snackbarHostState) {
-            if (state.archiveState.isArchived && state.archiveState.noteId != null) {
-                val result =
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(R.string.note_archived),
-                        duration = SnackbarDuration.Short,
-                        actionLabel = context.getString(R.string.undo)
-                    )
-                when (result) {
-                    SnackbarResult.Dismissed -> Unit
-                    SnackbarResult.ActionPerformed -> {
-                        onToggleArchiveNote(
-                            ArchiveState(isArchived = false, noteId = state.archiveState.noteId)
-                        )
-                    }
-                }
-            }
-        }
-
-        LaunchedEffect(state.deleteState, snackbarHostState) {
-            if (state.deleteState.isDeleted && state.deleteState.noteId != null) {
-                val result =
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(R.string.note_deleted),
-                        duration = SnackbarDuration.Short,
-                        actionLabel = context.getString(R.string.undo)
-                    )
-
-                when (result) {
-                    SnackbarResult.Dismissed -> Unit
-                    SnackbarResult.ActionPerformed -> {
-                        onToggleDeleteNote(DeleteState(isDeleted = false, noteId = state.deleteState.noteId))
-                    }
-                }
-            }
-        }
-
         Box(
             modifier =
                 Modifier.fillMaxSize()

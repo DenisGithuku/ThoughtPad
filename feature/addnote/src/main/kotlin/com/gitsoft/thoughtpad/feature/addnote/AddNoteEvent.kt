@@ -65,5 +65,7 @@ sealed interface AddNoteEvent {
 
     data class ChangeTime(val value: Long) : AddNoteEvent
 
+    data object DiscardNote : AddNoteEvent
+
     data object Save : AddNoteEvent
 }

@@ -75,7 +75,7 @@ fun TagSelectionContent(
     val tagIsValid =
         remember(tagNameState) {
             derivedStateOf {
-                tagNameState.isNotBlank() && existingTags.none { it.name.equals(tagNameState, true) }
+                tagNameState.trim().isNotBlank() && existingTags.none { it.name.equals(tagNameState, true) }
             }
         }
 

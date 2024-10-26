@@ -18,6 +18,7 @@ string at
 string close
 string color_bar
 string delete
+string empty_note_discarded
 string has_checklist
 string has_reminder
 string has_tags

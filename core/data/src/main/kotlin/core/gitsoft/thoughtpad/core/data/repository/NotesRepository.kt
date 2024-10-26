@@ -43,6 +43,8 @@ interface NotesRepository {
         tags: List<Tag>
     ): Long
 
+    suspend fun deleteNoteById(id: Long): Int
+
     suspend fun insertTags(tags: List<Tag>)
 
     suspend fun insertTag(tag: Tag): Long

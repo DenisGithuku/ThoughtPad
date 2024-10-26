@@ -63,4 +63,8 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
     override suspend fun updateNote(note: Note): Int = safeDbCall {
         notesDatabaseDao.updateNote(note)
     }
+
+    override suspend fun deleteNoteById(id: Long): Int = safeDbCall {
+        notesDatabaseDao.deleteNoteWithDetails(id)
+    }
 }

@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -37,15 +38,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.NoteColor
@@ -100,7 +104,8 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
         onToggleTimeDialog = { viewModel.onEvent(AddNoteEvent.ToggleTimeDialog(it)) },
         onChangeDate = { viewModel.onEvent(AddNoteEvent.ChangeDate(it)) },
         onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) },
-        onToggleDateSheet = { viewModel.onEvent(AddNoteEvent.ToggleDateSheet(it)) }
+        onToggleDateSheet = { viewModel.onEvent(AddNoteEvent.ToggleDateSheet(it)) },
+        onDiscardNote = { viewModel.onEvent(AddNoteEvent.DiscardNote) }
     )
 }
 
@@ -126,6 +131,7 @@ internal fun AddNoteScreen(
     onToggleReminder: (Boolean) -> Unit,
     onChangeDate: (Long) -> Unit,
     onChangeTime: (Long) -> Unit,
+    onDiscardNote: () -> Unit,
     onToggleDateDialog: (Boolean) -> Unit,
     onToggleTimeDialog: (Boolean) -> Unit,
     onToggleTagSheet: (Boolean) -> Unit,
@@ -134,8 +140,20 @@ internal fun AddNoteScreen(
 ) {
     val navigateToNoteList by rememberUpdatedState(onNavigateBack)
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(state.insertionSuccessful) {
         if (state.insertionSuccessful) {
+            navigateToNoteList()
+        }
+    }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(state.deletedSuccessfully) {
+        if (state.deletedSuccessfully) {
+            Toast.makeText(context, context.getString(R.string.empty_note_discarded), Toast.LENGTH_LONG)
+                .show()
             navigateToNoteList()
         }
     }
@@ -182,19 +200,20 @@ internal fun AddNoteScreen(
 
     /** check if user has entered any text and pressed back button before they could save. */
     BackHandler(enabled = true) {
-        if (!state.isNewNote || state.noteIsValid) {
+        if (state.noteIsValid) {
             onSave()
         } else {
-            navigateToNoteList()
+            onDiscardNote()
         }
     }
 
     TogaStandardScaffold(
+        snackbarHostState = snackbarHostState,
         onNavigateBack = {
-            if (!state.isNewNote || state.noteIsValid) {
+            if (state.noteIsValid) {
                 onSave()
             } else {
-                navigateToNoteList()
+                onDiscardNote()
             }
         },
         actions = {

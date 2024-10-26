@@ -16,6 +16,7 @@ int string at 0x0
 int string close 0x0
 int string color_bar 0x0
 int string delete 0x0
+int string empty_note_discarded 0x0
 int string has_checklist 0x0
 int string has_reminder 0x0
 int string has_tags 0x0

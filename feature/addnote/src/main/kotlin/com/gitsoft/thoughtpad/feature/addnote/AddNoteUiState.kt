@@ -33,6 +33,7 @@ data class AddNoteUiState(
     val selectedDate: Long? = null,
     val hasTags: Boolean = false,
     val systemInDarkMode: Boolean = false,
+    val deletedSuccessfully: Boolean = false,
     val noteColors: List<NoteColor> =
         listOf(
             NoteColor.Default,
@@ -69,6 +70,7 @@ data class AddNoteUiState(
 ) {
     val noteIsValid: Boolean
         get() {
-            return note.noteTitle?.isNotBlank() == true && note.noteText?.isNotBlank() == true
+            return note.noteTitle?.trim()?.isNotEmpty() == true ||
+                note.noteText?.trim()?.isNotEmpty() == true
         }
 }

@@ -8,6 +8,7 @@
     <string name="close">Close</string>
     <string name="color_bar">Toggle color bar</string>
     <string name="delete">Delete</string>
+    <string name="empty_note_discarded">Empty note discarded!</string>
     <string name="has_checklist">Has checklist</string>
     <string name="has_reminder">Has reminder</string>
     <string name="has_tags">Has tags</string>

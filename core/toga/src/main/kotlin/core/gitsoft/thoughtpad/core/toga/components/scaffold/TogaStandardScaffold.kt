@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.imeAnimationTarget
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -37,6 +39,7 @@ fun TogaStandardScaffold(
     @StringRes title: Int? = null,
     onNavigateBack: () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     bottomBar: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     appBarColors: TopAppBarColors =
@@ -46,6 +49,7 @@ fun TogaStandardScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TogaStandardTopAppBar(
                 title = title?.let { stringResource(id = title) },
