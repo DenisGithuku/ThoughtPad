@@ -29,6 +29,7 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import core.gitsoft.thoughtpad.core.data.AlarmReceiver
+import java.util.Calendar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -50,11 +51,23 @@ internal class NotesRepositoryImpl(
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
     ): Unit = safeDbCall {
+        val oldReminderTime = notesDatabaseDao.getNoteById(note.noteId).reminderTime
+
         notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
-        if (
-            note.reminderTime != null &&
-                userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted
-        ) {
+
+        if (note.reminderTime == null) return@safeDbCall
+
+        /** If the reminderTime has not changed or is in the past, return */
+        val now = Calendar.getInstance().timeInMillis
+        if (oldReminderTime == note.reminderTime || note.reminderTime?.let { it <= now } == true) {
+            return@safeDbCall
+        }
+
+        /**
+         * Schedule only if notification permissions are granted (required for API Tiramisu and above
+         * Always true for other devices.
+         */
+        if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall,
                 taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"
@@ -79,10 +92,14 @@ internal class NotesRepositoryImpl(
         tags: List<Tag>
     ): Long = safeDbCall {
         val noteId = notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
-        if (
-            note.reminderTime != null &&
-                userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted
-        ) {
+
+        if (note.reminderTime == null) return@safeDbCall noteId
+
+        /**
+         * Schedule only if notification permissions are granted (required for API Tiramisu and above
+         * Always true for other devices.
+         */
+        if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall noteId,
                 taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"

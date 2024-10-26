@@ -85,6 +85,7 @@ class ThoughtPadApplication : Application() {
                 .apply {
                     setShowBadge(true)
                     enableVibration(true)
+                    description = AppConstants.notificationChannelDescription
                 }
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)

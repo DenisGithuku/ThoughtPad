@@ -18,7 +18,7 @@ package com.gitsoft.thoughtpad.core.common
 
 object AppConstants {
     const val notificationChannelId = "ThoughtPad"
-    const val notificationChannelName = "ThoughtPad Notifications"
+    const val notificationChannelName = "Task and Note Reminders"
     val noteReminderNotificationId = System.currentTimeMillis().toInt()
-    val notificationChannelDescription = "Notification Channel for ThoughtPad"
+    const val notificationChannelDescription = "Notification Channel for ThoughtPad"
 }
