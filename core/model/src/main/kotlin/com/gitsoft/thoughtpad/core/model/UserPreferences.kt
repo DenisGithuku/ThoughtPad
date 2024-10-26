@@ -16,4 +16,7 @@
 */
 package com.gitsoft.thoughtpad.core.model
 
-data class UserPreferences(val themeConfig: ThemeConfig)
+data class UserPreferences(
+    val themeConfig: ThemeConfig,
+    val isNotificationPermissionsGranted: Boolean = false
+)

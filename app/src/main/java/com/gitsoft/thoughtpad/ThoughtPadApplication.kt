@@ -17,7 +17,11 @@
 package com.gitsoft.thoughtpad
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
+import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.database.databaseModule
 import com.gitsoft.thoughtpad.core.datastore.prefsModule
 import com.gitsoft.thoughtpad.feature.addnote.addNoteModule
@@ -50,6 +54,8 @@ class ThoughtPadApplication : Application() {
         }
 
         initTimber()
+
+        createNotificationChannel()
     }
 
     private fun initTimber() {
@@ -67,6 +73,21 @@ class ThoughtPadApplication : Application() {
                 Timber.plant(CrashlyticsTree())
             }
         }
+    }
+
+    private fun createNotificationChannel() {
+        val channel =
+            NotificationChannel(
+                    AppConstants.notificationChannelId,
+                    AppConstants.notificationChannelName,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                .apply {
+                    setShowBadge(true)
+                    enableVibration(true)
+                }
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }
 

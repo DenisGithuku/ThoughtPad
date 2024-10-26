@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".ThoughtPadApplication"
         android:allowBackup="true"
@@ -20,7 +23,7 @@
             </intent-filter>
         </activity>
 
-
+        <receiver android:name="core.gitsoft.thoughtpad.core.data.AlarmReceiver" android:enabled="true" />
     </application>
 
 </manifest>

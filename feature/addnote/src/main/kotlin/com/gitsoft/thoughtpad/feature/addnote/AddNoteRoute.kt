@@ -16,8 +16,10 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -38,6 +40,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
@@ -46,6 +49,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +66,10 @@ import com.gitsoft.thoughtpad.feature.addnote.components.ReminderContent
 import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
 import com.gitsoft.thoughtpad.feature.addnote.components.TagList
 import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionContent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBottomAppBar
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
@@ -73,6 +81,7 @@ import core.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import java.util.Calendar
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -104,12 +113,14 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
         onToggleTimeDialog = { viewModel.onEvent(AddNoteEvent.ToggleTimeDialog(it)) },
         onChangeDate = { viewModel.onEvent(AddNoteEvent.ChangeDate(it)) },
         onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) },
+        updatePermissionsStatus = { viewModel.onEvent(AddNoteEvent.UpdateNotificationPermissions) },
         onToggleDateSheet = { viewModel.onEvent(AddNoteEvent.ToggleDateSheet(it)) },
         onDiscardNote = { viewModel.onEvent(AddNoteEvent.DiscardNote) }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 internal fun AddNoteScreen(
     state: AddNoteUiState,
@@ -125,6 +136,7 @@ internal fun AddNoteScreen(
     onAddCheckListItem: (CheckListItem) -> Unit,
     onRemoveCheckListItem: (CheckListItem) -> Unit,
     onToggleTagSelection: (Tag) -> Unit,
+    updatePermissionsStatus: () -> Unit,
     onRemoveTag: (Tag) -> Unit,
     onAddNewTag: (Tag) -> Unit,
     onTogglePin: (Boolean) -> Unit,
@@ -142,6 +154,8 @@ internal fun AddNoteScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(state.insertionSuccessful) {
         if (state.insertionSuccessful) {
             navigateToNoteList()
@@ -149,6 +163,18 @@ internal fun AddNoteScreen(
     }
 
     val context = LocalContext.current
+
+    val notificationPermissionsState =
+        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+
+    LaunchedEffect(notificationPermissionsState.status) {
+        if (
+            notificationPermissionsState.status.isGranted ||
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+        ) {
+            updatePermissionsStatus()
+        }
+    }
 
     LaunchedEffect(state.deletedSuccessfully) {
         if (state.deletedSuccessfully) {
@@ -248,7 +274,29 @@ internal fun AddNoteScreen(
                             if (!state.hasReminder) {
                                 R.drawable.ic_notifications_outlined
                             } else R.drawable.ic_notifications_filled,
-                        onClick = { onToggleReminder(!state.hasReminder) },
+                        onClick = {
+                            if (
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                    !notificationPermissionsState.status.isGranted
+                            ) {
+                                notificationPermissionsState.launchPermissionRequest()
+                                return@TogaIconButton
+                            }
+
+                            if (
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                    !notificationPermissionsState.status.shouldShowRationale
+                            ) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = context.getString(R.string.permission_required),
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                                return@TogaIconButton
+                            }
+                            onToggleReminder(!state.hasReminder)
+                        },
                         contentDescription = R.string.toggle_reminder,
                         tint =
                             if (!state.hasReminder) {

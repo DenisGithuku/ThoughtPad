@@ -16,6 +16,11 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.core.app.AlarmManagerCompat
 import com.gitsoft.thoughtpad.core.common.safeDbCall
 import com.gitsoft.thoughtpad.core.common.safeDbReactiveDataRead
 import com.gitsoft.thoughtpad.core.database.NotesDatabaseDao
@@ -23,10 +28,15 @@ import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
+import core.gitsoft.thoughtpad.core.data.AlarmReceiver
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
-internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDao) :
-    NotesRepository {
+internal class NotesRepositoryImpl(
+    private val notesDatabaseDao: NotesDatabaseDao,
+    private val userPrefsRepository: UserPrefsRepository,
+    private val context: Context
+) : NotesRepository {
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
         get() = notesDatabaseDao.loadAllNotes().safeDbReactiveDataRead { emptyList() }
 
@@ -39,7 +49,18 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
-    ): Unit = safeDbCall { notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags) }
+    ): Unit = safeDbCall {
+        notesDatabaseDao.updateNoteWithDetails(note, checklistItems, tags)
+        if (
+            note.reminderTime != null &&
+                userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted
+        ) {
+            setTaskReminder(
+                alarmTime = note.reminderTime ?: return@safeDbCall,
+                taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"
+            )
+        }
+    }
 
     override suspend fun insertTags(tags: List<Tag>) = safeDbCall {
         notesDatabaseDao.insertTags(tags)
@@ -56,7 +77,19 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
         note: Note,
         checklistItems: List<CheckListItem>,
         tags: List<Tag>
-    ): Long = safeDbCall { notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags) }
+    ): Long = safeDbCall {
+        val noteId = notesDatabaseDao.insertNoteWithDetails(note, checklistItems, tags)
+        if (
+            note.reminderTime != null &&
+                userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted
+        ) {
+            setTaskReminder(
+                alarmTime = note.reminderTime ?: return@safeDbCall noteId,
+                taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"
+            )
+        }
+        noteId
+    }
 
     override suspend fun getNoteById(id: Long): Note = safeDbCall { notesDatabaseDao.getNoteById(id) }
 
@@ -66,5 +99,20 @@ internal class NotesRepositoryImpl(private val notesDatabaseDao: NotesDatabaseDa
 
     override suspend fun deleteNoteById(id: Long): Int = safeDbCall {
         notesDatabaseDao.deleteNoteWithDetails(id)
+    }
+
+    private fun setTaskReminder(alarmTime: Long, taskTitle: String) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent =
+            Intent(context, AlarmReceiver::class.java).apply { putExtra("Reminder", taskTitle) }
+
+        val pendingIntent =
+            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        AlarmManagerCompat.setExactAndAllowWhileIdle(
+            alarmManager,
+            AlarmManager.RTC_WAKEUP,
+            alarmTime,
+            pendingIntent
+        )
     }
 }

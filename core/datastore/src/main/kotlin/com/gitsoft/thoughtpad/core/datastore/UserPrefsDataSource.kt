@@ -31,7 +31,9 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
             preferences.data.map {
                 UserPreferences(
                     themeConfig =
-                        ThemeConfig.valueOf(it[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.SYSTEM.name)
+                        ThemeConfig.valueOf(it[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.SYSTEM.name),
+                    isNotificationPermissionsGranted =
+                        it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() ?: false
                 )
             }
 
@@ -46,8 +48,13 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
     suspend fun updateTheme(themeConfig: ThemeConfig) {
         updateValue(PreferencesKeys.THEME_CONFIG, themeConfig.name)
     }
+
+    suspend fun updateNotificationPermission(isGranted: Boolean) {
+        updateValue(PreferencesKeys.NOTIFICATION_PERMISSION, isGranted.toString())
+    }
 }
 
 private object PreferencesKeys {
     val THEME_CONFIG = stringPreferencesKey("theme_config")
+    val NOTIFICATION_PERMISSION = stringPreferencesKey("notification_permission")
 }

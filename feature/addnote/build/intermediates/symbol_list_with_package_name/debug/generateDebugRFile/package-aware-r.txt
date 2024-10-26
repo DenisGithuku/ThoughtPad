@@ -26,6 +26,7 @@ string no_tags
 string note_content
 string note_title
 string note_title_color
+string permission_required
 string pin
 string remind_me_later
 string reminder_me_at

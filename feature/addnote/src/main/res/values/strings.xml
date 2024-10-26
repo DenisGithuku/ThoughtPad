@@ -24,4 +24,5 @@
     <string name="remind_me_later">Remind me later</string>
     <string name="note_title_color">Select note color</string>
     <string name="empty_note_discarded">Empty note discarded!</string>
+    <string name="permission_required">Scheduling permission required. Please allow in settings</string>
 </resources>

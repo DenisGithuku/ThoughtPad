@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 class AddNoteViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository,
-    userPrefsRepository: UserPrefsRepository
+    private val userPrefsRepository: UserPrefsRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<AddNoteUiState> = MutableStateFlow(AddNoteUiState())
@@ -48,7 +48,12 @@ class AddNoteViewModel(
     val state: StateFlow<AddNoteUiState> =
         combine(_state, notesRepository.allTags, userPrefsRepository.userPrefs) { state, tags, userPrefs
                 ->
-                state.copy(defaultTags = tags, systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK)
+                Log.d("AddNoteViewModel", "state: $userPrefs")
+                state.copy(
+                    defaultTags = tags,
+                    systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK,
+                    permissionsNotificationsGranted = userPrefs.isNotificationPermissionsGranted
+                )
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddNoteUiState())
 
@@ -102,8 +107,13 @@ class AddNoteViewModel(
             is AddNoteEvent.ChangeDate -> changeDate(event.value)
             is AddNoteEvent.ChangeTime -> changeTime(event.value)
             is AddNoteEvent.DiscardNote -> onDiscardNote()
+            is AddNoteEvent.UpdateNotificationPermissions -> updatePermissionsStatus()
             AddNoteEvent.Save -> save()
         }
+    }
+
+    private fun updatePermissionsStatus() {
+        viewModelScope.launch { userPrefsRepository.updateNotificationPermission(true) }
     }
 
     private fun addCheckListItem(checkListItem: CheckListItem) {

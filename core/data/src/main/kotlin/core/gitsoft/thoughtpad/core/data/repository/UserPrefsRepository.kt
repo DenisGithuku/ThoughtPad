@@ -24,4 +24,6 @@ interface UserPrefsRepository {
     val userPrefs: Flow<UserPreferences>
 
     suspend fun updateTheme(themeConfig: ThemeConfig)
+
+    suspend fun updateNotificationPermission(isGranted: Boolean)
 }

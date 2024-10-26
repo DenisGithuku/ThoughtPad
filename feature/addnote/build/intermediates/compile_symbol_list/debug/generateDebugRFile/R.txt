@@ -25,6 +25,7 @@ int string no_tags 0x0
 int string note_content 0x0
 int string note_title 0x0
 int string note_title_color 0x0
+int string permission_required 0x0
 int string pin 0x0
 int string remind_me_later 0x0
 int string reminder_me_at 0x0

@@ -66,7 +66,8 @@ data class AddNoteUiState(
     val defaultTags: List<Tag> = emptyList(),
     val isTagSheetVisible: Boolean = false,
     val insertionSuccessful: Boolean = false,
-    val isNewNote: Boolean = true
+    val isNewNote: Boolean = true,
+    val permissionsNotificationsGranted: Boolean = false
 ) {
     val noteIsValid: Boolean
         get() {

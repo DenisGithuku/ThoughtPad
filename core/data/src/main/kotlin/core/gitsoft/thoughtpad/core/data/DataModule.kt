@@ -20,9 +20,10 @@ import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepositoryImpl
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepositoryImpl
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val dataModule = module {
     single<UserPrefsRepository> { UserPrefsRepositoryImpl(get()) }
-    single<NotesRepository> { NotesRepositoryImpl(get()) }
+    single<NotesRepository> { NotesRepositoryImpl(get(), get(), androidContext()) }
 }

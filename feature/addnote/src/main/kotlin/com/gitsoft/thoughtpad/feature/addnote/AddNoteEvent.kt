@@ -67,5 +67,7 @@ sealed interface AddNoteEvent {
 
     data object DiscardNote : AddNoteEvent
 
+    data object UpdateNotificationPermissions : AddNoteEvent
+
     data object Save : AddNoteEvent
 }

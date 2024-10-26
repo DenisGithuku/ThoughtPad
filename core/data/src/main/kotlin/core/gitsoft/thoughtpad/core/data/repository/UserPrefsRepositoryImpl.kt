@@ -30,4 +30,8 @@ class UserPrefsRepositoryImpl(private val userPrefsDataSource: UserPrefsDataSour
     override suspend fun updateTheme(themeConfig: ThemeConfig) {
         userPrefsDataSource.updateTheme(themeConfig)
     }
+
+    override suspend fun updateNotificationPermission(isGranted: Boolean) {
+        userPrefsDataSource.updateNotificationPermission(isGranted)
+    }
 }

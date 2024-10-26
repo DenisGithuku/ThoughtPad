@@ -38,8 +38,10 @@ room = "2.6.1"
 spotless-plugin-gradle = "6.25.0"
 timber = "5.0.1"
 storage = "1.4.2"
+accompanist-permissions = "0.36.0"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions"}
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-lib" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose" }
 androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
