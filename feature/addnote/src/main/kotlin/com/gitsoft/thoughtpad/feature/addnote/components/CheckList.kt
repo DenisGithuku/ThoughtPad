@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.feature.addnote.R
@@ -62,6 +63,7 @@ fun CheckList(
                 Spacer(modifier = Modifier.width(8.dp))
                 TogaMediumLabel(
                     text = item.text ?: "",
+                    textDecoration = if (item.isChecked) TextDecoration.LineThrough else TextDecoration.None,
                     modifier = Modifier.weight(1f) // Ensures the text takes the remaining space
                 )
                 TogaIconButton(

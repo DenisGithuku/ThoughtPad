@@ -21,17 +21,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 
 @Composable
 fun TogaMediumLabel(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    textDecoration: TextDecoration? = null
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.labelMedium,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }

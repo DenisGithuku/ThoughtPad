@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="about">About</string>
     <string name="add_note">Add note</string>
+    <string name="app_icon">App icon</string>
     <string name="archive">Archive</string>
+    <string name="archived">Archived</string>
     <string name="clear">Clear search</string>
     <string name="delete">Delete</string>
+    <string name="drawer_title">Your Notes Hub</string>
     <string name="edit">Edit</string>
     <string name="favourite">Favourite</string>
+    <string name="favourites">Favourites</string>
     <string name="filter_notes">Filter notes</string>
     <string name="no_notes_available">No notes available.</string>
     <string name="no_notes_found">No notes found</string>
@@ -20,6 +25,9 @@
     <string name="search">Search</string>
     <string name="settings">Settings</string>
     <string name="share">Share</string>
+    <string name="sidebar_toggle">Sidebar toggle</string>
+    <string name="tags">Tags</string>
+    <string name="trash">Trash</string>
     <string name="undo">Undo</string>
     <string name="unfavourite">Unfavourite</string>
     <string name="unpin">Unpin</string>

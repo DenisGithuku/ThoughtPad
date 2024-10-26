@@ -23,4 +23,12 @@
     <string name="note_archived">Note archived!</string>
     <string name="undo">Undo</string>
     <string name="no_notes_on_search">No notes found. Please try a searching different keyword</string>
+    <string name="drawer_title">Your Notes Hub</string>
+    <string name="archived">Archived</string>
+    <string name="favourites">Favourites</string>
+    <string name="trash">Trash</string>
+    <string name="about">About</string>
+    <string name="tags">Tags</string>
+    <string name="sidebar_toggle">Sidebar toggle</string>
+    <string name="app_icon">App icon</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +40,7 @@ fun NoNotesOnSearchIndicator(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(R.drawable.no_notes_on_search),
             contentDescription = stringResource(R.string.no_notes_on_search),
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally).size(200.dp),
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(16.dp))

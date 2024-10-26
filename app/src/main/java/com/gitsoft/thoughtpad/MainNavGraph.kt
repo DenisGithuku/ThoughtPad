@@ -71,7 +71,10 @@ fun MainNavGraph(appState: AppState) {
                         ThoughtPadDestination.Settings.route,
                         true
                     )
-                }
+                },
+                onOpenArchivedNotes = {},
+                onOpenTrash = {},
+                onOpenTags = {}
             )
         }
 

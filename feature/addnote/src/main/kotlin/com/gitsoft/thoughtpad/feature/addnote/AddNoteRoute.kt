@@ -16,10 +16,10 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.Manifest
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -67,6 +67,8 @@ import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
 import com.gitsoft.thoughtpad.feature.addnote.components.TagList
 import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -119,7 +121,6 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 internal fun AddNoteScreen(
@@ -165,7 +166,21 @@ internal fun AddNoteScreen(
     val context = LocalContext.current
 
     val notificationPermissionsState =
-        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            object : PermissionState {
+                override val permission: String
+                    get() = "android.permission.POST_NOTIFICATIONS"
+
+                override val status: PermissionStatus
+                    get() = PermissionStatus.Granted
+
+                override fun launchPermissionRequest() {
+                    // Not needed for devices lower than TIRAMISU
+                }
+            }
+        }
 
     LaunchedEffect(notificationPermissionsState.status) {
         if (

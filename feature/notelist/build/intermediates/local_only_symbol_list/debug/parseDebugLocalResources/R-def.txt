@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+drawable app_icon
 drawable ic_add
 drawable ic_add_circle
 drawable ic_archive
@@ -15,14 +16,21 @@ drawable ic_reminder
 drawable ic_search
 drawable ic_settings
 drawable ic_share
+drawable ic_side_menu
+drawable ic_tag
 drawable no_notes_on_search
 raw no_notes
+string about
 string add_note
+string app_icon
 string archive
+string archived
 string clear
 string delete
+string drawer_title
 string edit
 string favourite
+string favourites
 string filter_notes
 string no_notes_available
 string no_notes_found
@@ -37,6 +45,9 @@ string reminder
 string search
 string settings
 string share
+string sidebar_toggle
+string tags
+string trash
 string undo
 string unfavourite
 string unpin
