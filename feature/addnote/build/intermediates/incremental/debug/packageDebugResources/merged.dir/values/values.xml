@@ -15,9 +15,12 @@
     <string name="no_tags">No tags selected</string>
     <string name="note_content">Content</string>
     <string name="note_title">Title</string>
+    <string name="note_title_color">Select note color</string>
     <string name="pin">Pin</string>
+    <string name="remind_me_later">Remind me later</string>
     <string name="reminder_me_at">Remind me</string>
     <string name="save">Save</string>
+    <string name="select_date">Today at</string>
     <string name="toggle_reminder">Toggle reminder</string>
     <string name="update">Update</string>
 </resources>

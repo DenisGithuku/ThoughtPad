@@ -18,6 +18,7 @@ package core.gitsoft.thoughtpad.core.toga.components.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -81,6 +82,7 @@ fun TimePickerDialog(
     content: @Composable () -> Unit
 ) {
     AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = onDismiss,
         dismissButton = { TogaTextButton(onClick = onDismiss, text = R.string.dimiss) },
         confirmButton = {

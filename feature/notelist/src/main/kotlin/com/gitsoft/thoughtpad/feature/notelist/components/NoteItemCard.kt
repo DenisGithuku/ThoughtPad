@@ -23,7 +23,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,13 +49,11 @@ import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
 import core.gitsoft.thoughtpad.core.toga.theme.MidnightInk
 import core.gitsoft.thoughtpad.core.toga.theme.SnowDrift
-import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
 import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import java.time.Instant
 import java.time.LocalDate
@@ -71,8 +68,7 @@ fun NoteItemCard(
     noteData: DataWithNotesCheckListItemsAndTags,
     isSelected: Boolean,
     onClick: () -> Unit,
-    onLongClick: () -> Unit,
-    onToggleFavourite: (Boolean) -> Unit
+    onLongClick: () -> Unit
 ) {
     val borderColor by
         animateColorAsState(
@@ -132,27 +128,9 @@ fun NoteItemCard(
                 .combinedClickable(onClick = onClick, onLongClick = onLongClick)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Note title
-                noteData.note.noteTitle?.let { title ->
-                    TogaSmallTitle(modifier = Modifier.weight(1f), text = title, maxLines = 1)
-                }
-
-                TogaIconButton(
-                    onClick = { onToggleFavourite(!noteData.note.isFavorite) },
-                    icon =
-                        if (noteData.note.isFavorite) {
-                            R.drawable.ic_favourite_filled
-                        } else R.drawable.ic_favourite,
-                    contentDescription =
-                        if (noteData.note.isFavorite) R.string.favourite else R.string.unfavourite,
-                    tint =
-                        if (noteData.note.isFavorite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            // Note title
+            noteData.note.noteTitle?.let { title ->
+                TogaSmallTitle(modifier = Modifier.fillMaxWidth(), text = title, maxLines = 1)
             }
 
             // Note text

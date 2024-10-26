@@ -60,7 +60,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieCompositionFactory
@@ -221,12 +220,14 @@ internal fun NoteListScreen(
                         NoteActionBottomSheet(
                             noteId = state.selectedNote.noteId,
                             isPinned = state.selectedNote.isPinned,
+                            isFavourite = state.selectedNote.isFavorite,
                             onEdit = {
                                 onCreateNewNote(it)
                                 onToggleSelectedNote(null)
                                 onToggleFilterDialog(false)
                             },
                             onTogglePin = onToggleNotePin,
+                            onToggleFavourite = onToggleNoteFavourite,
                             onShare = {},
                             onArchive = {
                                 onToggleArchiveNote(ArchiveState(isArchived = true, noteId = it))
@@ -283,8 +284,7 @@ internal fun NoteListScreen(
                                     onLongClick = {
                                         onToggleSelectedNote(noteData.note)
                                         onToggleFilterDialog(true)
-                                    },
-                                    onToggleFavourite = { onToggleNoteFavourite(noteData.note.noteId, it) }
+                                    }
                                 )
                             }
                             item(span = StaggeredGridItemSpan.FullLine) {
@@ -312,8 +312,7 @@ internal fun NoteListScreen(
                                     onLongClick = {
                                         onToggleSelectedNote(noteData.note)
                                         onToggleFilterDialog(true)
-                                    },
-                                    onToggleFavourite = { onToggleNoteFavourite(noteData.note.noteId, it) }
+                                    }
                                 )
                             }
                         }
@@ -323,7 +322,7 @@ internal fun NoteListScreen(
 
             AnimatedVisibility(
                 visible = isAddNoteButtonVisible,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 16.dp, end = 16.dp),
                 enter =
                     scaleIn(
                         initialScale = 0.6f, // Start smaller for a zoom-in effect
@@ -365,5 +364,3 @@ fun TopRow(query: String, onOpenSettings: () -> Unit, onQueryChange: (String) ->
         )
     }
 }
-
-data class NoteListItem(val id: Long, val title: String, val content: String, val color: Color)

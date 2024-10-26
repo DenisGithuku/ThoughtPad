@@ -29,6 +29,7 @@ data class AddNoteUiState(
     val hasReminder: Boolean = false,
     val timeDialogIsVisible: Boolean = false,
     val dateDialogIsVisible: Boolean = false,
+    val isDateSheetVisible: Boolean = false,
     val selectedDate: Long? = null,
     val hasTags: Boolean = false,
     val systemInDarkMode: Boolean = false,

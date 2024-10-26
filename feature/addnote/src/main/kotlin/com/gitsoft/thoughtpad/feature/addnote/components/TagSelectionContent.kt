@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -57,7 +58,7 @@ import core.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TagSelectionBottomSheet(
+fun TagSelectionContent(
     isSystemInDarkTheme: Boolean,
     existingTags: List<Tag>,
     selectedTags: List<Tag>,
@@ -101,6 +102,7 @@ fun TagSelectionBottomSheet(
         ) {
             existingTags.forEach { tag ->
                 TogaInputChip(
+                    modifier = Modifier.height(48.dp),
                     text = tag.name ?: "",
                     isSelected = selectedTags.any { it isTheSameAs tag },
                     onSelectChanged = { onToggleTagSelection(tag) },

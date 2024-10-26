@@ -17,8 +17,11 @@
 package core.gitsoft.thoughtpad.core.toga.components.scaffold
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.imeAnimationTarget
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,7 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaStandardTopAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TogaStandardScaffold(
     @StringRes title: Int? = null,
@@ -52,7 +55,8 @@ fun TogaStandardScaffold(
             )
         },
         floatingActionButton = floatingActionButton,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
+        contentWindowInsets = WindowInsets.imeAnimationTarget
     ) { innerPadding ->
         content(innerPadding)
     }

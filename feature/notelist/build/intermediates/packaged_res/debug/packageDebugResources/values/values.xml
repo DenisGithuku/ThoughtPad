@@ -14,7 +14,7 @@
     <string name="note_deleted">Note deleted!</string>
     <string name="notes_list_title">My Notes</string>
     <string name="other_notes">Other</string>
-    <string name="pin">Pin note</string>
+    <string name="pin">Pin</string>
     <string name="pinned_notes">Pinned</string>
     <string name="reminder">Reminder time</string>
     <string name="search">Search</string>
@@ -22,5 +22,5 @@
     <string name="share">Share</string>
     <string name="undo">Undo</string>
     <string name="unfavourite">Unfavourite</string>
-    <string name="unpin">Unpin note</string>
+    <string name="unpin">Unpin</string>
 </resources>

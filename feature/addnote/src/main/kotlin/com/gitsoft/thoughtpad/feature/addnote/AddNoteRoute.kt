@@ -37,7 +37,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -55,9 +54,10 @@ import com.gitsoft.thoughtpad.core.model.TagColor
 import com.gitsoft.thoughtpad.feature.addnote.components.CheckList
 import com.gitsoft.thoughtpad.feature.addnote.components.ColorPill
 import com.gitsoft.thoughtpad.feature.addnote.components.NoteColorPicker
+import com.gitsoft.thoughtpad.feature.addnote.components.ReminderContent
 import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
 import com.gitsoft.thoughtpad.feature.addnote.components.TagList
-import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionBottomSheet
+import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionContent
 import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBottomAppBar
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
@@ -65,6 +65,7 @@ import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaDatePickerDialog
 import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaTimePickerDialog
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
 import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import core.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import java.util.Calendar
@@ -98,7 +99,8 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
         onToggleTagSheet = { viewModel.onEvent(AddNoteEvent.ToggleTagSheet(it)) },
         onToggleTimeDialog = { viewModel.onEvent(AddNoteEvent.ToggleTimeDialog(it)) },
         onChangeDate = { viewModel.onEvent(AddNoteEvent.ChangeDate(it)) },
-        onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) }
+        onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) },
+        onToggleDateSheet = { viewModel.onEvent(AddNoteEvent.ToggleDateSheet(it)) }
     )
 }
 
@@ -127,6 +129,7 @@ internal fun AddNoteScreen(
     onToggleDateDialog: (Boolean) -> Unit,
     onToggleTimeDialog: (Boolean) -> Unit,
     onToggleTagSheet: (Boolean) -> Unit,
+    onToggleDateSheet: (Boolean) -> Unit,
     onCheckListItemCheckedChange: (CheckListItem, Boolean) -> Unit
 ) {
     val navigateToNoteList by rememberUpdatedState(onNavigateBack)
@@ -162,8 +165,8 @@ internal fun AddNoteScreen(
     }
 
     if (state.isTagSheetVisible) {
-        ModalBottomSheet(onDismissRequest = { onToggleTagSheet(false) }) {
-            TagSelectionBottomSheet(
+        TogaModalBottomSheet(onDismissRequest = { onToggleTagSheet(false) }) {
+            TagSelectionContent(
                 isSystemInDarkTheme = state.systemInDarkMode,
                 existingTags = state.defaultTags,
                 selectedTags = state.selectedTags,
@@ -211,8 +214,9 @@ internal fun AddNoteScreen(
         bottomBar = {
             TogaBottomAppBar(
                 containerColor =
-                    if (state.systemInDarkMode) state.selectedNoteColor.darkColor.toComposeColor()
-                    else state.selectedNoteColor.lightColor.toComposeColor(),
+                    if (state.systemInDarkMode) {
+                        state.selectedNoteColor.darkColor.toComposeColor()
+                    } else state.selectedNoteColor.lightColor.toComposeColor(),
                 actions = {
                     TogaIconButton(
                         icon = R.drawable.ic_paint,
@@ -238,28 +242,51 @@ internal fun AddNoteScreen(
         appBarColors =
             TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor =
-                    if (state.systemInDarkMode) state.selectedNoteColor.darkColor.toComposeColor()
-                    else state.selectedNoteColor.lightColor.toComposeColor()
+                    if (state.systemInDarkMode) {
+                        state.selectedNoteColor.darkColor.toComposeColor()
+                    } else state.selectedNoteColor.lightColor.toComposeColor()
             )
     ) { innerPadding ->
         if (state.isColorVisible) {
-            ModalBottomSheet(onDismissRequest = { onToggleColorBar(false) }) {
+            TogaModalBottomSheet(onDismissRequest = { onToggleColorBar(false) }) {
                 NoteColorPicker(
                     modifier = Modifier.padding(PaddingValues(16.dp)),
                     isDarkTheme = state.systemInDarkMode,
                     selectedColor = state.selectedNoteColor,
                     colors = state.noteColors,
-                    onChangeColor = onChangeNoteColor
+                    onChangeColor = onChangeNoteColor,
+                    onDismissRequest = { onToggleColorBar(false) }
                 )
             }
         }
+
+        if (state.isDateSheetVisible) {
+            TogaModalBottomSheet(
+                onDismissRequest = { onToggleDateSheet(false) },
+                content = {
+                    ReminderContent(
+                        onDateSelected = {
+                            if (it != null) {
+                                onChangeDate(it)
+                                onChangeTime(it)
+                            } else {
+                                onToggleDateDialog(true)
+                            }
+                            onToggleDateSheet(false)
+                        }
+                    )
+                }
+            )
+        }
+
         LazyColumn(
             modifier =
                 Modifier.fillMaxSize()
                     .padding(innerPadding)
                     .background(
-                        if (state.systemInDarkMode) state.selectedNoteColor.darkColor.toComposeColor()
-                        else state.selectedNoteColor.lightColor.toComposeColor()
+                        if (state.systemInDarkMode) {
+                            state.selectedNoteColor.darkColor.toComposeColor()
+                        } else state.selectedNoteColor.lightColor.toComposeColor()
                     ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -323,8 +350,8 @@ internal fun AddNoteScreen(
                 AnimatedVisibility(
                     modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
                     visible = state.hasTags,
-                    enter = scaleIn(initialScale = 0.5f) + fadeIn(initialAlpha = 0.3f),
-                    exit = scaleOut(targetScale = 0.5f) + fadeOut(targetAlpha = 0.3f)
+                    enter = fadeIn(initialAlpha = 0.3f),
+                    exit = fadeOut(targetAlpha = 0.3f)
                 ) {
                     TagList(
                         isSystemInDarkTheme = state.systemInDarkMode,
@@ -367,8 +394,9 @@ fun TagColorPicker(
         items(items = colors, key = { it.ordinal }) { colorValue ->
             ColorPill(
                 color =
-                    if (isDarkTheme) colorValue.darkColor.toComposeColor()
-                    else colorValue.lightColor.toComposeColor(),
+                    if (isDarkTheme) {
+                        colorValue.darkColor.toComposeColor()
+                    } else colorValue.lightColor.toComposeColor(),
                 isSelected = colorValue == selectedColor,
                 onSelect = {
                     onColorSelected(

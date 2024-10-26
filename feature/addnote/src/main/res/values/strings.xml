@@ -20,4 +20,7 @@
     <string name="reminder_me_at">Remind me</string>
     <string name="at">at</string>
     <string name="new_tag_added">New tag added</string>
+    <string name="select_date">Today at</string>
+    <string name="remind_me_later">Remind me later</string>
+    <string name="note_title_color">Select note color</string>
 </resources>

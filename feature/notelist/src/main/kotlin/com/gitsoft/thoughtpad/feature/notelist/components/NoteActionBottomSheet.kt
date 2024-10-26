@@ -36,14 +36,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.R
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteActionBottomSheet(
     noteId: Long,
     isPinned: Boolean,
+    isFavourite: Boolean,
     onEdit: (Long) -> Unit,
     onTogglePin: (Long, Boolean) -> Unit,
+    onToggleFavourite: (Long, Boolean) -> Unit,
     onDelete: (Long) -> Unit,
     onShare: (Long) -> Unit,
     onArchive: (Long) -> Unit,
@@ -69,6 +72,12 @@ fun NoteActionBottomSheet(
             onClick = { onTogglePin(noteId, !isPinned) },
             icon = if (isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
             iconTint = pinIconColor
+        )
+        NoteAction(
+            title = stringResource(id = if (isFavourite) R.string.unfavourite else R.string.favourite),
+            onClick = { onToggleFavourite(noteId, !isFavourite) },
+            icon = if (isFavourite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite,
+            iconTint = if (isFavourite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
         )
         NoteAction(
             title = stringResource(R.string.delete),

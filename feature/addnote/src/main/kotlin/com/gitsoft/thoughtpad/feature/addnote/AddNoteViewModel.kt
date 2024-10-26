@@ -90,6 +90,7 @@ class AddNoteViewModel(
             is AddNoteEvent.ToggleTags -> toggleTags(event.value)
             is AddNoteEvent.ToggleColorBar -> toggleColorBar(event.value)
             is AddNoteEvent.TogglePin -> togglePin(event.value)
+            is AddNoteEvent.ToggleDateSheet -> toggleDateSheet(event.value)
             is AddNoteEvent.ToggleReminders -> toggleReminders(event.value)
             is AddNoteEvent.CheckListItemCheckedChange ->
                 onCheckedChange(event.checkListItem, event.checked)
@@ -210,15 +211,19 @@ class AddNoteViewModel(
         val defaultReminderTime =
             Calendar.getInstance()
                 .apply {
-                    set(Calendar.HOUR_OF_DAY, this.get(Calendar.HOUR_OF_DAY) + 1)
-                    set(Calendar.MINUTE, 30)
+                    set(Calendar.MINUTE, get(Calendar.MINUTE) + 30)
                     set(Calendar.SECOND, 0)
                     set(Calendar.MILLISECOND, 0)
                 }
                 .timeInMillis
         _state.update {
-            it.copy(hasReminder = value, selectedDate = it.selectedDate ?: defaultReminderTime)
+            it.copy(hasReminder = value, selectedDate = if (!value) null else defaultReminderTime)
         }
+        toggleDateSheet(value)
+    }
+
+    private fun toggleDateSheet(value: Boolean) {
+        _state.update { it.copy(isDateSheetVisible = value) }
     }
 
     private fun changeText(value: String) {

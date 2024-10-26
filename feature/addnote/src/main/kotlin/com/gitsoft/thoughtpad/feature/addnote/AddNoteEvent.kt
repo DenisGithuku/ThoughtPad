@@ -50,6 +50,8 @@ sealed interface AddNoteEvent {
 
     data class ToggleReminders(val value: Boolean) : AddNoteEvent
 
+    data class ToggleDateSheet(val value: Boolean) : AddNoteEvent
+
     data class CheckListItemCheckedChange(val checkListItem: CheckListItem, val checked: Boolean) :
         AddNoteEvent
 

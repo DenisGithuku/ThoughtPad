@@ -8,6 +8,7 @@ drawable ic_notifications_outlined
 drawable ic_paint
 drawable ic_pin
 drawable ic_pin_filled
+drawable ic_time
 drawable ic_update
 string add_new_item
 string add_new_tag
@@ -24,8 +25,11 @@ string new_tag_added
 string no_tags
 string note_content
 string note_title
+string note_title_color
 string pin
+string remind_me_later
 string reminder_me_at
 string save
+string select_date
 string toggle_reminder
 string update

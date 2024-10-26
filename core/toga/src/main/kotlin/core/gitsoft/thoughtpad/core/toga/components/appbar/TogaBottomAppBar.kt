@@ -18,7 +18,6 @@ package core.gitsoft.thoughtpad.core.toga.components.appbar
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +27,14 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun TogaBottomAppBar(
+    modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     containerColor: Color = MaterialTheme.colorScheme.background
 ) {
     BottomAppBar(
-        modifier = Modifier.consumeWindowInsets(WindowInsets.ime),
+        modifier = modifier,
         actions = actions,
-        containerColor = containerColor
+        containerColor = containerColor,
+        windowInsets = WindowInsets.ime
     )
 }

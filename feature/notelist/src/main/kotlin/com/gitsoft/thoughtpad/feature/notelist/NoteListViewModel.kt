@@ -51,9 +51,15 @@ class NoteListViewModel(
 
     fun onToggleNoteFavourite(noteId: Long, isFavourite: Boolean) {
         viewModelScope.launch {
+            // Fetch the note from the database
             val note = notesRepository.getNoteById(noteId)
             val updatedNote = note.copy(isFavorite = isFavourite)
+
+            // Update the note in the database
             notesRepository.updateNote(updatedNote)
+
+            // Update the selected note in the state
+            _state.update { it.copy(selectedNote = it.selectedNote?.copy(isFavorite = isFavourite)) }
         }
     }
 

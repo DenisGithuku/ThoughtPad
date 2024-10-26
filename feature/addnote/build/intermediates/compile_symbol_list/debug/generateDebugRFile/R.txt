@@ -6,6 +6,7 @@ int drawable ic_notifications_outlined 0x0
 int drawable ic_paint 0x0
 int drawable ic_pin 0x0
 int drawable ic_pin_filled 0x0
+int drawable ic_time 0x0
 int drawable ic_update 0x0
 int string add_new_item 0x0
 int string add_new_tag 0x0
@@ -22,8 +23,11 @@ int string new_tag_added 0x0
 int string no_tags 0x0
 int string note_content 0x0
 int string note_title 0x0
+int string note_title_color 0x0
 int string pin 0x0
+int string remind_me_later 0x0
 int string reminder_me_at 0x0
 int string save 0x0
+int string select_date 0x0
 int string toggle_reminder 0x0
 int string update 0x0
