@@ -54,13 +54,7 @@ fun TogaInputChip(
         modifier =
             modifier
                 .clip(MaterialTheme.shapes.extraLarge)
-                .background(
-                    if (color != null) {
-                        color.toComposeColor()
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    }
-                )
+                .background(color?.toComposeColor() ?: MaterialTheme.colorScheme.surfaceVariant)
                 .clickable(onClick = { onSelectChanged(!isSelected) }),
         contentAlignment = Alignment.Center
     ) {
@@ -69,7 +63,7 @@ fun TogaInputChip(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TogaMediumLabel(text = text, color = MaterialTheme.colorScheme.onSurface)
+            TogaMediumLabel(text = text)
             AnimatedVisibility(
                 visible = isSelected,
                 enter = scaleIn(initialScale = 0.5f) + fadeIn(initialAlpha = 0.3f),

@@ -36,7 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import core.gitsoft.thoughtpad.core.toga.tags.TagInfoType
 import core.gitsoft.thoughtpad.core.toga.tags.TogaInfoTag
 import core.gitsoft.thoughtpad.core.toga.theme.Error
@@ -112,7 +112,7 @@ fun NoteAction(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(painter = painterResource(id = icon), contentDescription = title, tint = color)
-            TogaSmallBody(modifier = Modifier.padding(start = 8.dp), text = title, color = color)
+            TogaMediumBody(modifier = Modifier.padding(start = 8.dp), text = title, color = color)
         }
         if (textTag != null) {
             TogaInfoTag(text = stringResource(textTag), tagInfoType = TagInfoType.SUCCESS)

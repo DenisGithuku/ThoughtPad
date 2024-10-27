@@ -83,7 +83,7 @@ fun DrawerContent(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
                         selectedBadgeColor = MaterialTheme.colorScheme.secondary,
-                        unselectedTextColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                         unselectedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                         unselectedBadgeColor = MaterialTheme.colorScheme.onSurface
                     ),

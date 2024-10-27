@@ -49,6 +49,10 @@ interface NotesRepository {
 
     suspend fun insertTag(tag: Tag): Long
 
+    suspend fun updateTag(tag: Tag): Int
+
+    suspend fun deleteTag(tag: Tag): Int
+
     suspend fun getTagById(tagId: Long): Tag
 
     val allTags: Flow<List<Tag>>

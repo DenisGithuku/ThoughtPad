@@ -26,6 +26,7 @@ import com.gitsoft.thoughtpad.core.database.databaseModule
 import com.gitsoft.thoughtpad.core.datastore.prefsModule
 import com.gitsoft.thoughtpad.feature.addnote.addNoteModule
 import com.gitsoft.thoughtpad.feature.notelist.noteListModule
+import com.gitsoft.thoughtpad.feature.tags.tagModule
 import com.gitsoft.thougtpad.feature.settings.settingsModule
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.sessions.BuildConfig
@@ -49,7 +50,8 @@ class ThoughtPadApplication : Application() {
                 prefsModule,
                 settingsModule,
                 noteListModule,
-                addNoteModule
+                addNoteModule,
+                tagModule
             )
         }
 

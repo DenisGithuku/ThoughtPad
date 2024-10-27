@@ -38,7 +38,7 @@ fun TogaPrimaryButton(
     colors: ButtonColors =
         ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            disabledContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+            disabledContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
             contentColor = MaterialTheme.colorScheme.onPrimary,
             disabledContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
         ),

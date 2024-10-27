@@ -55,7 +55,7 @@ fun TogaFilterChip(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TogaMediumLabel(text = text, color = MaterialTheme.colorScheme.onSurface)
+            TogaMediumLabel(text = text)
             Icon(
                 painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = null,

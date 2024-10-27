@@ -68,4 +68,6 @@ open class ThoughtPadDestination(val route: String) {
     data object Splash : ThoughtPadDestination(route = "splash")
 
     data object Settings : ThoughtPadDestination(route = "settings")
+
+    data object Tags : ThoughtPadDestination(route = "tags")
 }

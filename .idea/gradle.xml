@@ -36,6 +36,7 @@
             <option value="$PROJECT_DIR$/feature/addnote" />
             <option value="$PROJECT_DIR$/feature/notelist" />
             <option value="$PROJECT_DIR$/feature/settings" />
+            <option value="$PROJECT_DIR$/feature/tags" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

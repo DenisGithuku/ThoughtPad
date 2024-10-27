@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tag_route_title">Your tags</string>
+    <string name="edit">Edit</string>
+    <string name="new_tag">New tag</string>
+    <string name="add_new_tag">Add new tag</string>
+    <string name="new_tag_added">New tag added!</string>
+    <string name="add_tag">Add tag</string>
+    <string name="update">Update</string>
+    <string name="tag_updated">Tag updated</string>
+    <string name="no_tags">No tags added.</string>
+    <string name="tag_deleted">Tag deleted!</string>
+    <string name="undo">Undo</string>
+    <string name="fetching_tags">Fetching tags</string>
+</resources>

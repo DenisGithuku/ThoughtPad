@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":feature:notelist"))
     implementation(project(":feature:addnote"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:tags"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))

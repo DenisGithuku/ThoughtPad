@@ -102,7 +102,7 @@ fun TagSelectionContent(
         ) {
             existingTags.forEach { tag ->
                 TogaInputChip(
-                    modifier = Modifier.height(48.dp),
+                    modifier = Modifier.height(36.dp),
                     text = tag.name ?: "",
                     isSelected = selectedTags.any { it isTheSameAs tag },
                     onSelectChanged = { onToggleTagSelection(tag) },

@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun TogaBouncingDots(
     modifier: Modifier = Modifier,
     dotSize: Dp = 10.dp,
-    animationDelay: Int = 1500,
+    animationDelay: Int = 300,
     dotColor: Color = MaterialTheme.colorScheme.primary,
     dotCount: Int = 3 // Allow flexibility for the number of dots
 ) {

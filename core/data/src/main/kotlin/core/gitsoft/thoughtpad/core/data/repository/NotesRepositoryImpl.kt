@@ -118,6 +118,12 @@ internal class NotesRepositoryImpl(
         notesDatabaseDao.deleteNoteWithDetails(id)
     }
 
+    override suspend fun updateTag(tag: Tag): Int = safeDbCall { notesDatabaseDao.updateTag(tag) }
+
+    override suspend fun deleteTag(tag: Tag): Int = safeDbCall {
+        notesDatabaseDao.deleteTagWithNoteAssociation(tag)
+    }
+
     private fun setTaskReminder(alarmTime: Long, taskTitle: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent =

@@ -23,19 +23,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
+import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 
 @Composable
-fun TogaInfoChip(modifier: Modifier = Modifier, text: String, color: Long? = null) {
+fun TogaInfoChip(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Long? = null,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
+) {
     Box(
-        modifier = modifier.clip(MaterialTheme.shapes.extraLarge).background(Color(color ?: 0xFFE0E0E0))
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(color = color?.toComposeColor() ?: MaterialTheme.colorScheme.onSurface)
     ) {
         TogaMediumLabel(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             text = text,
-            color = MaterialTheme.colorScheme.onSurface
+            style = textStyle
         )
     }
 }

@@ -67,6 +67,19 @@ interface NotesDatabaseDao {
 
     @Update suspend fun updateTag(tag: Tag): Int
 
+    @Delete suspend fun deleteTag(tag: Tag): Int
+
+    @Transaction
+    suspend fun deleteTagWithNoteAssociation(tag: Tag): Int {
+        // Delete tag
+        val isDeleted = deleteTag(tag)
+
+        // Delete all cross refs to note for that tag
+        deleteTagCrossRefsForNote(tag.tagId)
+
+        return isDeleted
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertTag(tag: Tag): Long
 
     @Query("SELECT * FROM noteTags WHERE tagId = :id") suspend fun getTag(id: Long): Tag
@@ -150,6 +163,9 @@ interface NotesDatabaseDao {
     // Method to delete existing tag associations for the note
     @Query("DELETE FROM NoteTagCrossRef WHERE noteId = :noteId")
     suspend fun deleteNoteTagCrossRefsForNoteId(noteId: Long)
+
+    @Query("DELETE FROM NoteTagCrossRef WHERE tagId = :tagId")
+    suspend fun deleteTagCrossRefsForNote(tagId: Long)
 
     @Query("SELECT * FROM checklist WHERE noteId = :noteId")
     fun getChecklistItemsForNoteId(noteId: Long): Flow<List<CheckListItem>>

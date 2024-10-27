@@ -77,6 +77,8 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteNoteTagCrossRefsForNoteId;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteTagCrossRefsForNote;
+
   private final SharedSQLiteStatement __preparedStmtOfDeleteChecklistItemsByNoteId;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteNoteById;
@@ -338,6 +340,14 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
         return _query;
       }
     };
+    this.__preparedStmtOfDeleteTagCrossRefsForNote = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM NoteTagCrossRef WHERE tagId = ?";
+        return _query;
+      }
+    };
     this.__preparedStmtOfDeleteChecklistItemsByNoteId = new SharedSQLiteStatement(__db) {
       @Override
       @NonNull
@@ -505,6 +515,25 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
+  public Object deleteTag(final Tag tag, final Continuation<? super Integer> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
+      @Override
+      @NonNull
+      public Integer call() throws Exception {
+        int _total = 0;
+        __db.beginTransaction();
+        try {
+          _total += __deletionAdapterOfTag.handle(tag);
+          __db.setTransactionSuccessful();
+          return _total;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object updateNote(final Note note, final Continuation<? super Integer> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
       @Override
@@ -581,6 +610,12 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
   }
 
   @Override
+  public Object deleteTagWithNoteAssociation(final Tag tag,
+      final Continuation<? super Integer> $completion) {
+    return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.deleteTagWithNoteAssociation(NotesDatabaseDao_Impl.this, tag, __cont), $completion);
+  }
+
+  @Override
   public Object insertNoteWithDetails(final Note note, final List<CheckListItem> checklistItems,
       final List<Tag> tags, final Continuation<? super Long> $completion) {
     return RoomDatabaseKt.withTransaction(__db, (__cont) -> NotesDatabaseDao.DefaultImpls.insertNoteWithDetails(NotesDatabaseDao_Impl.this, note, checklistItems, tags, __cont), $completion);
@@ -619,6 +654,32 @@ public final class NotesDatabaseDao_Impl implements NotesDatabaseDao {
           }
         } finally {
           __preparedStmtOfDeleteNoteTagCrossRefsForNoteId.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteTagCrossRefsForNote(final long tagId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteTagCrossRefsForNote.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, tagId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteTagCrossRefsForNote.release(_stmt);
         }
       }
     }, $completion);

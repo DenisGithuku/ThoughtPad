@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.gitsoft.thoughtpad.feature.addnote.AddNoteRoute
 import com.gitsoft.thoughtpad.feature.notelist.NoteListRoute
+import com.gitsoft.thoughtpad.feature.tags.TagRoute
 import com.gitsoft.thougtpad.feature.settings.SettingsRoute
 
 @Composable
@@ -72,7 +73,13 @@ fun MainNavGraph(appState: AppState) {
                         true
                     )
                 },
-                onOpenTags = {}
+                onOpenTags = {
+                    appState.navigate(
+                        ThoughtPadDestination.Tags.route,
+                        ThoughtPadDestination.Tags.route,
+                        true
+                    )
+                }
             )
         }
 
@@ -101,6 +108,16 @@ fun MainNavGraph(appState: AppState) {
             route = ThoughtPadDestination.Settings.route
         ) {
             SettingsRoute(onNavigateBack = { appState.popBackStack() })
+        }
+
+        composable(
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) + fadeOut() },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) + fadeIn() },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+            route = ThoughtPadDestination.Tags.route
+        ) {
+            TagRoute(onNavigateBack = { appState.popBackStack() })
         }
     }
 }
