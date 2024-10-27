@@ -72,8 +72,6 @@ fun MainNavGraph(appState: AppState) {
                         true
                     )
                 },
-                onOpenArchivedNotes = {},
-                onOpenTrash = {},
                 onOpenTags = {}
             )
         }

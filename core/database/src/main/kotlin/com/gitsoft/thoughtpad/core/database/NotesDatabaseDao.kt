@@ -16,7 +16,6 @@
 */
 package com.gitsoft.thoughtpad.core.database
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -95,7 +94,6 @@ interface NotesDatabaseDao {
                 CheckListItem(noteId = noteId, text = it.text, isChecked = it.isChecked)
             }
 
-        Log.d("NotesDatabaseDao", "Checklist items: $updatedCheckListItems")
         insertChecklistItems(updatedCheckListItems)
 
         // Now insert the relation between the note and the tags in the cross-reference table

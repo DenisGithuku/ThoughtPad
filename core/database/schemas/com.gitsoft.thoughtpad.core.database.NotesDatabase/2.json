@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "24b251698b1e2c5fb743a4a6a19fd894",
+    "identityHash": "a2f2bd43cddd91cce007e5296d9d56b8",
     "entities": [
       {
         "tableName": "notes_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `noteTitle` TEXT, `noteText` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `isPinned` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL, `color` TEXT NOT NULL, `isDeleted` INTEGER NOT NULL, `isCheckList` INTEGER NOT NULL, `reminderTime` INTEGER, `attachments` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "noteId",
@@ -54,12 +54,6 @@
             "fieldPath": "color",
             "columnName": "color",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isFavorite",
-            "columnName": "isFavorite",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -252,7 +246,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24b251698b1e2c5fb743a4a6a19fd894')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a2f2bd43cddd91cce007e5296d9d56b8')"
     ]
   }
 }

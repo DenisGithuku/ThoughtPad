@@ -19,7 +19,7 @@ package core.gitsoft.thoughtpad.core.toga.theme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
-// Light Theme
+// Light App Theme
 val SavvyBlue = Color(0xFF0A4DE0)
 val SavvyBlueLight = Color(0xFFDCE3FF)
 val SavvyBlueDark = Color(0xFF001B6A)
@@ -31,7 +31,7 @@ val MidnightInk = Color(0xFF000000)
 val CrystalWhite = Color(0xFFFFFFFF)
 val SmokyGray = Color(0xFF1A1A1A)
 
-// Dark Theme
+// Dark App Theme
 val SavvyBlueDarkMode = Color(0xFF5989FF)
 val SavvyBlueOnDark = Color(0xFF00248C)
 val SavvyBlueContainerDark = Color(0xFF002D6C)
@@ -64,7 +64,7 @@ val TagBlueDark = Color(0xFF1E88E5)
 val TagPurpleDark = Color(0xFF8E24AA)
 val TagBrownDark = Color(0xFF6D4C41)
 
-// Light Background Colors
+// Light Note Background Colors
 val LightGray = Color(0xFFF5F5F5) // Light Gray
 val SoftBlue = Color(0xFF84C9FB) // Soft Blue
 val PaleGreen = Color(0xFFD9EAD3) // Pale Green
@@ -76,7 +76,7 @@ val SoftCoral = Color(0xFFFF6F61) // Soft Coral
 val LightCyan = Color(0xFFE0F7FA) // Light Cyan
 val BlushPink = Color(0xFFF8D2D0) // Blush Pink
 
-// Dark Background Colors
+// Dark Note Background Colors
 val DarkGray = Color(0xFF1A1A1A) // Dark Gray
 val DeepBlue = Color(0xFF1F2C3D) // Deep Blue
 val OliveGreen = Color(0xFF4A5E1B) // Olive Green
@@ -87,6 +87,10 @@ val ForestGreen = Color(0xFF1B4A1B) // Forest Green
 val DarkCoral = Color(0xFF9A4C3A) // Dark Coral
 val TealCyan = Color(0xFF006B6B) // Teal Cyan
 val DuskyPink = Color(0xFF7E1E1E) // Dusky Pink
+
+val Success = Color(0xFF4CAF50) // Green for success
+val Error = Color(0xFFF44336) // Red for error
+val Info = Color(0xFF2196F3) // Blue for info
 
 fun Color.toComposeLong(): Long = this.toArgb().toLong()
 

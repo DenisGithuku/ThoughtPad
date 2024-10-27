@@ -16,7 +16,6 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,7 +47,6 @@ class AddNoteViewModel(
     val state: StateFlow<AddNoteUiState> =
         combine(_state, notesRepository.allTags, userPrefsRepository.userPrefs) { state, tags, userPrefs
                 ->
-                Log.d("AddNoteViewModel", "state: $userPrefs")
                 state.copy(
                     defaultTags = tags,
                     systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK,
@@ -131,7 +129,6 @@ class AddNoteViewModel(
 
     private fun onDiscardNote() {
         viewModelScope.launch {
-            Log.d("AddNoteViewModel", "onDiscardNote: ${_state.value.note}")
             if (_state.value.note.noteId != 0L) {
                 notesRepository.deleteNoteById(_state.value.note.noteId)
             }

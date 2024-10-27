@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist
 
+import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
@@ -49,20 +50,6 @@ class NoteListViewModel(
         }
     }
 
-    fun onToggleNoteFavourite(noteId: Long, isFavourite: Boolean) {
-        viewModelScope.launch {
-            // Fetch the note from the database
-            val note = notesRepository.getNoteById(noteId)
-            val updatedNote = note.copy(isFavorite = isFavourite)
-
-            // Update the note in the database
-            notesRepository.updateNote(updatedNote)
-
-            // Update the selected note in the state
-            _state.update { it.copy(selectedNote = it.selectedNote?.copy(isFavorite = isFavourite)) }
-        }
-    }
-
     fun onOpenFilterDialog(isOpened: Boolean) {
         _state.update { it.copy(isFilterDialogVisible = isOpened) }
     }
@@ -74,7 +61,12 @@ class NoteListViewModel(
     fun onToggleDelete(deleteState: DeleteState) {
         viewModelScope.launch {
             val note = notesRepository.getNoteById(deleteState.noteId ?: return@launch)
-            notesRepository.updateNote(note.copy(isDeleted = deleteState.isDeleted))
+            notesRepository.updateNote(
+                note.copy(
+                    isDeleted = deleteState.isDeleted,
+                    updatedAt = Calendar.getInstance().timeInMillis
+                )
+            )
 
             // Update deleted state
             _state.update { it.copy(deleteState = deleteState) }
@@ -97,7 +89,7 @@ class NoteListViewModel(
         combine(_state, notesRepository.allNotes, userPrefsRepository.userPrefs) { state, notes, prefs
                 ->
                 state.copy(
-                    notes = notes.filterNot { it.note.isDeleted || it.note.isArchived },
+                    notes = notes,
                     isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
                     isLoading = false
                 )

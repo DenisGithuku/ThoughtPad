@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad.feature.notelist.components
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,21 +36,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
-import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
+import core.gitsoft.thoughtpad.core.toga.tags.TagInfoType
+import core.gitsoft.thoughtpad.core.toga.tags.TogaInfoTag
+import core.gitsoft.thoughtpad.core.toga.theme.Error
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteActionBottomSheet(
     noteId: Long,
     isPinned: Boolean,
-    isFavourite: Boolean,
+    isArchived: Boolean,
+    isDeleted: Boolean,
     onEdit: (Long) -> Unit,
     onTogglePin: (Long, Boolean) -> Unit,
-    onToggleFavourite: (Long, Boolean) -> Unit,
-    onDelete: (Long) -> Unit,
+    onToggleDelete: (Long, Boolean) -> Unit,
     onShare: (Long) -> Unit,
-    onArchive: (Long) -> Unit,
+    onToggleArchive: (Long, Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
     val pinIconColor by
@@ -71,28 +74,25 @@ fun NoteActionBottomSheet(
             title = stringResource(id = if (isPinned) R.string.unpin else R.string.pin),
             onClick = { onTogglePin(noteId, !isPinned) },
             icon = if (isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
-            iconTint = pinIconColor
+            color = pinIconColor
         )
         NoteAction(
-            title = stringResource(id = if (isFavourite) R.string.unfavourite else R.string.favourite),
-            onClick = { onToggleFavourite(noteId, !isFavourite) },
-            icon = if (isFavourite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite,
-            iconTint = if (isFavourite) TagOrange else MaterialTheme.colorScheme.onSurfaceVariant
+            title = stringResource(id = if (isDeleted) R.string.restore else R.string.delete),
+            onClick = { onToggleDelete(noteId, !isDeleted) },
+            icon = R.drawable.ic_delete,
+            color = if (isDeleted) MaterialTheme.colorScheme.onSurfaceVariant else Error
         )
         NoteAction(
-            title = stringResource(R.string.delete),
-            onClick = { onDelete(noteId) },
-            icon = R.drawable.ic_delete
-        )
-        NoteAction(
-            title = stringResource(R.string.archive),
-            onClick = { onArchive(noteId) },
-            icon = R.drawable.ic_archive
+            title = stringResource(id = if (isArchived) R.string.unarchive else R.string.archive),
+            onClick = { onToggleArchive(noteId, !isArchived) },
+            icon = R.drawable.ic_archive,
+            color = if (isArchived) MaterialTheme.colorScheme.onSurfaceVariant else Error
         )
         NoteAction(
             title = stringResource(R.string.share),
             onClick = { onShare(noteId) },
-            icon = R.drawable.ic_share
+            icon = R.drawable.ic_share,
+            textTag = R.string.beta
         )
     }
 }
@@ -101,14 +101,21 @@ fun NoteActionBottomSheet(
 fun NoteAction(
     title: String,
     onClick: () -> Unit,
+    textTag: Int? = null,
     @DrawableRes icon: Int,
-    iconTint: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+    color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(painter = painterResource(id = icon), contentDescription = title, tint = iconTint)
-        TogaMediumBody(modifier = Modifier.padding(start = 8.dp), text = title)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(painter = painterResource(id = icon), contentDescription = title, tint = color)
+            TogaSmallBody(modifier = Modifier.padding(start = 8.dp), text = title, color = color)
+        }
+        if (textTag != null) {
+            TogaInfoTag(text = stringResource(textTag), tagInfoType = TagInfoType.SUCCESS)
+        }
     }
 }

@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridItemScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -67,20 +68,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieCompositionFactory
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.feature.notelist.components.DrawerContent
+import com.gitsoft.thoughtpad.feature.notelist.components.DrawerItem
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
+import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesInCategoryIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesOnSearchIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteActionBottomSheet
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
+import com.gitsoft.thoughtpad.feature.notelist.components.SidebarRoute
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
 import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
+import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -89,8 +96,6 @@ fun NoteListRoute(
     viewModel: NoteListViewModel = koinViewModel(),
     onCreateNewNote: (Long?) -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenArchivedNotes: () -> Unit,
-    onOpenTrash: () -> Unit,
     onOpenTags: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -98,11 +103,8 @@ fun NoteListRoute(
         state = state,
         onCreateNewNote = onCreateNewNote,
         onOpenSettings = onOpenSettings,
-        onOpenArchivedNotes = onOpenArchivedNotes,
         onOpenTags = onOpenTags,
-        onOpenTrash = onOpenTrash,
         onToggleNotePin = viewModel::onToggleNotePin,
-        onToggleNoteFavourite = viewModel::onToggleNoteFavourite,
         onToggleFilterDialog = viewModel::onOpenFilterDialog,
         onToggleSelectedNote = viewModel::onToggleSelectNote,
         onToggleDeleteNote = viewModel::onToggleDelete,
@@ -118,10 +120,7 @@ internal fun NoteListScreen(
     onToggleFilterDialog: (Boolean) -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTags: () -> Unit,
-    onOpenArchivedNotes: () -> Unit,
-    onOpenTrash: () -> Unit,
     onToggleNotePin: (Long, Boolean) -> Unit,
-    onToggleNoteFavourite: (Long, Boolean) -> Unit,
     onToggleArchiveNote: (ArchiveState) -> Unit,
     onToggleDeleteNote: (DeleteState) -> Unit
 ) {
@@ -129,9 +128,11 @@ internal fun NoteListScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    var selectedDrawerItem: DrawerItem by remember { mutableStateOf(DrawerItem.All) }
+
     val scope = rememberCoroutineScope()
 
-    val filteredNotes by
+    val allSercheableNotes by
         remember(state.notes, query) {
             derivedStateOf {
                 if (query.isNotEmpty()) {
@@ -147,11 +148,23 @@ internal fun NoteListScreen(
             }
         }
 
-    val pinnedNotes by
-        remember(filteredNotes, query) { derivedStateOf { filteredNotes.filter { it.note.isPinned } } }
+    val trash = allSercheableNotes.filter { it.note.isDeleted }
 
-    val otherNotes by
-        remember(filteredNotes, query) { derivedStateOf { filteredNotes.filter { !it.note.isPinned } } }
+    val reminders = allSercheableNotes.filter { it.note.reminderTime != null }
+
+    val archivedNotes = allSercheableNotes.filter { it.note.isArchived }
+
+    val allFilteredNotes = allSercheableNotes.filterNot { it.note.isDeleted || it.note.isArchived }
+
+    val pinnedNotes by
+        remember(allFilteredNotes, query) {
+            derivedStateOf { allFilteredNotes.filter { it.note.isPinned } }
+        }
+
+    val allOtherNotes by
+        remember(allFilteredNotes, query) {
+            derivedStateOf { allFilteredNotes.filter { !it.note.isPinned } }
+        }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -201,7 +214,7 @@ internal fun NoteListScreen(
         }
     }
 
-    BackHandler(drawerState.isOpen || query.isNotEmpty()) {
+    BackHandler(drawerState.isOpen || query.isNotEmpty() || selectedDrawerItem != DrawerItem.All) {
         if (drawerState.isOpen) {
             scope.launch { drawerState.close() }
         }
@@ -209,20 +222,29 @@ internal fun NoteListScreen(
         if (query.isNotEmpty()) {
             query = ""
         }
+
+        if (selectedDrawerItem != DrawerItem.All) {
+            selectedDrawerItem = DrawerItem.All
+        }
     }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest) {
                 DrawerContent(
-                    onOpenSettings = {
+                    selectedDrawerItem = selectedDrawerItem,
+                    onOpenDrawerItem = {
                         scope.launch { drawerState.close() }
-                        onOpenSettings()
+                        selectedDrawerItem = it
                     },
-                    onOpenTags = onOpenTags,
-                    onOpenArchivedNotes = onOpenArchivedNotes,
-                    onOpenTrash = onOpenTrash
+                    onNavigateToRoute = { route ->
+                        scope.launch { drawerState.close() }
+                        when (route) {
+                            SidebarRoute.Settings -> onOpenSettings()
+                            SidebarRoute.Tags -> onOpenTags()
+                        }
+                    }
                 )
             }
         }
@@ -272,7 +294,7 @@ internal fun NoteListScreen(
                         return@Column
                     }
 
-                    if (pinnedNotes.isEmpty() && otherNotes.isEmpty() && query.isNotEmpty()) {
+                    if (pinnedNotes.isEmpty() && allOtherNotes.isEmpty() && query.isNotEmpty()) {
                         NoNotesOnSearchIndicator(modifier = Modifier)
                         return@Column
                     }
@@ -282,22 +304,22 @@ internal fun NoteListScreen(
                             NoteActionBottomSheet(
                                 noteId = state.selectedNote.noteId,
                                 isPinned = state.selectedNote.isPinned,
-                                isFavourite = state.selectedNote.isFavorite,
+                                isArchived = state.selectedNote.isArchived,
+                                isDeleted = state.selectedNote.isDeleted,
                                 onEdit = {
                                     onCreateNewNote(it)
                                     onToggleSelectedNote(null)
                                     onToggleFilterDialog(false)
                                 },
                                 onTogglePin = onToggleNotePin,
-                                onToggleFavourite = onToggleNoteFavourite,
                                 onShare = {},
-                                onArchive = {
-                                    onToggleArchiveNote(ArchiveState(isArchived = true, noteId = it))
+                                onToggleArchive = { id, isArchived ->
+                                    onToggleArchiveNote(ArchiveState(isArchived = isArchived, noteId = id))
                                     onToggleSelectedNote(null)
                                     onToggleFilterDialog(false)
                                 },
-                                onDelete = {
-                                    onToggleDeleteNote(DeleteState(isDeleted = true, noteId = it))
+                                onToggleDelete = { id, isDeleted ->
+                                    onToggleDeleteNote(DeleteState(isDeleted = isDeleted, noteId = id))
                                     onToggleSelectedNote(null)
                                     onToggleFilterDialog(false)
                                 },
@@ -310,7 +332,7 @@ internal fun NoteListScreen(
                     }
 
                     AnimatedContent(
-                        targetState = pinnedNotes.isEmpty() && otherNotes.isEmpty(),
+                        targetState = pinnedNotes.isEmpty() && allOtherNotes.isEmpty(),
                         label = "Note List Visibility State"
                     ) { isEmpty ->
                         if (isEmpty) {
@@ -318,67 +340,154 @@ internal fun NoteListScreen(
                         } else {
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
+                                modifier = Modifier.fillMaxSize(),
                                 columns = StaggeredGridCells.Fixed(2),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalItemSpacing = 8.dp
                             ) {
-                                item(span = StaggeredGridItemSpan.FullLine) {
-                                    AnimatedVisibility(visible = pinnedNotes.isNotEmpty()) {
-                                        SectionSeparator(title = R.string.pinned_notes)
-                                    }
-                                }
-                                items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
-                                    NoteItemCard(
-                                        modifier =
-                                            Modifier.animateItem(
-                                                fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                placementSpec =
-                                                    spring( // Controls the placement animation
-                                                        dampingRatio = Spring.DampingRatioLowBouncy,
-                                                        stiffness = Spring.StiffnessLow
-                                                    )
-                                            ),
-                                        isDarkTheme = state.isDarkTheme,
-                                        isSelected = state.selectedNote?.noteId == noteData.note.noteId,
-                                        noteData = noteData,
-                                        onClick = { onCreateNewNote(noteData.note.noteId) },
-                                        onLongClick = {
-                                            onToggleSelectedNote(noteData.note)
-                                            onToggleFilterDialog(true)
+                                when (selectedDrawerItem) {
+                                    DrawerItem.All -> {
+                                        item(span = StaggeredGridItemSpan.FullLine) {
+                                            AnimatedVisibility(visible = pinnedNotes.isNotEmpty()) {
+                                                SectionSeparator(title = R.string.pinned_notes)
+                                            }
                                         }
-                                    )
-                                }
-                                item(span = StaggeredGridItemSpan.FullLine) {
-                                    AnimatedVisibility(visible = otherNotes.isNotEmpty()) {
-                                        SectionSeparator(
-                                            modifier = Modifier.padding(4.dp),
-                                            title = R.string.other_notes
-                                        )
-                                    }
-                                }
+                                        items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
+                                            NoteItemCard(
+                                                modifier =
+                                                    Modifier.animateItem(
+                                                        fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
+                                                        fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
+                                                        placementSpec =
+                                                            spring( // Controls the placement animation
+                                                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                                                stiffness = Spring.StiffnessLow
+                                                            )
+                                                    ),
+                                                isDarkTheme = state.isDarkTheme,
+                                                isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                noteData = noteData,
+                                                onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                onLongClick = {
+                                                    onToggleSelectedNote(noteData.note)
+                                                    onToggleFilterDialog(true)
+                                                }
+                                            )
+                                        }
+                                        item(span = StaggeredGridItemSpan.FullLine) {
+                                            AnimatedVisibility(visible = allOtherNotes.isNotEmpty()) {
+                                                SectionSeparator(
+                                                    modifier = Modifier.padding(4.dp),
+                                                    title = R.string.other_notes
+                                                )
+                                            }
+                                        }
 
-                                items(items = otherNotes, key = { it.note.noteId }) { noteData ->
-                                    NoteItemCard(
-                                        modifier =
-                                            Modifier.animateItem(
-                                                fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                placementSpec =
-                                                    spring( // Controls the placement animation
-                                                        dampingRatio = Spring.DampingRatioLowBouncy,
-                                                        stiffness = Spring.StiffnessLow
-                                                    )
-                                            ),
-                                        isDarkTheme = state.isDarkTheme,
-                                        isSelected = state.selectedNote?.noteId == noteData.note.noteId,
-                                        noteData = noteData,
-                                        onClick = { onCreateNewNote(noteData.note.noteId) },
-                                        onLongClick = {
-                                            onToggleSelectedNote(noteData.note)
-                                            onToggleFilterDialog(true)
+                                        items(items = allOtherNotes, key = { it.note.noteId }) { noteData ->
+                                            NoteItemCard(
+                                                modifier = Modifier.then(animateNoteItemCard()),
+                                                isDarkTheme = state.isDarkTheme,
+                                                isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                noteData = noteData,
+                                                onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                onLongClick = {
+                                                    onToggleSelectedNote(noteData.note)
+                                                    onToggleFilterDialog(true)
+                                                }
+                                            )
                                         }
-                                    )
+                                    }
+                                    DrawerItem.Archived -> {
+                                        if (archivedNotes.isEmpty()) {
+                                            item(span = StaggeredGridItemSpan.FullLine) {
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    NoNotesInCategoryIndicator(category = R.string.no_archived)
+                                                }
+                                            }
+                                        } else {
+                                            items(items = archivedNotes, key = { it.note.noteId }) { noteData ->
+                                                NoteItemCard(
+                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    isDarkTheme = state.isDarkTheme,
+                                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                    noteData = noteData,
+                                                    onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                    onLongClick = {
+                                                        onToggleSelectedNote(noteData.note)
+                                                        onToggleFilterDialog(true)
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                    DrawerItem.Reminders -> {
+                                        if (reminders.isEmpty()) {
+                                            item(span = StaggeredGridItemSpan.FullLine) {
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    NoNotesInCategoryIndicator(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        category = R.string.no_reminders
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            items(items = reminders, key = { it.note.noteId }) { noteData ->
+                                                NoteItemCard(
+                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    isDarkTheme = state.isDarkTheme,
+                                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                    noteData = noteData,
+                                                    onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                    onLongClick = {
+                                                        onToggleSelectedNote(noteData.note)
+                                                        onToggleFilterDialog(true)
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                    DrawerItem.Trash -> {
+                                        item(span = StaggeredGridItemSpan.FullLine) {
+                                            TogaMediumBody(
+                                                maxLines = 10,
+                                                text = stringResource(id = R.string.trash_info),
+                                                textAlign = TextAlign.Center
+                                            )
+                                        }
+                                        if (trash.isEmpty()) {
+                                            item(span = StaggeredGridItemSpan.FullLine) {
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    NoNotesInCategoryIndicator(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        category = R.string.no_trash
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            items(items = trash, key = { it.note.noteId }) { noteData ->
+                                                NoteItemCard(
+                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    isDarkTheme = state.isDarkTheme,
+                                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                    noteData = noteData,
+                                                    onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                    onLongClick = {
+                                                        onToggleSelectedNote(noteData.note)
+                                                        onToggleFilterDialog(true)
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -408,6 +517,18 @@ internal fun NoteListScreen(
             }
         }
     }
+}
+
+fun LazyStaggeredGridItemScope.animateNoteItemCard(): Modifier {
+    return Modifier.animateItem(
+        fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
+        fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
+        placementSpec =
+            spring( // Controls the placement animation
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+    )
 }
 
 @Composable

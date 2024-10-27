@@ -34,7 +34,6 @@ val Migration_1_2 = object : Migration(1, 2) {
                                 isPinned INTEGER NOT NULL DEFAULT 0,
                                 isArchived INTEGER NOT NULL DEFAULT 0,
                                 color TEXT DEFAULT 'Gray',  -- Default color value
-                                isFavorite INTEGER NOT NULL DEFAULT 0,
                                 isDeleted INTEGER NOT NULL DEFAULT 0,
                                 isCheckList INTEGER NOT NULL DEFAULT 0,
                                 reminderTime INTEGER DEFAULT NULL,

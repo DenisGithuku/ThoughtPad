@@ -22,7 +22,8 @@
     <string name="note_deleted">Note deleted!</string>
     <string name="note_archived">Note archived!</string>
     <string name="undo">Undo</string>
-    <string name="no_notes_on_search">No notes found. Please try a searching different keyword</string>
+    <string name="no_notes_on_search">No notes found. Please try a different keyword</string>
+    <string name="no_notes_in_category">You don\'t have any %s notes.</string>
     <string name="drawer_title">Your Notes Hub</string>
     <string name="archived">Archived</string>
     <string name="favourites">Favourites</string>
@@ -31,4 +32,13 @@
     <string name="tags">Tags</string>
     <string name="sidebar_toggle">Sidebar toggle</string>
     <string name="app_icon">App icon</string>
+    <string name="notes">Notes</string>
+    <string name="reminders">Reminders</string>
+    <string name="trash_info">Notes in Recycle Bin are deleted after 7 days.</string>
+    <string name="no_reminders">You don\'t have any reminders.</string>
+    <string name="no_archived">You haven\'t archived any notes.</string>
+    <string name="no_trash">You have no notes in trash.</string>
+    <string name="unarchive">Unarchive</string>
+    <string name="restore">Restore</string>
+    <string name="beta">Beta</string>
 </resources>
