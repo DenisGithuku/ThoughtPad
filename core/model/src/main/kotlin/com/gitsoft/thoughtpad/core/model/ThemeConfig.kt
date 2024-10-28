@@ -18,8 +18,7 @@ package com.gitsoft.thoughtpad.core.model
 
 enum class ThemeConfig {
     LIGHT,
-    DARK,
-    SYSTEM
+    DARK
 }
 
 object ThemeConfigConverter {

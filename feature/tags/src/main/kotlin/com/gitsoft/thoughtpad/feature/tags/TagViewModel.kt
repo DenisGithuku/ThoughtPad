@@ -115,7 +115,7 @@ class TagViewModel(
 
     fun onEditTagName(value: String) {
         _state.update {
-            it.copy(selectedTag = it.selectedTag?.copy(name = value.trim().capitalize(Locale.current)))
+            it.copy(selectedTag = it.selectedTag?.copy(name = value.capitalize(Locale.current)))
         }
     }
 

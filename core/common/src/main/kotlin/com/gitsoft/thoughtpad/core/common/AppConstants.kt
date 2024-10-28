@@ -21,4 +21,7 @@ object AppConstants {
     const val notificationChannelName = "Task and Note Reminders"
     val noteReminderNotificationId = System.currentTimeMillis().toInt()
     const val notificationChannelDescription = "Notification Channel for ThoughtPad"
+    const val notificationTitleKey = "Notification title"
+    const val taskContentKey = "Task content"
+    const val actionOpenMainActivity = "ACTION_OPEN_MAIN_ACTIVITY"
 }

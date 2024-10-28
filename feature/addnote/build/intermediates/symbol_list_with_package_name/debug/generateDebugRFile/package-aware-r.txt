@@ -13,6 +13,8 @@ string add_new_item
 string add_new_tag
 string add_note
 string add_tag
+string alarm_permissions_required
+string allow
 string at
 string close
 string color_bar

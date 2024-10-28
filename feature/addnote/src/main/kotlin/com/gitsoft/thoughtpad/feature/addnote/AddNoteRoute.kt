@@ -17,7 +17,11 @@
 package com.gitsoft.thoughtpad.feature.addnote
 
 import android.Manifest
+import android.app.AlarmManager
+import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -29,10 +33,12 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -42,6 +48,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -121,7 +128,11 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalPermissionsApi::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 internal fun AddNoteScreen(
     state: AddNoteUiState,
@@ -239,6 +250,39 @@ internal fun AddNoteScreen(
         }
     }
 
+    if (state.isColorVisible) {
+        TogaModalBottomSheet(modifier = Modifier, onDismissRequest = { onToggleColorBar(false) }) {
+            NoteColorPicker(
+                modifier = Modifier.padding(PaddingValues(16.dp)),
+                isDarkTheme = state.systemInDarkMode,
+                selectedColor = state.selectedNoteColor,
+                colors = state.noteColors,
+                onChangeColor = onChangeNoteColor,
+                onDismissRequest = { onToggleColorBar(false) }
+            )
+        }
+    }
+
+    if (state.isDateSheetVisible) {
+        TogaModalBottomSheet(
+            modifier = Modifier,
+            onDismissRequest = { onToggleDateSheet(false) },
+            content = {
+                ReminderContent(
+                    onDateSelected = {
+                        if (it != null) {
+                            onChangeDate(it)
+                            onChangeTime(it)
+                        } else {
+                            onToggleDateDialog(true)
+                        }
+                        onToggleDateSheet(false)
+                    }
+                )
+            }
+        )
+    }
+
     /** check if user has entered any text and pressed back button before they could save. */
     BackHandler(enabled = true) {
         if (state.noteIsValid) {
@@ -273,6 +317,7 @@ internal fun AddNoteScreen(
         },
         bottomBar = {
             TogaBottomAppBar(
+                modifier = Modifier.navigationBarsPadding(),
                 containerColor =
                     if (state.systemInDarkMode) {
                         state.selectedNoteColor.darkColor.toComposeColor()
@@ -290,17 +335,19 @@ internal fun AddNoteScreen(
                                 R.drawable.ic_notifications_outlined
                             } else R.drawable.ic_notifications_filled,
                         onClick = {
+                            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                             if (
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                                     !notificationPermissionsState.status.isGranted
                             ) {
                                 notificationPermissionsState.launchPermissionRequest()
+
                                 return@TogaIconButton
                             }
 
                             if (
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                                    !notificationPermissionsState.status.shouldShowRationale
+                                    notificationPermissionsState.status.shouldShowRationale
                             ) {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(
@@ -310,6 +357,26 @@ internal fun AddNoteScreen(
                                 }
                                 return@TogaIconButton
                             }
+
+                            // Check for the SCHEDULE_EXACT_ALARM permission
+                            if (
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                                    !alarmManager.canScheduleExactAlarms()
+                            ) {
+                                scope.launch {
+                                    val result =
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.alarm_permissions_required),
+                                            actionLabel = context.getString(R.string.allow)
+                                        )
+                                    when (result) {
+                                        SnackbarResult.Dismissed -> return@launch
+                                        SnackbarResult.ActionPerformed -> requestAlarmPermission(context)
+                                    }
+                                }
+                                return@TogaIconButton
+                            }
+
                             onToggleReminder(!state.hasReminder)
                         },
                         contentDescription = R.string.toggle_reminder,
@@ -329,38 +396,6 @@ internal fun AddNoteScreen(
                     } else state.selectedNoteColor.lightColor.toComposeColor()
             )
     ) { innerPadding ->
-        if (state.isColorVisible) {
-            TogaModalBottomSheet(onDismissRequest = { onToggleColorBar(false) }) {
-                NoteColorPicker(
-                    modifier = Modifier.padding(PaddingValues(16.dp)),
-                    isDarkTheme = state.systemInDarkMode,
-                    selectedColor = state.selectedNoteColor,
-                    colors = state.noteColors,
-                    onChangeColor = onChangeNoteColor,
-                    onDismissRequest = { onToggleColorBar(false) }
-                )
-            }
-        }
-
-        if (state.isDateSheetVisible) {
-            TogaModalBottomSheet(
-                onDismissRequest = { onToggleDateSheet(false) },
-                content = {
-                    ReminderContent(
-                        onDateSelected = {
-                            if (it != null) {
-                                onChangeDate(it)
-                                onChangeTime(it)
-                            } else {
-                                onToggleDateDialog(true)
-                            }
-                            onToggleDateSheet(false)
-                        }
-                    )
-                }
-            )
-        }
-
         LazyColumn(
             modifier =
                 Modifier.fillMaxSize()
@@ -459,6 +494,15 @@ internal fun AddNoteScreen(
                 }
             }
         }
+    }
+}
+
+// Helper function to check and request SCHEDULE_EXACT_ALARM permission
+fun requestAlarmPermission(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        // Launch intent to request SCHEDULE_EXACT_ALARM permission.
+        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+        context.startActivity(intent)
     }
 }
 

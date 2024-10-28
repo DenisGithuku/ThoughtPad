@@ -21,6 +21,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
+import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.common.safeDbCall
 import com.gitsoft.thoughtpad.core.common.safeDbReactiveDataRead
 import com.gitsoft.thoughtpad.core.database.NotesDatabaseDao
@@ -30,8 +31,46 @@ import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import core.gitsoft.thoughtpad.core.data.AlarmReceiver
 import java.util.Calendar
+import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+
+private const val TAG = "NotesRepositoryImpl"
+private val taskReminderTitles =
+    listOf(
+        "Stay on Track Today!",
+        "Small Steps Count – Let’s Get Started!",
+        "Progress Awaits – Make Today Count!",
+        "Just a Little Progress to Go!",
+        "Let's Keep Momentum Going!",
+        "Another Step Closer to Your Goal!",
+        "Today’s a Great Day for Progress!",
+        "Focus Time! Let’s Get it Done.",
+        "Small Wins Lead to Big Results!",
+        "Make Today’s Goals Happen!",
+        "Consistency is Key – Keep Pushing!",
+        "Just a Little Effort for a Big Impact!",
+        "It’s Progress Time – Let’s Move!",
+        "Take Action Toward Your Goals!",
+        "Let’s Work Toward the Finish Line!",
+        "Success is Built on Daily Progress!",
+        "Remember Your Goals – Push Forward!",
+        "One Step Closer Every Day!",
+        "Your Goals Are Within Reach!",
+        "Make the Most of Today’s Opportunities!",
+        "Keep the Momentum Going Strong!",
+        "You're Building Something Great!",
+        "Success Starts with a Single Step!",
+        "Every Effort Adds Up – Let's Go!",
+        "Progress Over Perfection – Take Action!",
+        "One Day Closer to Achieving It!",
+        "Focus Forward – Today is Yours!",
+        "Create a Productive Day!",
+        "Aim for Progress, Not Perfection!",
+        "Your Future Self Will Thank You!"
+    )
+
+private val taskSeed = 123456789L
 
 internal class NotesRepositoryImpl(
     private val notesDatabaseDao: NotesDatabaseDao,
@@ -70,7 +109,8 @@ internal class NotesRepositoryImpl(
         if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall,
-                taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"
+                notificationTitle = taskReminderTitles[Random(taskSeed).nextInt(30)],
+                taskTitle = note.noteTitle ?: note.noteText ?: "Remember to Make Progress Today!"
             )
         }
     }
@@ -102,7 +142,8 @@ internal class NotesRepositoryImpl(
         if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall noteId,
-                taskTitle = note.noteTitle ?: "Remember to Make Progress Today!"
+                notificationTitle = taskReminderTitles[Random(taskSeed).nextInt(30)],
+                taskTitle = note.noteTitle ?: note.noteText ?: "Remember to Make Progress Today!"
             )
         }
         noteId
@@ -124,10 +165,13 @@ internal class NotesRepositoryImpl(
         notesDatabaseDao.deleteTagWithNoteAssociation(tag)
     }
 
-    private fun setTaskReminder(alarmTime: Long, taskTitle: String) {
+    private fun setTaskReminder(alarmTime: Long, notificationTitle: String, taskTitle: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent =
-            Intent(context, AlarmReceiver::class.java).apply { putExtra("Reminder", taskTitle) }
+            Intent(context, AlarmReceiver::class.java).apply {
+                putExtra(AppConstants.notificationTitleKey, notificationTitle)
+                putExtra(AppConstants.taskContentKey, taskTitle)
+            }
 
         val pendingIntent =
             PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)

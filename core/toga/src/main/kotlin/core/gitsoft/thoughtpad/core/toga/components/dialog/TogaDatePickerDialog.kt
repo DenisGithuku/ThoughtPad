@@ -39,7 +39,9 @@ fun TogaDatePickerDialog(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit)
             selectableDates =
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                        return utcTimeMillis >= Calendar.getInstance().timeInMillis
+                        return Calendar.getInstance()
+                            .apply { timeInMillis = utcTimeMillis }
+                            .get(Calendar.DAY_OF_YEAR) >= Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
                     }
 
                     override fun isSelectableYear(year: Int): Boolean {

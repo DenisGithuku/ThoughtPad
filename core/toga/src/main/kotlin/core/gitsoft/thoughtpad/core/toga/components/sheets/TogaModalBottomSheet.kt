@@ -16,20 +16,23 @@
 */
 package core.gitsoft.thoughtpad.core.toga.components.sheets
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TogaModalBottomSheet(onDismissRequest: () -> Unit, content: @Composable () -> Unit) {
+fun TogaModalBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.surface,
-        contentWindowInsets = { WindowInsets.ime }
+        modifier = modifier
     ) {
         content()
     }

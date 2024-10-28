@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
@@ -43,6 +44,8 @@ class MainActivity : ComponentActivity() {
                 viewModel.uiState.collectLatest { mainUiState.value = it }
             }
         }
+
+        enableEdgeToEdge()
 
         setContent {
             val appState: AppState = rememberAppState()

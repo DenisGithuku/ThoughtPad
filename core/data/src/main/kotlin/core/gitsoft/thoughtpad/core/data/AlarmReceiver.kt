@@ -17,18 +17,23 @@
 package core.gitsoft.thoughtpad.core.data
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.data.R
+import kotlin.random.Random
+
+private val requestCode = (System.currentTimeMillis() % 10000 + Random.nextInt(0, 1000)).toInt()
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let {
             notify(
-                message = it.extras?.getString("Reminder") ?: return,
+                notificationTitle = it.extras?.getString(AppConstants.notificationTitleKey) ?: return,
+                taskContent = it.extras?.getString(AppConstants.taskContentKey) ?: return,
                 context = context!!,
                 notificationId = AppConstants.noteReminderNotificationId,
                 channelId = AppConstants.notificationChannelId
@@ -36,13 +41,35 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun notify(message: String, context: Context, notificationId: Int, channelId: String) {
+    private fun notify(
+        notificationTitle: String,
+        taskContent: String,
+        context: Context,
+        notificationId: Int,
+        channelId: String
+    ) {
+        // Create an intent to open the MainActivity
+        val mainIntent =
+            Intent("${context.packageName}.${AppConstants.actionOpenMainActivity}").apply {
+                setPackage(context.packageName)
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+
+        val pendingIntent =
+            PendingIntent.getActivity(
+                context,
+                requestCode,
+                mainIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification =
             NotificationCompat.Builder(context, channelId)
-                .setContentTitle("Remember to Make Progress Today!")
-                .setContentText(message)
+                .setContentTitle(notificationTitle)
+                .setContentText(taskContent)
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_time)

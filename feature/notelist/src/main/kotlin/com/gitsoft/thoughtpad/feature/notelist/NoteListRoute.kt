@@ -31,15 +31,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridItemScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -112,6 +114,7 @@ fun NoteListRoute(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun NoteListScreen(
     state: NoteListUiState,
@@ -253,9 +256,10 @@ internal fun NoteListScreen(
             Box(
                 modifier =
                     Modifier.fillMaxSize()
-                        .padding(innerPadding)
                         .background(MaterialTheme.colorScheme.background)
-                        .consumeWindowInsets(WindowInsets.ime)
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
+                        .imeNestedScroll()
             ) {
                 val noteListState = rememberLazyStaggeredGridState()
 
@@ -274,7 +278,10 @@ internal fun NoteListScreen(
                         }
                     }
 
-                Column(modifier = Modifier.fillMaxSize().padding(PaddingValues(horizontal = 16.dp))) {
+                Column(
+                    modifier =
+                        Modifier.fillMaxSize().imeNestedScroll().padding(PaddingValues(horizontal = 16.dp))
+                ) {
                     TopRow(
                         query = query,
                         onToggleSideBar = {
@@ -340,7 +347,7 @@ internal fun NoteListScreen(
                         } else {
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize().imeNestedScroll(),
                                 columns = StaggeredGridCells.Fixed(2),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalItemSpacing = 8.dp
@@ -496,7 +503,8 @@ internal fun NoteListScreen(
 
                 AnimatedVisibility(
                     visible = isAddNoteButtonVisible,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 16.dp, end = 16.dp),
+                    modifier =
+                        Modifier.align(Alignment.BottomEnd).padding(bottom = 16.dp, end = 16.dp).imePadding(),
                     enter =
                         scaleIn(
                             initialScale = 0.6f, // Start smaller for a zoom-in effect

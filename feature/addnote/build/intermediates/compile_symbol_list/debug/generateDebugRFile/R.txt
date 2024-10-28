@@ -12,6 +12,8 @@ int string add_new_item 0x0
 int string add_new_tag 0x0
 int string add_note 0x0
 int string add_tag 0x0
+int string alarm_permissions_required 0x0
+int string allow 0x0
 int string at 0x0
 int string close 0x0
 int string color_bar 0x0

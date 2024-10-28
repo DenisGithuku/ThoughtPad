@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
+data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.LIGHT)
 
 class MainViewModel(
     userPrefsRepository: UserPrefsRepository,

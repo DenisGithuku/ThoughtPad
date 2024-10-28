@@ -143,7 +143,6 @@ internal fun SettingsScreen(
                         text =
                             stringResource(
                                 when (state.selectedTheme) {
-                                    ThemeConfig.SYSTEM -> R.string.theme_system
                                     ThemeConfig.LIGHT -> R.string.theme_light
                                     ThemeConfig.DARK -> R.string.theme_dark
                                 }

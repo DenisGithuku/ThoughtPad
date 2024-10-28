@@ -19,8 +19,7 @@ package com.gitsoft.thougtpad.feature.settings
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 
 data class SettingsUiState(
-    val selectedTheme: ThemeConfig = ThemeConfig.SYSTEM,
+    val selectedTheme: ThemeConfig = ThemeConfig.LIGHT,
     val isThemeDialogShown: Boolean = false,
-    val availableThemes: List<ThemeConfig> =
-        listOf(ThemeConfig.SYSTEM, ThemeConfig.LIGHT, ThemeConfig.DARK)
+    val availableThemes: List<ThemeConfig> = listOf(ThemeConfig.LIGHT, ThemeConfig.DARK)
 )

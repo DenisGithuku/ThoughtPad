@@ -20,11 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepnames class androidx.navigation.fragment.NavHostFragment
--keep class * extends androidx.fragment.app.Fragment{}
 -keepnames class * extends android.os.Parcelable
 -keepnames class * extends java.io.Serializable
--keepnames class com.gitsoft.thoughtpad.model.*
--keep class com.gitsoft.thoughtpad.core.model.Note
--keep class * extends androidx.fragment.app.Fragment{}
--keepnames class * extends androidx.fragment.app.FragmentContainerView
+ -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+-keep class com.gitsoft.thoughtpad.core.model.** { <fields>; }
+-keep class com.gitsoft.thoughtpad.core.common.** { <fields>; }
+-keep class com.gitsoft.thoughtpad.core.database.** { <fields>; }
+
