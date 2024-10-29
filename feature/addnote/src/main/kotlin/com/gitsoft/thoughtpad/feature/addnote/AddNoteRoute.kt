@@ -336,48 +336,52 @@ internal fun AddNoteScreen(
                             } else R.drawable.ic_notifications_filled,
                         onClick = {
                             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                            if (
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                                    !notificationPermissionsState.status.isGranted
-                            ) {
-                                notificationPermissionsState.launchPermissionRequest()
 
-                                return@TogaIconButton
-                            }
+                            // Check for Notification Permission on Tiramisu and above
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                if (!notificationPermissionsState.status.isGranted) {
+                                    // Request notification permission if not granted
+                                    notificationPermissionsState.launchPermissionRequest()
 
-                            if (
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                                    notificationPermissionsState.status.shouldShowRationale
-                            ) {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = context.getString(R.string.permission_required),
-                                        duration = SnackbarDuration.Short
-                                    )
+                                    // After granting notification permission, proceed to check alarm permission
+                                    if (notificationPermissionsState.status.isGranted) {
+                                        // Check and request alarm permission next if needed
+                                        checkAndRequestAlarmPermission(alarmManager, context)
+                                    }
+
+                                    return@TogaIconButton
+                                } else if (notificationPermissionsState.status.shouldShowRationale) {
+                                    // Show rationale if notification permission was denied and needs explanation
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.permission_required),
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                    return@TogaIconButton
                                 }
-                                return@TogaIconButton
                             }
 
-                            // Check for the SCHEDULE_EXACT_ALARM permission
+                            // If notification permission is already granted, check alarm permission directly
                             if (
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
                                     !alarmManager.canScheduleExactAlarms()
                             ) {
+                                // Show Snackbar to inform user of alarm permission requirement
                                 scope.launch {
                                     val result =
                                         snackbarHostState.showSnackbar(
                                             message = context.getString(R.string.alarm_permissions_required),
                                             actionLabel = context.getString(R.string.allow)
                                         )
-                                    when (result) {
-                                        SnackbarResult.Dismissed -> return@launch
-                                        SnackbarResult.ActionPerformed -> requestAlarmPermission(context)
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        requestAlarmPermission(context)
                                     }
                                 }
-                                return@TogaIconButton
+                            } else {
+                                // If all permissions are granted, toggle the reminder
+                                onToggleReminder(!state.hasReminder)
                             }
-
-                            onToggleReminder(!state.hasReminder)
                         },
                         contentDescription = R.string.toggle_reminder,
                         tint =
@@ -498,9 +502,12 @@ internal fun AddNoteScreen(
 }
 
 // Helper function to check and request SCHEDULE_EXACT_ALARM permission
+fun checkAndRequestAlarmPermission(alarmManager: AlarmManager, context: Context) {}
+
+// Function to open settings for SCHEDULE_EXACT_ALARM permission
 fun requestAlarmPermission(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        // Launch intent to request SCHEDULE_EXACT_ALARM permission.
+        // Launch intent to request alarm permission
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
         context.startActivity(intent)
     }
