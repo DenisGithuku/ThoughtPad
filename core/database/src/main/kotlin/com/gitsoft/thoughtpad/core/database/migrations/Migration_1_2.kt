@@ -47,11 +47,11 @@ val Migration_1_2 = object : Migration(1, 2) {
             """
                         INSERT INTO new_notes_table (
                                 noteId, noteTitle, noteText, createdAt, updatedAt, isPinned, isArchived,
-                                color, isFavorite, isDeleted, isCheckList, reminderTime, attachments
+                                color, isDeleted, isCheckList, reminderTime, attachments
                         )
                         SELECT noteId, noteTitle, noteText, NULL AS createdAt, NULL AS updatedAt,
                                 0 AS isPinned, 0 AS isArchived,
-                                'Gray' AS color, 0 AS isFavorite, 0 AS isDeleted,
+                                'Gray' AS color, 0 AS isDeleted,
                                 0 AS isCheckList, NULL AS reminderTime,
                                 '' AS attachments  -- Ensure non-null attachments
                         FROM notes_table
