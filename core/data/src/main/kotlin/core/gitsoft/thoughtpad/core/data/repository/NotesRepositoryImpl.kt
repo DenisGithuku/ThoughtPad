@@ -31,7 +31,6 @@ import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import core.gitsoft.thoughtpad.core.data.AlarmReceiver
 import java.util.Calendar
-import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -70,8 +69,6 @@ private val taskReminderTitles =
         "Your Future Self Will Thank You!"
     )
 
-private val taskSeed = 123456789L
-
 internal class NotesRepositoryImpl(
     private val notesDatabaseDao: NotesDatabaseDao,
     private val userPrefsRepository: UserPrefsRepository,
@@ -109,7 +106,7 @@ internal class NotesRepositoryImpl(
         if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall,
-                notificationTitle = taskReminderTitles[Random(taskSeed).nextInt(30)],
+                notificationTitle = taskReminderTitles[(0..taskReminderTitles.size).random()],
                 taskTitle = note.noteTitle ?: note.noteText ?: "Remember to Make Progress Today!"
             )
         }
@@ -142,7 +139,7 @@ internal class NotesRepositoryImpl(
         if (userPrefsRepository.userPrefs.first().isNotificationPermissionsGranted) {
             setTaskReminder(
                 alarmTime = note.reminderTime ?: return@safeDbCall noteId,
-                notificationTitle = taskReminderTitles[Random(taskSeed).nextInt(30)],
+                notificationTitle = taskReminderTitles[(0..taskReminderTitles.size).random()],
                 taskTitle = note.noteTitle ?: note.noteText ?: "Remember to Make Progress Today!"
             )
         }
