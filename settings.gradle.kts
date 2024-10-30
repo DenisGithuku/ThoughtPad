@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -15,3 +16,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "ThoughtPad"
 include(":app")
+include(":core:common")
+include(":core:data")
+include(":core:database")
+include(":core:datastore")
+include(":core:testing")
+include(":core:toga")
+include(":core:model")
+include(":feature:addnote")
+include(":feature:notelist")
+include(":feature:settings")
+include(":feature:tags")

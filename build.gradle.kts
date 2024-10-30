@@ -1,10 +1,14 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+import org.jetbrains.kotlin.js.inline.clean.removeUnusedImports
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        classpath(libs.navigation.safeargs)
+        classpath(libs.firebase.performance.gradle.plugin)
+        classpath(libs.firebase.crashlytics.gradle.plugin)
+        classpath(libs.google.services.plugin)
     }
 }
 
@@ -12,9 +16,14 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.hilt.android.gradle) apply false
     alias(libs.plugins.com.diffplug.spotless) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.firebase.performance) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.gms) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
 }
 
 subprojects {
@@ -32,16 +41,19 @@ subprojects {
                 .editorConfigOverride(
                     mapOf(
                         "ktlint_standard_package-name" to "disabled",
+                        "ktlint_standard_filename" to "disabled",
                         "ij_kotlin_allow_trailing_comma" to "false",
                         "ij_kotlin_allow_trailing_comma_on_call_site" to "false",
                     ),
                 )
-            ktfmt().googleStyle()
+            ktfmt().googleStyle().configure {
+                it.setRemoveUnusedImport(true)
+            }
             licenseHeaderFile("${project.rootProject.projectDir}/license-header.txt")
             trimTrailingWhitespace()
             indentWithTabs(2)
             indentWithSpaces(4)
-
+            toggleOffOn()
         }
 
         kotlinGradle {

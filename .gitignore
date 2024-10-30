@@ -16,3 +16,26 @@
 local.properties
 keystore.properties
 keystore.jks
+
+# Gradle files
+.gradle/
+build/
+*.iml
+local.properties
+
+# IDE files
+.idea/
+.DS_Store
+
+# Build artifacts
+*.apk
+*.aab
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Specific module builds
+/core/**/build/
+app/build/
+feature/**/build/
+

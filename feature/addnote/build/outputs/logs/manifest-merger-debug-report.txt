@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml:2:13-83
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml:2:13-83
+	package
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml
+	xmlns:android
+		ADDED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml:2:23-81
+uses-sdk
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml reason: use-sdk injection requested
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml
+INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml
+	android:targetSdkVersion
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml
+	android:minSdkVersion
+		INJECTED from /home/githukudenis/CodeFactory/Android/ThoughtPad/feature/addnote/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest7524487514285342955.xml

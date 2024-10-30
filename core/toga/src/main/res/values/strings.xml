@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="ok">Okay</string>
+    <string name="confirm">Okay</string>
+    <string name="dimiss">Dismiss</string>
+    <string name="add_note">Add note</string>
+    <string name="search_notes">Search by title, description, tags etc</string>
+</resources>

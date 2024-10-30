@@ -16,28 +16,75 @@
 */
 package com.gitsoft.thoughtpad
 
+import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gitsoft.thoughtpad.model.ThemeConfig
-import com.gitsoft.thoughtpad.repository.UserPrefsRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.model.TagColor
+import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
+import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.SYSTEM)
+data class MainUiState(val themeConfig: ThemeConfig = ThemeConfig.LIGHT)
 
-@HiltViewModel
-class MainViewModel @Inject constructor(private val userPrefsRepository: UserPrefsRepository) :
-    ViewModel() {
+class MainViewModel(
+    userPrefsRepository: UserPrefsRepository,
+    private val notesRepository: NotesRepository
+) : ViewModel() {
 
     val uiState =
-        userPrefsRepository.userPreferencesFlow
+        userPrefsRepository.userPrefs
             .mapLatest { MainUiState(it.themeConfig) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = MainUiState()
             )
+
+    init {
+        checkTags()
+        refreshRecycleBin()
+    }
+
+    private fun checkTags() {
+        viewModelScope.launch {
+            notesRepository.allTags.collectLatest {
+                if (it.isEmpty()) {
+                    val defaultTags =
+                        listOf(
+                            Tag(name = "Work", color = TagColor.Blue), // Blue
+                            Tag(name = "Personal", color = TagColor.Green), // Green
+                            Tag(name = "Urgent", color = TagColor.Orange) // Orange
+                        )
+
+                    notesRepository.insertTags(defaultTags)
+                }
+            }
+        }
+    }
+
+    private fun refreshRecycleBin() {
+        viewModelScope.launch {
+            val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+            val timeUpdatedTemp = Calendar.getInstance()
+
+            /** Filter all notes that have been deleted and are more than 7 days old in the trash. */
+            val staleNotes =
+                notesRepository.allNotes
+                    .first()
+                    .filter {
+                        it.note.isDeleted &&
+                            timeUpdatedTemp.apply { it.note.updatedAt }.get(Calendar.DAY_OF_YEAR) + 7 < today
+                    }
+                    .map { it.note.noteId }
+
+            staleNotes.forEach { notesRepository.deleteNoteById(it) }
+        }
+    }
 }
