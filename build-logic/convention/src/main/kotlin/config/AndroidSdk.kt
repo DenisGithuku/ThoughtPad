@@ -10,7 +10,7 @@ object AndroidSdk {
     const val applicationId = "com.gitsoft.thoughtpad"
 
     private val code = 0
-        .plus(SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis()).plus("00").toInt())
+        .plus(SimpleDateFormat("MMddHHmm").format(System.currentTimeMillis()).plus("00").toInt())
         .plus(0) // change this if you're shipping for the same day
 
     val versionCode = code
