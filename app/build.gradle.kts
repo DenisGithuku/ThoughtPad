@@ -73,6 +73,6 @@ dependencies {
     implementation(project(":core:toga"))
     implementation(libs.lottie.compose)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

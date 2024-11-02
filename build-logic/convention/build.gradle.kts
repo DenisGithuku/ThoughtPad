@@ -52,10 +52,6 @@ gradlePlugin {
             id = "thoughtpad.google.firebase.application"
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
         }
-        register("android-testing") {
-            id = "thoughtpad.android.testing"
-            implementationClass = "AndroidTestConventionPlugin"
-        }
         register("koin") {
             id = "thoughtpad.android.koin"
             implementationClass = "AndroidKoinConventionPlugin"
