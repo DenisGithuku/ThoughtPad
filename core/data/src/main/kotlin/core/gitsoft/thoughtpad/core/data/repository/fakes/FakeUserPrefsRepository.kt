@@ -20,21 +20,23 @@ import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.model.UserPreferences
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeUserPrefsRepository : UserPrefsRepository {
 
     private var _userPrefs =
-        UserPreferences(themeConfig = ThemeConfig.DARK, isNotificationPermissionsGranted = true)
+        MutableStateFlow(
+            UserPreferences(themeConfig = ThemeConfig.DARK, isNotificationPermissionsGranted = true)
+        )
 
     override val userPrefs: Flow<UserPreferences>
-        get() = flow { emit(_userPrefs) }
+        get() = _userPrefs
 
     override suspend fun updateTheme(themeConfig: ThemeConfig) {
-        _userPrefs = _userPrefs.copy(themeConfig = themeConfig)
+        _userPrefs.value = _userPrefs.value.copy(themeConfig = themeConfig)
     }
 
     override suspend fun updateNotificationPermission(isGranted: Boolean) {
-        _userPrefs = _userPrefs.copy(isNotificationPermissionsGranted = isGranted)
+        _userPrefs.value = _userPrefs.value.copy(isNotificationPermissionsGranted = isGranted)
     }
 }
