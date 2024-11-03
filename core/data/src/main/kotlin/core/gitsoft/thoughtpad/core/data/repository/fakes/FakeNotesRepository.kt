@@ -48,10 +48,10 @@ class FakeNotesRepository : NotesRepository {
                             noteText = "Text $index",
                             createdAt = System.currentTimeMillis(),
                             updatedAt = System.currentTimeMillis(),
-                            isPinned = index % 3 == 0,
-                            isArchived = index % 2 == 0,
+                            isPinned = false,
+                            isArchived = false,
                             color = NoteColor.Blue,
-                            isDeleted = index % 5 == 0,
+                            isDeleted = false,
                             isCheckList = true,
                             reminderTime = System.currentTimeMillis(),
                             attachments = listOf()

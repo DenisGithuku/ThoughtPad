@@ -16,7 +16,6 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist
 
-import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
@@ -62,10 +61,7 @@ class NoteListViewModel(
         viewModelScope.launch {
             val note = notesRepository.getNoteById(deleteState.noteId ?: return@launch)
             notesRepository.updateNote(
-                note.copy(
-                    isDeleted = deleteState.isDeleted,
-                    updatedAt = Calendar.getInstance().timeInMillis
-                )
+                note.copy(isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis())
             )
 
             // Update deleted state

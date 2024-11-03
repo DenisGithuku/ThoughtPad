@@ -10,6 +10,13 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:toga"))
+    implementation(project(":core:common"))
 
     implementation(libs.lottie.compose)
+
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.runner)
+    testImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.test.core)
 }
