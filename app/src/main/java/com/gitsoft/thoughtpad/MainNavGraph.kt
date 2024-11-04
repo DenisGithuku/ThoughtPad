@@ -28,8 +28,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.gitsoft.thoughtpad.feature.addnote.AddNoteRoute
 import com.gitsoft.thoughtpad.feature.notelist.NoteListRoute
+import com.gitsoft.thoughtpad.feature.settings.SettingsRoute
 import com.gitsoft.thoughtpad.feature.tags.TagRoute
-import com.gitsoft.thougtpad.feature.settings.SettingsRoute
 
 @Composable
 fun MainNavGraph(appState: AppState) {

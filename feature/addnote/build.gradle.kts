@@ -12,4 +12,10 @@ dependencies {
     implementation(project(":core:toga"))
     implementation(project(":core:common"))
     implementation(libs.accompanist.permissions)
+
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.runner)
+    testImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.test.core)
 }

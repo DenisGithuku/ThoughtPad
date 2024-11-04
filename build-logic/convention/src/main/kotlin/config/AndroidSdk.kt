@@ -3,7 +3,7 @@ package config
 import java.text.SimpleDateFormat
 
 object AndroidSdk {
-    const val targetSdk = 34
+    const val targetSdk = 35
     const val compileSdk = 33
     const val minimumSdk = 27
     const val namespace = "com.gitsoft.thoughtpad"

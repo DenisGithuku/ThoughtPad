@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.feature.notelist.R
+import com.gitsoft.thoughtpad.feature.notelist.TestTags
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
@@ -130,7 +132,11 @@ fun NoteItemCard(
         Column(modifier = Modifier.padding(8.dp)) {
             // Note title
             noteData.note.noteTitle?.let { title ->
-                TogaSmallTitle(modifier = Modifier.fillMaxWidth(), text = title, maxLines = 1)
+                TogaSmallTitle(
+                    modifier = Modifier.fillMaxWidth().testTag(TestTags.NOTE_ITEM_CARD_TITLE),
+                    text = title,
+                    maxLines = 1
+                )
             }
 
             // Note text

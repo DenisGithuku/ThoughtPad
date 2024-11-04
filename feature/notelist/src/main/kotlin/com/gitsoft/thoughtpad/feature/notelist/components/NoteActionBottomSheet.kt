@@ -44,6 +44,7 @@ import core.gitsoft.thoughtpad.core.toga.theme.Error
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteActionBottomSheet(
+    modifier: Modifier = Modifier,
     noteId: Long,
     isPinned: Boolean,
     isArchived: Boolean,
@@ -64,7 +65,7 @@ fun NoteActionBottomSheet(
             label = "pin icon color"
         )
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    ModalBottomSheet(modifier = modifier, onDismissRequest = onDismiss) {
         NoteAction(
             title = stringResource(R.string.edit),
             onClick = { onEdit(noteId) },

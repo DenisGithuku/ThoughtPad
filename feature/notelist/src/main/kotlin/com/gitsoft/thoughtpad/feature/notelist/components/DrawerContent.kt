@@ -39,11 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.feature.notelist.R
+import com.gitsoft.thoughtpad.feature.notelist.TestTags
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumTitle
 
@@ -57,7 +59,7 @@ fun DrawerContent(
         listOf(DrawerItem.All, DrawerItem.Reminders, DrawerItem.Archived, DrawerItem.Trash)
     val sideBarRoutes = listOf(SidebarRoute.Tags, SidebarRoute.Settings)
 
-    Column(modifier = Modifier.fillMaxWidth(0.75f)) {
+    Column(modifier = Modifier.fillMaxWidth(0.75f).testTag(TestTags.SIDEBAR)) {
         DrawerHeader()
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -66,15 +68,22 @@ fun DrawerContent(
         )
         drawerItems.forEach {
             NavigationDrawerItem(
+                modifier = Modifier.testTag(TestTags.SIDEBAR_ITEM),
                 selected = selectedDrawerItem == it,
                 icon = {
                     Icon(
+                        modifier = Modifier.testTag(TestTags.SIDEBAR_ITEM_ICON),
                         painter = painterResource(id = it.icon),
                         tint = MaterialTheme.colorScheme.onSurface,
                         contentDescription = stringResource(it.title)
                     )
                 },
-                label = { TogaMediumLabel(text = stringResource(it.title)) },
+                label = {
+                    TogaMediumLabel(
+                        modifier = Modifier.testTag(TestTags.SIDEBAR_ITEM_TEXT),
+                        text = stringResource(it.title)
+                    )
+                },
                 onClick = { onOpenDrawerItem(it) },
                 colors =
                     NavigationDrawerItemDefaults.colors(

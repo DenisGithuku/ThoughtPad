@@ -4,10 +4,21 @@ plugins {
     alias(libs.plugins.thoughtpad.android.koin)
 }
 
-android { namespace = "com.gitsoft.thoughtpad.feature.settings" }
+android {
+    namespace = "com.gitsoft.thoughtpad.feature.settings"
+
+    defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+}
 
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:toga"))
+    implementation(project(":core:common"))
+
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.runner)
+    testImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.test.core)
 }

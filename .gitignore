@@ -39,3 +39,6 @@ local.properties
 app/build/
 feature/**/build/
 
+#kotlin
+/.kotlin
+
