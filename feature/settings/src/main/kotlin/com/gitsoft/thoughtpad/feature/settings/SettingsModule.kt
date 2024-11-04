@@ -14,12 +14,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thougtpad.feature.settings
+package com.gitsoft.thoughtpad.feature.settings
 
-import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-data class SettingsUiState(
-    val selectedTheme: ThemeConfig = ThemeConfig.LIGHT,
-    val isThemeDialogShown: Boolean = false,
-    val availableThemes: List<ThemeConfig> = listOf(ThemeConfig.LIGHT, ThemeConfig.DARK)
-)
+val settingsModule = module { viewModel { SettingsViewModel(get()) } }

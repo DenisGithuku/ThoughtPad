@@ -26,8 +26,8 @@ import com.gitsoft.thoughtpad.core.database.databaseModule
 import com.gitsoft.thoughtpad.core.datastore.prefsModule
 import com.gitsoft.thoughtpad.feature.addnote.addNoteModule
 import com.gitsoft.thoughtpad.feature.notelist.noteListModule
+import com.gitsoft.thoughtpad.feature.settings.settingsModule
 import com.gitsoft.thoughtpad.feature.tags.tagModule
-import com.gitsoft.thougtpad.feature.settings.settingsModule
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.sessions.BuildConfig
 import core.gitsoft.thoughtpad.core.data.dataModule

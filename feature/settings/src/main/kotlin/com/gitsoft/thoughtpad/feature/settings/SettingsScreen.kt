@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thougtpad.feature.settings
+package com.gitsoft.thoughtpad.feature.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -41,12 +41,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
-import com.gitsoft.thoughtpad.feature.settings.R
 import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaContentDialog
 import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
 import org.koin.androidx.compose.koinViewModel
@@ -89,7 +89,7 @@ internal fun SettingsScreen(
                 TogaContentDialog(
                     title = { Text(text = "Select theme", style = MaterialTheme.typography.headlineSmall) },
                     content = {
-                        Column {
+                        Column(modifier = Modifier.testTag(TestTags.THEME_COLUMN).fillMaxWidth()) {
                             state.availableThemes.forEach { availableTheme ->
                                 Row(
                                     modifier =
@@ -161,6 +161,7 @@ internal fun SettingsScreen(
 
 @Composable
 fun SettingsItem(
+    modifier: Modifier = Modifier,
     leading: (@Composable () -> Unit)? = null,
     title: @Composable () -> Unit,
     description: (@Composable () -> Unit)? = null,
@@ -169,9 +170,11 @@ fun SettingsItem(
 ) {
     Row(
         modifier =
-            Modifier.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .clickable(enabled = onClick != null) { onClick?.let { it() } }
-                .padding(16.dp),
+                .padding(16.dp)
+                .testTag(TestTags.SETTINGS_ITEM),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -187,4 +190,9 @@ fun SettingsItem(
         }
         if (trailing != null) trailing()
     }
+}
+
+internal object TestTags {
+    const val SETTINGS_ITEM = "settings_item"
+    const val THEME_COLUMN = "theme_column"
 }
