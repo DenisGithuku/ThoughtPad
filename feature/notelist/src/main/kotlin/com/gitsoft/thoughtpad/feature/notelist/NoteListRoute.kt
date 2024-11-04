@@ -70,6 +70,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -259,7 +260,6 @@ internal fun NoteListScreen(
                         .background(MaterialTheme.colorScheme.background)
                         .statusBarsPadding()
                         .navigationBarsPadding()
-                        .imeNestedScroll()
             ) {
                 val noteListState = rememberLazyStaggeredGridState()
 
@@ -278,10 +278,7 @@ internal fun NoteListScreen(
                         }
                     }
 
-                Column(
-                    modifier =
-                        Modifier.fillMaxSize().imeNestedScroll().padding(PaddingValues(horizontal = 16.dp))
-                ) {
+                Column(modifier = Modifier.fillMaxSize().padding(PaddingValues(horizontal = 16.dp))) {
                     TopRow(
                         query = query,
                         onToggleSideBar = {
@@ -309,6 +306,7 @@ internal fun NoteListScreen(
                     if (state.isFilterDialogVisible) {
                         state.selectedNote?.let {
                             NoteActionBottomSheet(
+                                modifier = Modifier.testTag(TestTags.NOTE_ACTIONS_BOTTOM_SHEET),
                                 noteId = state.selectedNote.noteId,
                                 isPinned = state.selectedNote.isPinned,
                                 isArchived = state.selectedNote.isArchived,
@@ -347,7 +345,7 @@ internal fun NoteListScreen(
                         } else {
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
-                                modifier = Modifier.fillMaxSize().imeNestedScroll(),
+                                modifier = Modifier.fillMaxSize().imeNestedScroll().testTag(TestTags.NOTE_LIST),
                                 columns = StaggeredGridCells.Fixed(2),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalItemSpacing = 8.dp
@@ -362,15 +360,7 @@ internal fun NoteListScreen(
                                         items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
                                             NoteItemCard(
                                                 modifier =
-                                                    Modifier.animateItem(
-                                                        fadeInSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                        fadeOutSpec = tween(durationMillis = 300, delayMillis = 100),
-                                                        placementSpec =
-                                                            spring( // Controls the placement animation
-                                                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                                                stiffness = Spring.StiffnessLow
-                                                            )
-                                                    ),
+                                                    Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                                                 isDarkTheme = state.isDarkTheme,
                                                 isSelected = state.selectedNote?.noteId == noteData.note.noteId,
                                                 noteData = noteData,
@@ -392,7 +382,8 @@ internal fun NoteListScreen(
 
                                         items(items = allOtherNotes, key = { it.note.noteId }) { noteData ->
                                             NoteItemCard(
-                                                modifier = Modifier.then(animateNoteItemCard()),
+                                                modifier =
+                                                    Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                                                 isDarkTheme = state.isDarkTheme,
                                                 isSelected = state.selectedNote?.noteId == noteData.note.noteId,
                                                 noteData = noteData,
@@ -417,7 +408,8 @@ internal fun NoteListScreen(
                                         } else {
                                             items(items = archivedNotes, key = { it.note.noteId }) { noteData ->
                                                 NoteItemCard(
-                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    modifier =
+                                                        Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                                                     isDarkTheme = state.isDarkTheme,
                                                     isSelected = state.selectedNote?.noteId == noteData.note.noteId,
                                                     noteData = noteData,
@@ -446,7 +438,8 @@ internal fun NoteListScreen(
                                         } else {
                                             items(items = reminders, key = { it.note.noteId }) { noteData ->
                                                 NoteItemCard(
-                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    modifier =
+                                                        Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                                                     isDarkTheme = state.isDarkTheme,
                                                     isSelected = state.selectedNote?.noteId == noteData.note.noteId,
                                                     noteData = noteData,
@@ -482,7 +475,8 @@ internal fun NoteListScreen(
                                         } else {
                                             items(items = trash, key = { it.note.noteId }) { noteData ->
                                                 NoteItemCard(
-                                                    modifier = Modifier.then(animateNoteItemCard()),
+                                                    modifier =
+                                                        Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                                                     isDarkTheme = state.isDarkTheme,
                                                     isSelected = state.selectedNote?.noteId == noteData.note.noteId,
                                                     noteData = noteData,
@@ -517,6 +511,7 @@ internal fun NoteListScreen(
                         ) + fadeOut(animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing))
                 ) {
                     TogaFloatingActionButton(
+                        modifier = Modifier.testTag(TestTags.ADD_NOTE_FAB),
                         icon = R.drawable.ic_add,
                         contentDescription = R.string.add_note,
                         onClick = { onCreateNewNote(null) }
@@ -546,16 +541,30 @@ fun TopRow(query: String, onToggleSideBar: () -> Unit, onQueryChange: (String) -
         verticalAlignment = Alignment.CenterVertically
     ) {
         TogaIconButton(
-            modifier = Modifier.sizeIn(24.dp),
+            modifier = Modifier.sizeIn(24.dp).testTag(TestTags.SIDEBAR_TOGGLE),
             icon = R.drawable.ic_side_menu,
             contentDescription = R.string.sidebar_toggle,
             onClick = onToggleSideBar
         )
         TogaSearchBar(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag(TestTags.SEARCH_BAR),
             query = query,
             onQueryChange = onQueryChange,
             onSearch = {}
         )
     }
+}
+
+internal object TestTags {
+    const val SEARCH_BAR = "search_bar"
+    const val SIDEBAR_TOGGLE = "sidebar_toggle"
+    const val SIDEBAR = "sidebar"
+    const val SIDEBAR_ITEM = "sidebar_item"
+    const val SIDEBAR_ITEM_TEXT = "sidebar_item_text"
+    const val SIDEBAR_ITEM_ICON = "sidebar_item_icon"
+    const val NOTE_LIST = "note_list"
+    const val NOTE_ACTIONS_BOTTOM_SHEET = "note_actions_bottom_sheet"
+    const val NOTE_ITEM_CARD = "note_item_card"
+    const val NOTE_ITEM_CARD_TITLE = "note_item_card_title"
+    const val ADD_NOTE_FAB = "add_note_fab"
 }
