@@ -4,7 +4,11 @@ plugins {
     alias(libs.plugins.thoughtpad.android.koin)
 }
 
-android { namespace = "com.gitsoft.thoughtpad.feature.addnote" }
+android {
+    namespace = "com.gitsoft.thoughtpad.feature.addnote"
+
+    defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+}
 
 dependencies {
     implementation(project(":core:model"))

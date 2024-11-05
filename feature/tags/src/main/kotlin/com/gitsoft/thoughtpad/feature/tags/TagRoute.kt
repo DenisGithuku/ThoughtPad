@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -105,7 +106,10 @@ internal fun TagScreen(
     val context = LocalContext.current
 
     if (state.isAddTag) {
-        TogaModalBottomSheet(onDismissRequest = { onToggleAddTag(false) }) {
+        TogaModalBottomSheet(
+            modifier = Modifier.testTag(TestTag.TAG_SAVE_UPDATE_BOTTOM_SHEET),
+            onDismissRequest = { onToggleAddTag(false) }
+        ) {
             NewTagContent(
                 isSystemInDarkTheme = state.isSystemInDarkTheme,
                 tagNameState = state.tagName,
@@ -119,7 +123,10 @@ internal fun TagScreen(
     }
 
     if (state.selectedTag != null) {
-        TogaModalBottomSheet(onDismissRequest = { onToggleEditTag(null) }) {
+        TogaModalBottomSheet(
+            modifier = Modifier.testTag(TestTag.TAG_SAVE_UPDATE_BOTTOM_SHEET),
+            onDismissRequest = { onToggleEditTag(null) }
+        ) {
             EditTagContent(
                 isSystemInDarkTheme = state.isSystemInDarkTheme,
                 selectedTag = state.selectedTag,
@@ -179,7 +186,8 @@ internal fun TagScreen(
             return@TogaStandardScaffold
         }
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp),
+            modifier =
+                Modifier.fillMaxSize().padding(innerPadding).padding(16.dp).testTag(TestTag.TAG_LIST),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(items = state.tags, key = { it.tagId }) { tag ->
@@ -191,7 +199,10 @@ internal fun TagScreen(
                 )
             }
             item {
-                TogaPrimaryButton(modifier = Modifier, onClick = { onToggleAddTag(true) }) {
+                TogaPrimaryButton(
+                    modifier = Modifier.testTag(TestTag.ADD_TAG_BTN),
+                    onClick = { onToggleAddTag(true) }
+                ) {
                     TogaButtonText(text = stringResource(id = R.string.new_tag))
                 }
             }
@@ -207,7 +218,7 @@ private fun TagRow(
     onDeleteTag: (Tag) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().testTag(TestTag.TAG_ITEM),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -224,11 +235,13 @@ private fun TagRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TogaIconButton(
+                modifier = Modifier.testTag(TestTag.EDIT_TAG_BTN),
                 icon = R.drawable.ic_edit,
                 contentDescription = R.string.edit,
                 onClick = { onEditTag(tag) }
             )
             TogaIconButton(
+                modifier = Modifier.testTag(TestTag.DELETE_TAG_BTN),
                 icon = R.drawable.ic_delete,
                 contentDescription = R.string.edit,
                 onClick = { onDeleteTag(tag) },
@@ -262,4 +275,18 @@ fun NoTagsContent(onAddNewTag: () -> Unit) {
             TogaButtonText(text = stringResource(id = R.string.add_new_tag))
         }
     }
+}
+
+internal object TestTag {
+    const val TAG_ITEM = "tag_item"
+    const val TAG_LIST = "tag_list"
+    const val ADD_TAG_BTN = "add_tag_btn"
+    const val TAG_SAVE_UPDATE_BOTTOM_SHEET = "tag_save_update_bottom_sheet"
+    const val EDIT_TAG_BTN = "edit_tag_btn"
+    const val DELETE_TAG_BTN = "delete_tag_btn"
+    const val NEW_TAG_INPUT = "new_tag_input"
+    const val EDIT_TAG_INPUT = "edit_tag_input"
+    const val UPDATE_TAG_INPUT = "update_tag_input"
+    const val SAVE_TAG_BTN = "save_tag_btn"
+    const val UPDATE_TAG_BTN = "update_tag_btn"
 }

@@ -30,11 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
 import com.gitsoft.thoughtpad.feature.tags.R
+import com.gitsoft.thoughtpad.feature.tags.TestTag
 import core.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
 import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
 import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
@@ -61,7 +63,7 @@ fun NewTagContent(
             onValueChange = onChangeTagName,
             label = R.string.add_new_tag,
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag(TestTag.NEW_TAG_INPUT)
         )
 
         // Tag colors
@@ -87,7 +89,7 @@ fun NewTagContent(
                 Toast.makeText(context, context.getString(R.string.new_tag_added), Toast.LENGTH_SHORT)
                     .show()
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.End).testTag(TestTag.SAVE_TAG_BTN)
         ) {
             TogaButtonText(text = stringResource(id = R.string.add_tag))
         }
