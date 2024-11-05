@@ -51,17 +51,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
+import com.gitsoft.thoughtpad.core.toga.components.chips.TogaInfoChip
+import com.gitsoft.thoughtpad.core.toga.components.loading.indicators.TogaFadingCirclesIndicator
+import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import com.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import com.gitsoft.thoughtpad.core.toga.theme.Error
 import com.gitsoft.thoughtpad.feature.tags.components.EditTagContent
 import com.gitsoft.thoughtpad.feature.tags.components.NewTagContent
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
-import core.gitsoft.thoughtpad.core.toga.components.chips.TogaInfoChip
-import core.gitsoft.thoughtpad.core.toga.components.loading.indicators.TogaFadingCirclesIndicator
-import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
-import core.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
-import core.gitsoft.thoughtpad.core.toga.theme.Error
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

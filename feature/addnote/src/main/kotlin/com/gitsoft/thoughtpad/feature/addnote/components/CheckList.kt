@@ -32,24 +32,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
 import com.gitsoft.thoughtpad.feature.addnote.R
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
+import com.gitsoft.thoughtpad.feature.addnote.TestTags
 
 @Composable
 fun CheckList(
+    modifier: Modifier = Modifier,
     checklistItems: List<CheckListItem>,
     onCheckedChange: (CheckListItem, Boolean) -> Unit, // Handles check/uncheck
     onAddItem: (CheckListItem) -> Unit, // Handles adding a new checklist item
     onDeleteItem: (CheckListItem) -> Unit // Handles item deletion
 ) {
-    Column {
+    Column(modifier = modifier) {
         // Display existing checklist items
         checklistItems.forEach { item ->
             Row(
@@ -84,7 +87,7 @@ fun CheckList(
                 value = newItemText,
                 onValueChange = { newItemText = it },
                 label = R.string.add_new_item,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).testTag(TestTags.NEW_CHECKLIST_ITEM_TEXT_FIELD),
                 singleLine = true,
                 keyboardOptions =
                     KeyboardOptions(
@@ -102,11 +105,11 @@ fun CheckList(
                     ) // Takes up the rest of the row
             )
             TogaIconButton(
+                enabled = newItemText.isNotEmpty(),
+                modifier = Modifier.testTag(TestTags.ADD_NEW_CHECKLIST_ITEM_BUTTON),
                 onClick = {
-                    if (newItemText.isNotEmpty()) {
-                        onAddItem(CheckListItem(text = newItemText))
-                        newItemText = ""
-                    }
+                    onAddItem(CheckListItem(text = newItemText))
+                    newItemText = ""
                 },
                 icon = R.drawable.ic_add,
                 contentDescription = R.string.add_new_item

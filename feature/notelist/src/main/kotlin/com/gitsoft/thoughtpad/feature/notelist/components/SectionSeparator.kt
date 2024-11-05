@@ -20,7 +20,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
 
 @Composable
 fun SectionSeparator(modifier: Modifier = Modifier, @StringRes title: Int) {

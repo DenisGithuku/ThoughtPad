@@ -33,7 +33,7 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
                     themeConfig =
                         ThemeConfig.valueOf(it[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.LIGHT.name),
                     isNotificationPermissionsGranted =
-                        it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() ?: false
+                        it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() == true
                 )
             }
 

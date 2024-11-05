@@ -29,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.NoteColor
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
+import com.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import com.gitsoft.thoughtpad.feature.addnote.R
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
-import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 
 @Composable
 fun NoteColorPicker(

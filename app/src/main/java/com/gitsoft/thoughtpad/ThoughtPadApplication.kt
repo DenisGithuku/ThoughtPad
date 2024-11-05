@@ -19,7 +19,6 @@ package com.gitsoft.thoughtpad
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.util.Log
 import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.database.databaseModule
@@ -89,7 +88,7 @@ class ThoughtPadApplication : Application() {
                     enableVibration(true)
                     description = AppConstants.notificationChannelDescription
                 }
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 }

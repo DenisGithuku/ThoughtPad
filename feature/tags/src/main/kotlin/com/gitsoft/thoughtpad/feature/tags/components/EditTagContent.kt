@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,11 +38,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
 import com.gitsoft.thoughtpad.feature.tags.R
 import com.gitsoft.thoughtpad.feature.tags.TestTag
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
-import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
 
 @Composable
 fun EditTagContent(

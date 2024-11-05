@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import core.gitsoft.thoughtpad.core.toga.components.loading.indicators.TogaFadingCirclesIndicator
+import com.gitsoft.thoughtpad.core.toga.components.loading.indicators.TogaFadingCirclesIndicator
 
 @Composable
 fun LoadingIndicator() {

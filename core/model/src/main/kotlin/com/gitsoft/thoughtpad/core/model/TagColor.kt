@@ -17,23 +17,23 @@
 package com.gitsoft.thoughtpad.core.model
 
 import androidx.room.TypeConverter
-import core.gitsoft.thoughtpad.core.toga.theme.TagBlue
-import core.gitsoft.thoughtpad.core.toga.theme.TagBlueDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagBrown
-import core.gitsoft.thoughtpad.core.toga.theme.TagBrownDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagGreen
-import core.gitsoft.thoughtpad.core.toga.theme.TagGreenDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagOrange
-import core.gitsoft.thoughtpad.core.toga.theme.TagOrangeDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagPurple
-import core.gitsoft.thoughtpad.core.toga.theme.TagPurpleDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagRed
-import core.gitsoft.thoughtpad.core.toga.theme.TagRedDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagTeal
-import core.gitsoft.thoughtpad.core.toga.theme.TagTealDark
-import core.gitsoft.thoughtpad.core.toga.theme.TagYellow
-import core.gitsoft.thoughtpad.core.toga.theme.TagYellowDark
-import core.gitsoft.thoughtpad.core.toga.theme.toComposeLong
+import com.gitsoft.thoughtpad.core.toga.theme.TagBlue
+import com.gitsoft.thoughtpad.core.toga.theme.TagBlueDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagBrown
+import com.gitsoft.thoughtpad.core.toga.theme.TagBrownDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagGreen
+import com.gitsoft.thoughtpad.core.toga.theme.TagGreenDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagOrange
+import com.gitsoft.thoughtpad.core.toga.theme.TagOrangeDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagPurple
+import com.gitsoft.thoughtpad.core.toga.theme.TagPurpleDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagRed
+import com.gitsoft.thoughtpad.core.toga.theme.TagRedDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagTeal
+import com.gitsoft.thoughtpad.core.toga.theme.TagTealDark
+import com.gitsoft.thoughtpad.core.toga.theme.TagYellow
+import com.gitsoft.thoughtpad.core.toga.theme.TagYellowDark
+import com.gitsoft.thoughtpad.core.toga.theme.toComposeLong
 
 enum class TagColor(val lightColor: Long, val darkColor: Long) {
     Red(lightColor = TagRed.toComposeLong(), darkColor = TagRedDark.toComposeLong()),

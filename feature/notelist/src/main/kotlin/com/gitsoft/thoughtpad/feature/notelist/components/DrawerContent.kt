@@ -44,10 +44,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumTitle
 import com.gitsoft.thoughtpad.feature.notelist.R
 import com.gitsoft.thoughtpad.feature.notelist.TestTags
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumTitle
 
 @Composable
 fun DrawerContent(

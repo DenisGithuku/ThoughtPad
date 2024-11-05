@@ -35,8 +35,8 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 
 @Composable
 fun NoNotesIndicator(modifier: Modifier = Modifier) {

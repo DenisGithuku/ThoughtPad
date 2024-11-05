@@ -76,6 +76,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieCompositionFactory
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
+import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import com.gitsoft.thoughtpad.feature.notelist.components.DrawerContent
 import com.gitsoft.thoughtpad.feature.notelist.components.DrawerItem
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
@@ -86,11 +91,6 @@ import com.gitsoft.thoughtpad.feature.notelist.components.NoteActionBottomSheet
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
 import com.gitsoft.thoughtpad.feature.notelist.components.SidebarRoute
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
-import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

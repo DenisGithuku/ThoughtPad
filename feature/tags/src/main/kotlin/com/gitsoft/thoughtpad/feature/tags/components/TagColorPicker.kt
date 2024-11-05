@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.TagColor
-import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
+import com.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 
 @Composable
 fun TagColorPicker(
