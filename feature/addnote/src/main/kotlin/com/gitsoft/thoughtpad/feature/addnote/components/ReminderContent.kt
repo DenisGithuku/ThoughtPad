@@ -28,13 +28,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
 import com.gitsoft.thoughtpad.feature.addnote.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
+import com.gitsoft.thoughtpad.feature.addnote.TestTags
 import java.util.Calendar
 
 @Composable
@@ -46,7 +48,7 @@ fun ReminderContent(onDateSelected: (Long?) -> Unit) {
             set(Calendar.MILLISECOND, 0)
         }
 
-    val tommorrowAtEight =
+    val tomorrowAtEight =
         Calendar.getInstance().apply {
             set(Calendar.DAY_OF_MONTH, this.get(Calendar.DAY_OF_MONTH) + 1)
             set(Calendar.HOUR_OF_DAY, 8)
@@ -61,17 +63,20 @@ fun ReminderContent(onDateSelected: (Long?) -> Unit) {
             modifier = Modifier.padding(16.dp)
         )
         ReminderContentItem(
+            modifier = Modifier.testTag(TestTags.REMINDER_TIME_ENTRY),
             icon = R.drawable.ic_time,
             title = "In 30 minutes",
             onClick = { onDateSelected(inThirtyMinutes.timeInMillis) }
         )
 
         ReminderContentItem(
+            modifier = Modifier.testTag(TestTags.REMINDER_TIME_ENTRY),
             icon = R.drawable.ic_time,
             title = "Tomorrow at 8:00 am",
-            onClick = { onDateSelected(tommorrowAtEight.timeInMillis) }
+            onClick = { onDateSelected(tomorrowAtEight.timeInMillis) }
         )
         ReminderContentItem(
+            modifier = Modifier.testTag(TestTags.REMINDER_TIME_ENTRY),
             icon = R.drawable.ic_time,
             title = "Choose date and time",
             onClick = { onDateSelected(null) }
@@ -81,13 +86,14 @@ fun ReminderContent(onDateSelected: (Long?) -> Unit) {
 
 @Composable
 private fun ReminderContentItem(
+    modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     title: String,
     description: String? = null,
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick).padding(16.dp),
+        modifier = modifier.fillMaxWidth().clickable(onClick = onClick).padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(painter = painterResource(id = icon), contentDescription = title)

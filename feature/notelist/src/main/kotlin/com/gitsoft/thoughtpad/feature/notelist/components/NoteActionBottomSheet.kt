@@ -35,11 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import com.gitsoft.thoughtpad.core.toga.tags.TagInfoType
+import com.gitsoft.thoughtpad.core.toga.tags.TogaInfoTag
+import com.gitsoft.thoughtpad.core.toga.theme.Error
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
-import core.gitsoft.thoughtpad.core.toga.tags.TagInfoType
-import core.gitsoft.thoughtpad.core.toga.tags.TogaInfoTag
-import core.gitsoft.thoughtpad.core.toga.theme.Error
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -61,11 +61,22 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
+import com.gitsoft.thoughtpad.core.toga.components.appbar.TogaBottomAppBar
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
+import com.gitsoft.thoughtpad.core.toga.components.dialog.TogaDatePickerDialog
+import com.gitsoft.thoughtpad.core.toga.components.dialog.TogaTimePickerDialog
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
+import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import com.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
+import com.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import com.gitsoft.thoughtpad.feature.addnote.components.CheckList
 import com.gitsoft.thoughtpad.feature.addnote.components.ColorPill
 import com.gitsoft.thoughtpad.feature.addnote.components.NoteColorPicker
@@ -79,16 +90,6 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import core.gitsoft.thoughtpad.core.toga.components.appbar.TogaBottomAppBar
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
-import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaDatePickerDialog
-import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaTimePickerDialog
-import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
-import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
-import core.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
-import core.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import java.util.Calendar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -213,6 +214,7 @@ internal fun AddNoteScreen(
     if (state.timeDialogIsVisible) {
         state.selectedDate?.let {
             TogaTimePickerDialog(
+                modifier = Modifier.testTag(TestTags.TIME_DIALOG),
                 selectedDate = state.selectedDate,
                 onConfirm = { timePickerState ->
                     val selectedTimeMillis = getTimeInMillisFromPicker(timePickerState)
@@ -226,6 +228,7 @@ internal fun AddNoteScreen(
 
     if (state.dateDialogIsVisible) {
         TogaDatePickerDialog(
+            modifier = Modifier.testTag(TestTags.DATE_DIALOG),
             onDateSelected = {
                 onChangeDate(it ?: return@TogaDatePickerDialog)
                 onToggleDateDialog(false)
@@ -235,7 +238,10 @@ internal fun AddNoteScreen(
     }
 
     if (state.isTagSheetVisible) {
-        TogaModalBottomSheet(onDismissRequest = { onToggleTagSheet(false) }) {
+        TogaModalBottomSheet(
+            modifier = Modifier.testTag(TestTags.TAG_BOTTOM_SHEET),
+            onDismissRequest = { onToggleTagSheet(false) }
+        ) {
             TagSelectionContent(
                 isSystemInDarkTheme = state.systemInDarkMode,
                 existingTags = state.defaultTags,
@@ -251,7 +257,10 @@ internal fun AddNoteScreen(
     }
 
     if (state.isColorVisible) {
-        TogaModalBottomSheet(modifier = Modifier, onDismissRequest = { onToggleColorBar(false) }) {
+        TogaModalBottomSheet(
+            modifier = Modifier.testTag(TestTags.NOTE_COLOR_PICKER),
+            onDismissRequest = { onToggleColorBar(false) }
+        ) {
             NoteColorPicker(
                 modifier = Modifier.padding(PaddingValues(16.dp)),
                 isDarkTheme = state.systemInDarkMode,
@@ -265,7 +274,7 @@ internal fun AddNoteScreen(
 
     if (state.isDateSheetVisible) {
         TogaModalBottomSheet(
-            modifier = Modifier,
+            modifier = Modifier.testTag(TestTags.REMINDER_BOTTOM_SHEET),
             onDismissRequest = { onToggleDateSheet(false) },
             content = {
                 ReminderContent(
@@ -303,6 +312,7 @@ internal fun AddNoteScreen(
         },
         actions = {
             TogaIconButton(
+                modifier = Modifier.testTag(TestTags.TOGGLE_PIN_BUTTON),
                 icon = if (state.note.isPinned) R.drawable.ic_pin_filled else R.drawable.ic_pin,
                 contentDescription = R.string.pin,
                 tint =
@@ -313,7 +323,12 @@ internal fun AddNoteScreen(
                     },
                 onClick = { onTogglePin(!state.note.isPinned) }
             )
-            TogaTextButton(text = R.string.save, enabled = state.noteIsValid, onClick = onSave)
+            TogaTextButton(
+                modifier = Modifier.testTag(TestTags.SAVE_BUTTON),
+                text = R.string.save,
+                enabled = state.noteIsValid,
+                onClick = onSave
+            )
         },
         bottomBar = {
             TogaBottomAppBar(
@@ -324,12 +339,14 @@ internal fun AddNoteScreen(
                     } else state.selectedNoteColor.lightColor.toComposeColor(),
                 actions = {
                     TogaIconButton(
+                        modifier = Modifier.testTag(TestTags.TOGGLE_COLOR_BUTTON),
                         icon = R.drawable.ic_paint,
                         onClick = { onToggleColorBar(!state.isColorVisible) },
                         contentDescription = R.string.color_bar
                     )
 
                     TogaIconButton(
+                        modifier = Modifier.testTag(TestTags.TOGGLE_REMINDER_BUTTON),
                         icon =
                             if (!state.hasReminder) {
                                 R.drawable.ic_notifications_outlined
@@ -413,7 +430,8 @@ internal fun AddNoteScreen(
         ) {
             item {
                 TogaTextField(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag(TestTags.NOTE_TITLE_INPUT),
                     value = state.note.noteTitle ?: "",
                     onValueChange = onChangeTitle,
                     textStyle = MaterialTheme.typography.titleMedium,
@@ -423,7 +441,8 @@ internal fun AddNoteScreen(
             }
             item {
                 TogaTextField(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag(TestTags.NOTE_TEXT_INPUT),
                     value = state.note.noteText ?: "",
                     onValueChange = onChangeContent,
                     textStyle = MaterialTheme.typography.bodyMedium,
@@ -436,13 +455,18 @@ internal fun AddNoteScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(checked = state.note.isCheckList, onCheckedChange = onToggleCheckList)
+                    Checkbox(
+                        checked = state.note.isCheckList,
+                        onCheckedChange = onToggleCheckList,
+                        modifier = Modifier.testTag(TestTags.TOGGLE_CHECKLIST_BUTTON)
+                    )
                     TogaLargeLabel(R.string.has_checklist)
                 }
             }
             item {
                 AnimatedVisibility(visible = state.note.isCheckList) {
                     CheckList(
+                        modifier = Modifier.testTag(TestTags.CHECK_LIST),
                         checklistItems = state.checkListItems,
                         onCheckedChange = onCheckListItemCheckedChange,
                         onAddItem = onAddCheckListItem,
@@ -456,10 +480,15 @@ internal fun AddNoteScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(checked = state.hasTags, onCheckedChange = onToggleTags)
+                    Checkbox(
+                        checked = state.hasTags,
+                        onCheckedChange = onToggleTags,
+                        modifier = Modifier.testTag(TestTags.NOTE_TAG_TOGGLE)
+                    )
                     TogaLargeLabel(R.string.has_tags, modifier = Modifier.weight(1f))
                     AnimatedVisibility(visible = state.hasTags, modifier = Modifier) {
                         TogaIconButton(
+                            modifier = Modifier.testTag(TestTags.ADD_TAG_BUTTON),
                             icon = R.drawable.ic_add,
                             onClick = { onToggleTagSheet(true) },
                             contentDescription = R.string.add_tag
@@ -475,6 +504,7 @@ internal fun AddNoteScreen(
                     exit = fadeOut(targetAlpha = 0.3f)
                 ) {
                     TagList(
+                        modifier = Modifier.testTag(TestTags.TAG_LIST),
                         isSystemInDarkTheme = state.systemInDarkMode,
                         tags = state.selectedTags,
                         onDeleteTag = onRemoveTag
@@ -490,6 +520,7 @@ internal fun AddNoteScreen(
                 ) {
                     state.selectedDate?.let {
                         ReminderRow(
+                            modifier = Modifier.testTag(TestTags.REMINDER_ROW),
                             reminderTime = state.selectedDate,
                             onChangeDate = onToggleDateDialog,
                             onChangeTime = onToggleTimeDialog
@@ -555,4 +586,29 @@ fun getTimeInMillisFromPicker(timePickerState: TimePickerState): Long {
 
     // Return the timestamp in milliseconds
     return calendar.timeInMillis
+}
+
+internal object TestTags {
+    const val NOTE_TITLE_INPUT = "note_title_input"
+    const val NOTE_TEXT_INPUT = "note_text_input"
+    const val SAVE_BUTTON = "save_button"
+    const val NOTE_COLOR_PICKER = "note_color_picker"
+    const val NOTE_TAG_TOGGLE = "note_tag_toggle"
+    const val TOGGLE_PIN_BUTTON = "toggle_pin_button"
+    const val TOGGLE_REMINDER_BUTTON = "toggle_reminder_button"
+    const val REMINDER_BOTTOM_SHEET = "reminder_bottom_sheet"
+    const val DATE_DIALOG = "date_dialog"
+    const val TIME_DIALOG = "time_dialog"
+    const val REMINDER_ROW = "reminder_row"
+    const val TAG_BOTTOM_SHEET = "tag_bottom_sheet"
+    const val TOGGLE_CHECKLIST_BUTTON = "toggle_checklist_button"
+    const val CHECK_LIST = "check_list"
+    const val TAG_LIST = "tag_list"
+    const val TOGGLE_COLOR_BUTTON = "toggle_color_button"
+    const val ADD_TAG_BUTTON = "add_tag_button"
+    const val ADD_NEW_CHECKLIST_ITEM_BUTTON = "add_new_checklist_item_button"
+    const val NEW_CHECKLIST_ITEM_TEXT_FIELD = "new_checklist_item_text_field"
+    const val REMINDER_DATE = "reminder_date"
+    const val REMINDER_TIME = "reminder_time"
+    const val REMINDER_TIME_ENTRY = "reminder_time_entry"
 }

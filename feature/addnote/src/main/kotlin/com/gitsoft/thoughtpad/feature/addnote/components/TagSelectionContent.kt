@@ -47,14 +47,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
+import com.gitsoft.thoughtpad.core.toga.components.chips.TogaInputChip
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
 import com.gitsoft.thoughtpad.feature.addnote.R
 import com.gitsoft.thoughtpad.feature.addnote.TagColorPicker
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
-import core.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
-import core.gitsoft.thoughtpad.core.toga.components.chips.TogaInputChip
-import core.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

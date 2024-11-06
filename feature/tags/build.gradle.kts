@@ -4,7 +4,11 @@ plugins {
     alias(libs.plugins.thoughtpad.android.koin)
 }
 
-android { namespace = "com.gitsoft.thoughtpad.feature.tags" }
+android {
+    namespace = "com.gitsoft.thoughtpad.feature.tags"
+
+    defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+}
 
 dependencies {
     implementation(project(":core:model"))

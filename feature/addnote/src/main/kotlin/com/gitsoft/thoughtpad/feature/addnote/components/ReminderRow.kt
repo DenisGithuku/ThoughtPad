@@ -31,12 +31,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import com.gitsoft.thoughtpad.feature.addnote.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaDefaultText
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
+import com.gitsoft.thoughtpad.feature.addnote.TestTags
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -56,18 +58,27 @@ fun ReminderRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            ReminderItem(value = reminderTime.toFormattedDate(), onClick = { onChangeDate(true) })
+            ReminderItem(
+                modifier = Modifier.testTag(TestTags.REMINDER_DATE),
+                value = reminderTime.toFormattedDate(),
+                onClick = { onChangeDate(true) }
+            )
             TogaSmallLabel(text = stringResource(id = R.string.at))
-            ReminderItem(value = reminderTime.toFormattedTime(), onClick = { onChangeTime(true) })
+            ReminderItem(
+                modifier = Modifier.testTag(TestTags.REMINDER_TIME),
+                value = reminderTime.toFormattedTime(),
+                onClick = { onChangeTime(true) }
+            )
         }
     }
 }
 
 @Composable
-fun ReminderItem(value: String, onClick: () -> Unit) {
+fun ReminderItem(modifier: Modifier = Modifier, value: String, onClick: () -> Unit) {
     Box(
         modifier =
-            Modifier.clip(MaterialTheme.shapes.small)
+            modifier
+                .clip(MaterialTheme.shapes.small)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .clickable { onClick() }
     ) {

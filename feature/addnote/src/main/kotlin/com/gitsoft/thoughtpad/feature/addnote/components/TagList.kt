@@ -32,9 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.Tag
+import com.gitsoft.thoughtpad.core.toga.components.chips.TogaFilterChip
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 import com.gitsoft.thoughtpad.feature.addnote.R
-import core.gitsoft.thoughtpad.core.toga.components.chips.TogaFilterChip
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

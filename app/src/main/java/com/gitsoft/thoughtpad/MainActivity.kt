@@ -26,7 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
-import core.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

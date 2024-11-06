@@ -31,8 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import com.gitsoft.thoughtpad.feature.notelist.R
-import core.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 
 @Composable
 fun NoNotesInCategoryIndicator(modifier: Modifier = Modifier, @StringRes category: Int) {

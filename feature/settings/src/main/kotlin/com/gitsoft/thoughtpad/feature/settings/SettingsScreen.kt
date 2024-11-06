@@ -47,8 +47,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
-import core.gitsoft.thoughtpad.core.toga.components.dialog.TogaContentDialog
-import core.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import com.gitsoft.thoughtpad.core.toga.components.dialog.TogaContentDialog
+import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
