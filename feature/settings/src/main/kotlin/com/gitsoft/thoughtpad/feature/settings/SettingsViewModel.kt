@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -18,6 +17,9 @@ package com.gitsoft.thoughtpad.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,16 +36,18 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
 
     val state: StateFlow<SettingsUiState> =
         combine(_state, userPrefsRepository.userPrefs) { state, userPrefs ->
-                SettingsUiState(
-                    selectedTheme = userPrefs.themeConfig,
-                    isThemeDialogShown = state.isThemeDialogShown
-                )
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = SettingsUiState()
+            state.copy(
+                selectedTheme = userPrefs.themeConfig,
+                isPeriodicRemindersEnabled = userPrefs.isPeriodicRemindersEnabled,
+                reminderDisplayStyle = userPrefs.reminderDisplayStyle,
+                reminderFrequency = userPrefs.reminderFrequency,
+                sortOrder = userPrefs.sortOrder
             )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SettingsUiState()
+        )
 
     fun onToggleTheme(themeConfig: ThemeConfig) {
         viewModelScope.launch { userPrefsRepository.updateTheme(themeConfig) }
@@ -51,5 +55,39 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
 
     fun onToggleThemeDialog(isVisible: Boolean) {
         _state.update { it.copy(isThemeDialogShown = isVisible) }
+    }
+
+    fun onTogglePeriodicReminders(isEnabled: Boolean) {
+        viewModelScope.launch { userPrefsRepository.updatePeriodicReminderStatus(isEnabled) }
+    }
+
+    fun onToggleReminderStyleDialog(isVisible: Boolean) {
+        _state.update { it.copy(isReminderStyleDialogShown = isVisible) }
+    }
+
+    fun onToggleReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
+        viewModelScope.launch {
+            userPrefsRepository.updateReminderDisplayStyle(reminderDisplayStyle)
+        }
+    }
+
+    fun onToggleReminderFrequencyDialog(isVisible: Boolean) {
+        _state.update { it.copy(isReminderFrequencyDialogShown = isVisible) }
+    }
+
+    fun onToggleReminderFrequency(reminderFrequency: ReminderFrequency) {
+        viewModelScope.launch {
+            userPrefsRepository.updatePeriodicReminderFrequency(reminderFrequency)
+        }
+    }
+
+    fun onToggleSortDialog(isVisible: Boolean) {
+        _state.update { it.copy(isSortDialogShown = isVisible) }
+    }
+
+    fun onToggleSortOrder(sortOrder: SortOrder) {
+        viewModelScope.launch {
+            userPrefsRepository.updateSortOrder(sortOrder)
+        }
     }
 }

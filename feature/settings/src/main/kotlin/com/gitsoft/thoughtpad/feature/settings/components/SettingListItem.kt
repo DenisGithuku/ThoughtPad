@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -30,14 +29,17 @@ import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
+import com.gitsoft.thoughtpad.feature.settings.TestTags
 
 @Composable
 fun SettingListItem(
+    modifier: Modifier = Modifier,
     @DrawableRes leading: Int? = null,
     @StringRes title: Int,
     @StringRes description: Int? = null,
@@ -46,18 +48,23 @@ fun SettingListItem(
 ) {
     Row(
         modifier =
-            Modifier.fillMaxWidth()
-                .clickable(enabled = onClick != null) { onClick?.let { it() } }
-                .padding(16.dp),
+        modifier
+            .fillMaxWidth()
+            .clickable(enabled = onClick != null) { onClick?.let { it() } }
+            .padding(16.dp)
+            .testTag(TestTags.SETTING_LIST_ITEM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) {
-            Icon(painter = painterResource(id = leading), contentDescription = stringResource(id = title))
+            Icon(
+                painter = painterResource(id = leading),
+                contentDescription = stringResource(id = title)
+            )
         }
         Spacer(modifier = Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            TogaMediumBody(text = stringResource(id = title))
+            TogaSmallBody(text = stringResource(id = title))
             if (description != null) {
                 TogaSmallLabel(text = stringResource(id = description))
             }
@@ -73,6 +80,7 @@ fun SettingListItem(
 
 @Composable
 fun ToggleableSettingItem(
+    modifier: Modifier = Modifier,
     @DrawableRes leading: Int? = null,
     @StringRes title: Int,
     @StringRes description: Int,
@@ -80,15 +88,21 @@ fun ToggleableSettingItem(
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(!isChecked) }.padding(16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!isChecked) }
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) {
-            Icon(painter = painterResource(id = leading), contentDescription = stringResource(id = title))
+            Icon(
+                painter = painterResource(id = leading),
+                contentDescription = stringResource(id = title)
+            )
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            TogaMediumBody(text = stringResource(id = title))
+            TogaSmallBody(text = stringResource(id = title))
             TogaSmallLabel(text = stringResource(id = description))
         }
         Switch(checked = isChecked, onCheckedChange = onCheckedChange)

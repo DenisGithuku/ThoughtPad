@@ -44,7 +44,7 @@ fun TogaContentDialog(
     onDismissRequest: () -> Unit
 ) {
     Dialog(
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = true),
         onDismissRequest = { onDismissRequest() }
     ) {
         Box(

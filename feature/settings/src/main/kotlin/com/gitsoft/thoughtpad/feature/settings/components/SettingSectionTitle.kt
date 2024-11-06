@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -28,13 +27,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
 import com.gitsoft.thoughtpad.feature.settings.R
 
 @Composable
-fun SettingSectionTitle(@StringRes title: Int) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        TogaSmallTitle(text = stringResource(title))
+fun SettingSectionTitle(
+    modifier: Modifier = Modifier,
+    @StringRes title: Int) {
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp)) {
+        TogaSmallLabel(text = stringResource(title))
         Spacer(modifier = Modifier.height(8.dp))
         HorizontalDivider(thickness = 0.8.dp)
     }
@@ -43,5 +47,5 @@ fun SettingSectionTitle(@StringRes title: Int) {
 @Preview
 @Composable
 private fun SettingSectionTitlePrev() {
-    SettingSectionTitle(R.string.settings)
+    SettingSectionTitle(title = R.string.settings)
 }

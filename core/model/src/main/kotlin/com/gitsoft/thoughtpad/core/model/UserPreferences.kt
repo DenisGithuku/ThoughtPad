@@ -18,5 +18,9 @@ package com.gitsoft.thoughtpad.core.model
 
 data class UserPreferences(
     val themeConfig: ThemeConfig,
-    val isNotificationPermissionsGranted: Boolean = false
+    val isNotificationPermissionsGranted: Boolean = false,
+    val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
+    val sortOrder: SortOrder = SortOrder.DATE,
+    val isPeriodicRemindersEnabled: Boolean = false,
+    val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER,
 )

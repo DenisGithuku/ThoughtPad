@@ -20,9 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import core.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +42,14 @@ class SettingsScreenTest {
                     state = state.value,
                     onToggleTheme = { state.value = state.value.copy(selectedTheme = it) },
                     onToggleThemeDialog = { state.value = state.value.copy(isThemeDialogShown = it) },
-                    onNavigateBack = {}
+                    onNavigateBack = {},
+                    onToggleSortType = {},
+                    onToggleSortDialog = {},
+                    onTogglePeriodicReminders = {},
+                    onToggleReminderFrequency = {},
+                    onToggleReminderStyleDialog = {},
+                    onToggleReminderDisplayStyle = {},
+                    onToggleReminderFrequencyDialog = {}
                 )
             }
         }
@@ -48,17 +57,17 @@ class SettingsScreenTest {
 
     @Test
     fun settingsItemIsDisplayed() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).assertIsDisplayed()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().assertIsDisplayed()
     }
 
     @Test
     fun testSettingsItemIsClickable() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).performClick()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().performClick()
     }
 
     @Test
     fun testClickThemeSettingsItemOpensDialog() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).performClick()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().performClick()
 
         composeTestRule.onNodeWithTag(TestTags.THEME_COLUMN).assertIsDisplayed()
     }

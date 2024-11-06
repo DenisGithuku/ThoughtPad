@@ -32,7 +32,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
-import core.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

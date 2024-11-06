@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="confirm">Okay</string>
+    <string name="appearance">Appearance and Display</string>
+    <string name="reminder_display_style_title">Reminder display style</string>
+    <string name="reminder_display_style_list">List</string>
+    <string name="reminder_display_style_calendar">Calendar</string>
+    <string name="sort_title">Sort by</string>
+    <string name="sort_description">Date added</string>
+    <string name="sort_date">Date</string>
+    <string name="notifications_and_reminders"><![CDATA[Notifications & Reminders]]></string>
+    <string name="notifications_title">Periodic reminders</string>
+    <string name="notifications_description">Enable regular reminders to keep up with tasks.</string>
+    <string name="notification_tone_title">Notification tone</string>
+    <string name="notification_tone_description">Some tone</string>
+    <string name="help_and_support"><![CDATA[Help & Support]]></string>
+    <string name="app_info">App info</string>
+    <string name="reminder_frequency_title">Reminder frequency</string>
+    <string name="daily_reminder_frequency_description">Daily</string>
+    <string name="never_reminder_frequency_description">Never</string>
+    <string name="weekly_reminder_frequency_description">Weekly</string>
 </resources>

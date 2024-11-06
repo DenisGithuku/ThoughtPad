@@ -40,5 +40,6 @@ app/build/
 feature/**/build/
 
 #kotlin
-/.kotlin
+.kotlin
+/build-logic/convention/build
 
