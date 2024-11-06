@@ -18,6 +18,9 @@ package com.gitsoft.thoughtpad.feature.settings
 
 import androidx.test.filters.MediumTest
 import com.gitsoft.thoughtpad.core.common.MainCoroutineRule
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.google.common.truth.Truth.assertThat
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
@@ -30,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 @MediumTest
 class SettingsViewModelTest {
@@ -56,5 +60,54 @@ class SettingsViewModelTest {
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
         viewModel.onToggleThemeDialog(true)
         assertTrue(viewModel.state.value.isThemeDialogShown)
+    }
+
+    @Test
+    fun `test toggle periodic reminders`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onTogglePeriodicReminders(true)
+        assertTrue(viewModel.state.value.isPeriodicRemindersEnabled)
+    }
+
+    @Test
+    fun `test toggle display style dialog`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleReminderStyleDialog(true)
+        assertTrue(viewModel.state.value.isReminderStyleDialogShown)
+    }
+
+    @Test
+    fun `test toggle reminder style`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleReminderDisplayStyle(ReminderDisplayStyle.CALENDAR)
+        assertThat(viewModel.state.value.reminderDisplayStyle).isEqualTo(ReminderDisplayStyle.CALENDAR)
+    }
+
+    @Test
+    fun `test sort order dialog`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleSortDialog(true)
+        assertTrue(viewModel.state.value.isSortDialogShown)
+    }
+
+    @Test
+    fun `test toggle sort order`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleSortOrder(SortOrder.TITLE)
+        assertEquals(viewModel.state.value.sortOrder, SortOrder.TITLE)
+    }
+
+    @Test
+    fun `test toggle reminder frequency dialog`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleReminderFrequencyDialog(true)
+        assertTrue(viewModel.state.value.isReminderFrequencyDialogShown)
+    }
+
+    @Test
+    fun `test toggle reminder frequency`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleReminderFrequency(ReminderFrequency.DAILY)
+        assertEquals(viewModel.state.value.reminderFrequency, ReminderFrequency.DAILY)
     }
 }

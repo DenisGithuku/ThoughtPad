@@ -16,6 +16,9 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository.fakes
 
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.model.UserPreferences
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
@@ -26,7 +29,14 @@ class FakeUserPrefsRepository : UserPrefsRepository {
 
     private var _userPrefs =
         MutableStateFlow(
-            UserPreferences(themeConfig = ThemeConfig.DARK, isNotificationPermissionsGranted = true)
+            UserPreferences(
+                reminderDisplayStyle = ReminderDisplayStyle.LIST,
+                themeConfig = ThemeConfig.DARK,
+                isNotificationPermissionsGranted = true,
+                isPeriodicRemindersEnabled = true,
+                reminderFrequency = ReminderFrequency.DAILY,
+                sortOrder = SortOrder.DATE
+            )
         )
 
     override val userPrefs: Flow<UserPreferences>
@@ -38,5 +48,21 @@ class FakeUserPrefsRepository : UserPrefsRepository {
 
     override suspend fun updateNotificationPermission(isGranted: Boolean) {
         _userPrefs.value = _userPrefs.value.copy(isNotificationPermissionsGranted = isGranted)
+    }
+
+    override suspend fun updateReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
+        _userPrefs.value = _userPrefs.value.copy(reminderDisplayStyle = reminderDisplayStyle)
+    }
+
+    override suspend fun updatePeriodicReminderStatus(isEnabled: Boolean) {
+        _userPrefs.value = _userPrefs.value.copy(isPeriodicRemindersEnabled = isEnabled)
+    }
+
+    override suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
+        _userPrefs.value = _userPrefs.value.copy(reminderFrequency = reminderFrequency)
+    }
+
+    override suspend fun updateSortOrder(sortOrder: SortOrder) {
+        _userPrefs.value = _userPrefs.value.copy(sortOrder = sortOrder)
     }
 }
