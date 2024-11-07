@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -36,18 +37,19 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
 
     val state: StateFlow<SettingsUiState> =
         combine(_state, userPrefsRepository.userPrefs) { state, userPrefs ->
-            state.copy(
-                selectedTheme = userPrefs.themeConfig,
-                isPeriodicRemindersEnabled = userPrefs.isPeriodicRemindersEnabled,
-                reminderDisplayStyle = userPrefs.reminderDisplayStyle,
-                reminderFrequency = userPrefs.reminderFrequency,
-                sortOrder = userPrefs.sortOrder
+                state.copy(
+                    selectedTheme = userPrefs.themeConfig,
+                    isPeriodicRemindersEnabled = userPrefs.isPeriodicRemindersEnabled,
+                    reminderDisplayStyle = userPrefs.reminderDisplayStyle,
+                    reminderFrequency = userPrefs.reminderFrequency,
+                    sortOrder = userPrefs.sortOrder
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = SettingsUiState()
             )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = SettingsUiState()
-        )
 
     fun onToggleTheme(themeConfig: ThemeConfig) {
         viewModelScope.launch { userPrefsRepository.updateTheme(themeConfig) }
@@ -66,9 +68,7 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
     }
 
     fun onToggleReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
-        viewModelScope.launch {
-            userPrefsRepository.updateReminderDisplayStyle(reminderDisplayStyle)
-        }
+        viewModelScope.launch { userPrefsRepository.updateReminderDisplayStyle(reminderDisplayStyle) }
     }
 
     fun onToggleReminderFrequencyDialog(isVisible: Boolean) {
@@ -76,9 +76,7 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
     }
 
     fun onToggleReminderFrequency(reminderFrequency: ReminderFrequency) {
-        viewModelScope.launch {
-            userPrefsRepository.updatePeriodicReminderFrequency(reminderFrequency)
-        }
+        viewModelScope.launch { userPrefsRepository.updatePeriodicReminderFrequency(reminderFrequency) }
     }
 
     fun onToggleSortDialog(isVisible: Boolean) {
@@ -86,8 +84,6 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
     }
 
     fun onToggleSortOrder(sortOrder: SortOrder) {
-        viewModelScope.launch {
-            userPrefsRepository.updateSortOrder(sortOrder)
-        }
+        viewModelScope.launch { userPrefsRepository.updateSortOrder(sortOrder) }
     }
 }

@@ -39,10 +39,14 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
                         it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() == true,
                     sortOrder = SortOrder.valueOf(it[PreferencesKeys.SORT_ORDER] ?: SortOrder.DATE.name),
                     reminderDisplayStyle =
-                            ReminderDisplayStyle.valueOf(it[PreferencesKeys.REMINDER_DISPLAY_STYLE] ?: ReminderDisplayStyle.LIST.name),
+                        ReminderDisplayStyle.valueOf(
+                            it[PreferencesKeys.REMINDER_DISPLAY_STYLE] ?: ReminderDisplayStyle.LIST.name
+                        ),
                     isPeriodicRemindersEnabled = it[PreferencesKeys.REMINDER_STATUS]?.toBoolean() == true,
                     reminderFrequency =
-                        ReminderFrequency.valueOf(it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.NEVER.name),
+                        ReminderFrequency.valueOf(
+                            it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.NEVER.name
+                        )
                 )
             }
 
@@ -82,7 +86,6 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
     suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
         updateValue(PreferencesKeys.REMINDER_FREQUENCY, reminderFrequency.name)
     }
-
 }
 
 private object PreferencesKeys {

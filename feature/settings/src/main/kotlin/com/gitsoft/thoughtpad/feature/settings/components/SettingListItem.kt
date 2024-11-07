@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -48,18 +49,15 @@ fun SettingListItem(
 ) {
     Row(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .clickable(enabled = onClick != null) { onClick?.let { it() } }
-            .padding(16.dp)
-            .testTag(TestTags.SETTING_LIST_ITEM),
+            modifier
+                .fillMaxWidth()
+                .clickable(enabled = onClick != null) { onClick?.let { it() } }
+                .padding(16.dp)
+                .testTag(TestTags.SETTING_LIST_ITEM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) {
-            Icon(
-                painter = painterResource(id = leading),
-                contentDescription = stringResource(id = title)
-            )
+            Icon(painter = painterResource(id = leading), contentDescription = stringResource(id = title))
         }
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -88,17 +86,11 @@ fun ToggleableSettingItem(
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onCheckedChange(!isChecked) }
-            .padding(16.dp),
+        modifier = modifier.fillMaxWidth().clickable { onCheckedChange(!isChecked) }.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) {
-            Icon(
-                painter = painterResource(id = leading),
-                contentDescription = stringResource(id = title)
-            )
+            Icon(painter = painterResource(id = leading), contentDescription = stringResource(id = title))
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {

@@ -25,6 +25,7 @@ import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.google.common.truth.Truth.assertThat
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeUserPrefsRepository
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,7 +34,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 
 @MediumTest
 class SettingsViewModelTest {

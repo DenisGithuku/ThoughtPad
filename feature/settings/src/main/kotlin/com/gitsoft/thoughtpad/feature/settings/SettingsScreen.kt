@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -88,193 +89,183 @@ internal fun SettingsScreen(
     onToggleSortType: (SortOrder) -> Unit,
     onToggleSortDialog: (Boolean) -> Unit
 ) {
-
-    AnimatedVisibility(visible = state.isThemeDialogShown,
-        enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
-            initialScale = .8f, animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMediumLow
-            )
-        ),
-        exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)) {
-        TogaContentDialog(title = {
-            Text(
-                text = "Select theme", style = MaterialTheme.typography.headlineSmall
-            )
-        }, content = {
-            Column(
-                modifier = Modifier
-                    .testTag(TestTags.THEME_COLUMN)
-                    .fillMaxWidth()
-            ) {
-                state.availableThemes.forEach { availableTheme ->
-                    Row(
-                        modifier = Modifier
-                            .clickable(role = Role.RadioButton,
-                                enabled = true,
-                                onClick = { onToggleTheme(availableTheme) })
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        RadioButton(selected = availableTheme == state.selectedTheme,
-                            onClick = { onToggleTheme(availableTheme) })
-                        Text(
-                            text = availableTheme.name.lowercase()
-                                .replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.bodyMedium
+    AnimatedVisibility(
+        visible = state.isThemeDialogShown,
+        enter =
+            fadeIn(spring(stiffness = Spring.StiffnessHigh)) +
+                scaleIn(
+                    initialScale = .8f,
+                    animationSpec =
+                        spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMediumLow
                         )
+                ),
+        exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
+    ) {
+        TogaContentDialog(
+            title = { Text(text = "Select theme", style = MaterialTheme.typography.headlineSmall) },
+            content = {
+                Column(modifier = Modifier.testTag(TestTags.THEME_COLUMN).fillMaxWidth()) {
+                    state.availableThemes.forEach { availableTheme ->
+                        Row(
+                            modifier =
+                                Modifier.clickable(
+                                        role = Role.RadioButton,
+                                        enabled = true,
+                                        onClick = { onToggleTheme(availableTheme) }
+                                    )
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            RadioButton(
+                                selected = availableTheme == state.selectedTheme,
+                                onClick = { onToggleTheme(availableTheme) }
+                            )
+                            Text(
+                                text = availableTheme.name.lowercase().replaceFirstChar { it.uppercase() },
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
-            }
-        }, onDismissRequest = { onToggleThemeDialog(false) })
+            },
+            onDismissRequest = { onToggleThemeDialog(false) }
+        )
     }
 
     if (state.isReminderStyleDialogShown) {
-        TogaContentDialog(title = {
-            Text(
-                text = "Reminder display style", style = MaterialTheme.typography.headlineSmall
-            )
-        }, content = {
-            Column(
-                modifier = Modifier
-                    .testTag(TestTags.REMINDER_STYLE_COLUMN)
-                    .fillMaxWidth()
-            ) {
-                state.availableReminderDisplayStyles.forEach { availableStyle ->
-                    Row(
-                        modifier = Modifier
-                            .clickable(role = Role.RadioButton,
-                                enabled = true,
-                                onClick = { onToggleReminderDisplayStyle(availableStyle) })
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        RadioButton(selected = availableStyle == state.reminderDisplayStyle,
-                            onClick = { onToggleReminderDisplayStyle(availableStyle) })
-                        Text(
-                            text = availableStyle.name.lowercase()
-                                .replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+        TogaContentDialog(
+            title = {
+                Text(text = "Reminder display style", style = MaterialTheme.typography.headlineSmall)
+            },
+            content = {
+                Column(modifier = Modifier.testTag(TestTags.REMINDER_STYLE_COLUMN).fillMaxWidth()) {
+                    state.availableReminderDisplayStyles.forEach { availableStyle ->
+                        Row(
+                            modifier =
+                                Modifier.clickable(
+                                        role = Role.RadioButton,
+                                        enabled = true,
+                                        onClick = { onToggleReminderDisplayStyle(availableStyle) }
+                                    )
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            RadioButton(
+                                selected = availableStyle == state.reminderDisplayStyle,
+                                onClick = { onToggleReminderDisplayStyle(availableStyle) }
+                            )
+                            Text(
+                                text = availableStyle.name.lowercase().replaceFirstChar { it.uppercase() },
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
-            }
-        }, onDismissRequest = { onToggleReminderStyleDialog(false) })
+            },
+            onDismissRequest = { onToggleReminderStyleDialog(false) }
+        )
     }
 
     if (state.isReminderFrequencyDialogShown) {
-        TogaContentDialog(title = {
-            Text(
-                text = "Reminder frequency", style = MaterialTheme.typography.headlineSmall
-            )
-        }, content = {
-            Column(
-                modifier = Modifier
-                    .testTag(TestTags.REMINDER_FREQUENCY_COLUMN)
-                    .fillMaxWidth()
-            ) {
-                state.availableReminderFrequencies.forEach { availableFrequency ->
-                    Row(
-                        modifier = Modifier
-                            .clickable(role = Role.RadioButton, enabled = true, onClick = {
-                                onToggleReminderFrequency(availableFrequency)
-                            })
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        RadioButton(
-                            selected = availableFrequency == state.reminderFrequency,
-                            onClick = {
-                                onToggleReminderFrequency(availableFrequency)
-                            })
-                        Text(
-                            text = availableFrequency.name.lowercase()
-                                .replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-
+        TogaContentDialog(
+            title = { Text(text = "Reminder frequency", style = MaterialTheme.typography.headlineSmall) },
+            content = {
+                Column(modifier = Modifier.testTag(TestTags.REMINDER_FREQUENCY_COLUMN).fillMaxWidth()) {
+                    state.availableReminderFrequencies.forEach { availableFrequency ->
+                        Row(
+                            modifier =
+                                Modifier.clickable(
+                                        role = Role.RadioButton,
+                                        enabled = true,
+                                        onClick = { onToggleReminderFrequency(availableFrequency) }
+                                    )
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            RadioButton(
+                                selected = availableFrequency == state.reminderFrequency,
+                                onClick = { onToggleReminderFrequency(availableFrequency) }
+                            )
+                            Text(
+                                text = availableFrequency.name.lowercase().replaceFirstChar { it.uppercase() },
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
-            }
-        }, onDismissRequest = { onToggleReminderFrequencyDialog(false) })
+            },
+            onDismissRequest = { onToggleReminderFrequencyDialog(false) }
+        )
     }
 
     if (state.isSortDialogShown) {
-        TogaContentDialog(title = {
-            Text(
-                text = "Sort content by", style = MaterialTheme.typography.headlineSmall
-            )
-        }, content = {
-            Column(
-                modifier = Modifier
-                    .testTag(TestTags.SORT_TYPE_COLUMN)
-                    .fillMaxWidth()
-            ) {
-                state.availableSortOrders.forEach { sortType ->
-                    Row(
-                        modifier = Modifier
-                            .clickable(role = Role.RadioButton,
-                                enabled = true,
-                                onClick = { onToggleSortType(sortType) })
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        RadioButton(selected = sortType == state.sortOrder,
-                            onClick = { onToggleSortType(sortType) })
-                        Text(
-                            text = sortType.name.lowercase().replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+        TogaContentDialog(
+            title = { Text(text = "Sort content by", style = MaterialTheme.typography.headlineSmall) },
+            content = {
+                Column(modifier = Modifier.testTag(TestTags.SORT_TYPE_COLUMN).fillMaxWidth()) {
+                    state.availableSortOrders.forEach { sortType ->
+                        Row(
+                            modifier =
+                                Modifier.clickable(
+                                        role = Role.RadioButton,
+                                        enabled = true,
+                                        onClick = { onToggleSortType(sortType) }
+                                    )
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            RadioButton(
+                                selected = sortType == state.sortOrder,
+                                onClick = { onToggleSortType(sortType) }
+                            )
+                            Text(
+                                text = sortType.name.lowercase().replaceFirstChar { it.uppercase() },
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
-            }
-        }, onDismissRequest = { onToggleSortDialog(false) })
+            },
+            onDismissRequest = { onToggleSortDialog(false) }
+        )
     }
 
-
-    TogaStandardScaffold(
-        title = R.string.settings, onNavigateBack = onNavigateBack
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .animateContentSize()
-        ) {
+    TogaStandardScaffold(title = R.string.settings, onNavigateBack = onNavigateBack) { innerPadding ->
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(innerPadding).animateContentSize()) {
+            item { SettingSectionTitle(modifier = Modifier.animateItem(), title = R.string.appearance) }
             item {
-                SettingSectionTitle(
+                SettingListItem(
                     modifier = Modifier.animateItem(),
-                    title = R.string.appearance,
-                )
-            }
-            item {
-                SettingListItem(modifier = Modifier.animateItem(),
-                    leading = if (state.selectedTheme == ThemeConfig.DARK) {
-                        R.drawable.ic_dark_mode
-                    } else R.drawable.ic_light_mode,
+                    leading =
+                        if (state.selectedTheme == ThemeConfig.DARK) {
+                            R.drawable.ic_dark_mode
+                        } else R.drawable.ic_light_mode,
                     title = R.string.theme_title,
-                    description = when (state.selectedTheme) {
-                        ThemeConfig.LIGHT -> R.string.theme_light
-                        ThemeConfig.DARK -> R.string.theme_dark
-                    },
-                    onClick = { onToggleThemeDialog(true) })
+                    description =
+                        when (state.selectedTheme) {
+                            ThemeConfig.LIGHT -> R.string.theme_light
+                            ThemeConfig.DARK -> R.string.theme_dark
+                        },
+                    onClick = { onToggleThemeDialog(true) }
+                )
             }
             item {
                 SettingListItem(
                     modifier = Modifier.animateItem(),
                     leading = R.drawable.ic_reminder_alert,
                     title = R.string.reminder_display_style_title,
-                    description = when (state.reminderDisplayStyle) {
-                        ReminderDisplayStyle.LIST -> R.string.reminder_display_style_list
-                        ReminderDisplayStyle.CALENDAR -> R.string.reminder_display_style_calendar
-                    },
-                    onClick = {
-                        onToggleReminderStyleDialog(true)
-                    },
+                    description =
+                        when (state.reminderDisplayStyle) {
+                            ReminderDisplayStyle.LIST -> R.string.reminder_display_style_list
+                            ReminderDisplayStyle.CALENDAR -> R.string.reminder_display_style_calendar
+                        },
+                    onClick = { onToggleReminderStyleDialog(true) },
                     trailing = R.drawable.ic_chevron_right
                 )
             }
@@ -283,20 +274,19 @@ internal fun SettingsScreen(
                     modifier = Modifier.animateItem(),
                     leading = R.drawable.ic_sort,
                     title = R.string.sort_title,
-                    description = when (state.sortOrder) {
-                        SortOrder.TITLE -> R.string.sort_title
-                        SortOrder.DATE -> R.string.sort_date
-                    },
-                    onClick = {
-                        onToggleSortDialog(true)
-                    },
+                    description =
+                        when (state.sortOrder) {
+                            SortOrder.TITLE -> R.string.sort_title
+                            SortOrder.DATE -> R.string.sort_date
+                        },
+                    onClick = { onToggleSortDialog(true) },
                     trailing = R.drawable.ic_chevron_right
                 )
             }
             item {
                 SettingSectionTitle(
                     modifier = Modifier.animateItem(),
-                    title = R.string.notifications_and_reminders,
+                    title = R.string.notifications_and_reminders
                 )
             }
             item {
@@ -306,7 +296,7 @@ internal fun SettingsScreen(
                     title = R.string.notifications_title,
                     description = R.string.notifications_description,
                     isChecked = state.isPeriodicRemindersEnabled,
-                    onCheckedChange = onTogglePeriodicReminders,
+                    onCheckedChange = onTogglePeriodicReminders
                 )
             }
             item {
@@ -315,13 +305,13 @@ internal fun SettingsScreen(
                         modifier = Modifier.animateItem(),
                         leading = R.drawable.ic_frequency,
                         title = R.string.reminder_frequency_title,
-                        description = when (state.reminderFrequency) {
-                            ReminderFrequency.NEVER -> R.string.never_reminder_frequency_description
-                            ReminderFrequency.DAILY -> R.string.daily_reminder_frequency_description
-                            ReminderFrequency.WEEKLY -> R.string.weekly_reminder_frequency_description
-
-                        },
-                        onClick = { onToggleReminderFrequencyDialog(true) },
+                        description =
+                            when (state.reminderFrequency) {
+                                ReminderFrequency.NEVER -> R.string.never_reminder_frequency_description
+                                ReminderFrequency.DAILY -> R.string.daily_reminder_frequency_description
+                                ReminderFrequency.WEEKLY -> R.string.weekly_reminder_frequency_description
+                            },
+                        onClick = { onToggleReminderFrequencyDialog(true) }
                     )
                 }
             }
@@ -336,17 +326,14 @@ internal fun SettingsScreen(
                 )
             }
             item {
-                SettingSectionTitle(
-                    modifier = Modifier.animateItem(),
-                    title = R.string.help_and_support,
-                )
+                SettingSectionTitle(modifier = Modifier.animateItem(), title = R.string.help_and_support)
             }
             item {
                 SettingListItem(
                     modifier = Modifier.animateItem(),
                     leading = R.drawable.ic_info_circle,
                     title = R.string.app_info,
-                    onClick = {},
+                    onClick = {}
                 )
             }
         }
