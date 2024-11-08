@@ -512,7 +512,7 @@ internal fun NoteListScreen(
                 ) {
                     TogaFloatingActionButton(
                         modifier = Modifier.testTag(TestTags.ADD_NOTE_FAB),
-                        icon = R.drawable.ic_add,
+                        icon = R.drawable.ic_pen_edit,
                         contentDescription = R.string.add_note,
                         onClick = { onCreateNewNote(null) }
                     )
