@@ -70,7 +70,7 @@ fun SettingsRoute(onNavigateBack: () -> Unit, viewModel: SettingsViewModel = koi
         onTogglePeriodicReminders = viewModel::onTogglePeriodicReminders,
         onToggleReminderStyleDialog = viewModel::onToggleReminderStyleDialog,
         onToggleSortDialog = viewModel::onToggleSortDialog,
-        onToggleSortType = viewModel::onToggleSortOrder
+        onToggleSortOrder = viewModel::onToggleSortOrder
     )
 }
 
@@ -86,7 +86,7 @@ internal fun SettingsScreen(
     onToggleReminderDisplayStyle: (ReminderDisplayStyle) -> Unit,
     onToggleReminderFrequencyDialog: (Boolean) -> Unit,
     onToggleReminderFrequency: (ReminderFrequency) -> Unit,
-    onToggleSortType: (SortOrder) -> Unit,
+    onToggleSortOrder: (SortOrder) -> Unit,
     onToggleSortDialog: (Boolean) -> Unit
 ) {
     AnimatedVisibility(
@@ -207,14 +207,14 @@ internal fun SettingsScreen(
         TogaContentDialog(
             title = { Text(text = "Sort content by", style = MaterialTheme.typography.headlineSmall) },
             content = {
-                Column(modifier = Modifier.testTag(TestTags.SORT_TYPE_COLUMN).fillMaxWidth()) {
+                Column(modifier = Modifier.testTag(TestTags.SORT_ORDER_COLUMN).fillMaxWidth()) {
                     state.availableSortOrders.forEach { sortType ->
                         Row(
                             modifier =
                                 Modifier.clickable(
                                         role = Role.RadioButton,
                                         enabled = true,
-                                        onClick = { onToggleSortType(sortType) }
+                                        onClick = { onToggleSortOrder(sortType) }
                                     )
                                     .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -222,7 +222,7 @@ internal fun SettingsScreen(
                         ) {
                             RadioButton(
                                 selected = sortType == state.sortOrder,
-                                onClick = { onToggleSortType(sortType) }
+                                onClick = { onToggleSortOrder(sortType) }
                             )
                             Text(
                                 text = sortType.name.lowercase().replaceFirstChar { it.uppercase() },
@@ -252,7 +252,8 @@ internal fun SettingsScreen(
                             ThemeConfig.LIGHT -> R.string.theme_light
                             ThemeConfig.DARK -> R.string.theme_dark
                         },
-                    onClick = { onToggleThemeDialog(true) }
+                    onClick = { onToggleThemeDialog(true) },
+                    trailing = R.drawable.ic_chevron_right
                 )
             }
             item {
@@ -311,7 +312,8 @@ internal fun SettingsScreen(
                                 ReminderFrequency.DAILY -> R.string.daily_reminder_frequency_description
                                 ReminderFrequency.WEEKLY -> R.string.weekly_reminder_frequency_description
                             },
-                        onClick = { onToggleReminderFrequencyDialog(true) }
+                        onClick = { onToggleReminderFrequencyDialog(true) },
+                        trailing = R.drawable.ic_chevron_right
                     )
                 }
             }
@@ -342,8 +344,10 @@ internal fun SettingsScreen(
 
 internal object TestTags {
     const val SETTING_LIST_ITEM = "setting_list_item"
+    const val TOGGLEABLE_SETTING_ITEM = "toggleable_setting_item"
     const val THEME_COLUMN = "theme_column"
     const val REMINDER_STYLE_COLUMN = "reminder_style_column"
     const val REMINDER_FREQUENCY_COLUMN = "reminder_frequency_column"
-    const val SORT_TYPE_COLUMN = "sort_type_column"
+    const val SORT_ORDER_COLUMN = "sort_type_column"
+    const val TOGGLEABLE_SETTING_ITEM_SWITCH = "toggleable_setting_item_switch"
 }

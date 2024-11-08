@@ -86,7 +86,12 @@ fun ToggleableSettingItem(
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().clickable { onCheckedChange(!isChecked) }.padding(16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onCheckedChange(!isChecked) }
+                .padding(16.dp)
+                .testTag(TestTags.TOGGLEABLE_SETTING_ITEM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) {
@@ -97,6 +102,10 @@ fun ToggleableSettingItem(
             TogaSmallBody(text = stringResource(id = title))
             TogaSmallLabel(text = stringResource(id = description))
         }
-        Switch(checked = isChecked, onCheckedChange = onCheckedChange)
+        Switch(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.testTag(TestTags.TOGGLEABLE_SETTING_ITEM_SWITCH)
+        )
     }
 }
