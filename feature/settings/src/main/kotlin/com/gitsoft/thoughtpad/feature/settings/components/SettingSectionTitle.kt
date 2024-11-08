@@ -18,14 +18,13 @@ package com.gitsoft.thoughtpad.feature.settings.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallLabel
@@ -34,9 +33,10 @@ import com.gitsoft.thoughtpad.feature.settings.R
 @Composable
 fun SettingSectionTitle(modifier: Modifier = Modifier, @StringRes title: Int) {
     Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
-        TogaSmallLabel(text = stringResource(title))
-        Spacer(modifier = Modifier.height(8.dp))
-        HorizontalDivider(thickness = 0.8.dp)
+        TogaSmallLabel(
+            text = stringResource(title),
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium)
+        )
     }
 }
 
