@@ -24,6 +24,7 @@
     <string name="undo">Undo</string>
     <string name="no_notes_on_search">No notes found. Please try a different keyword</string>
     <string name="no_notes_in_category">You don\'t have any %s notes.</string>
+    <string name="all_clear">Looks like you\'ve completed all your tasks for today. Take a break or start something new whenever you\'re ready!</string>
     <string name="drawer_title">Your Notes Hub</string>
     <string name="archived">Archived</string>
     <string name="favourites">Favourites</string>

@@ -105,7 +105,7 @@ fun ToggleableSettingItem(
         Switch(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
-            modifier = Modifier.testTag(TestTags.TOGGLEABLE_SETTING_ITEM_SWITCH)
+            modifier = Modifier.padding(start = 16.dp).testTag(TestTags.TOGGLEABLE_SETTING_ITEM_SWITCH)
         )
     }
 }

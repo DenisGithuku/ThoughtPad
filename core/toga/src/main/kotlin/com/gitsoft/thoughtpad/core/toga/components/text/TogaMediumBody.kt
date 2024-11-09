@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 fun TogaMediumBody(
     modifier: Modifier = Modifier,
     text: String,
-    maxLines: Int = 1,
+    maxLines: Int = Int.MAX_VALUE,
     color: Color = MaterialTheme.colorScheme.onBackground,
     textAlign: TextAlign = TextAlign.Start,
     style: TextStyle = MaterialTheme.typography.bodyMedium
