@@ -22,15 +22,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun TogaSmallBody(
     modifier: Modifier = Modifier,
     text: String,
-    maxLines: Int = 1,
+    maxLines: Int = Int.MAX_VALUE,
     style: TextStyle = MaterialTheme.typography.bodySmall,
-    color: Color = MaterialTheme.colorScheme.onBackground
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Text(
         modifier = modifier,
@@ -38,6 +40,7 @@ fun TogaSmallBody(
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis,
         color = color,
+        textAlign = textAlign,
         style = style
     )
 }

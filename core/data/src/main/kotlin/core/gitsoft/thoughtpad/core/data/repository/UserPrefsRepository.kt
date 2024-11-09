@@ -16,6 +16,9 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.model.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -26,4 +29,12 @@ interface UserPrefsRepository {
     suspend fun updateTheme(themeConfig: ThemeConfig)
 
     suspend fun updateNotificationPermission(isGranted: Boolean)
+
+    suspend fun updateReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle)
+
+    suspend fun updatePeriodicReminderStatus(isEnabled: Boolean)
+
+    suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency)
+
+    suspend fun updateSortOrder(sortOrder: SortOrder)
 }

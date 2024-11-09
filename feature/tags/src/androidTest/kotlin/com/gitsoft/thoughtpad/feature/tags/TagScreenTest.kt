@@ -30,7 +30,7 @@ import androidx.compose.ui.test.performScrollToKey
 import androidx.compose.ui.test.performTextInput
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
-import core.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

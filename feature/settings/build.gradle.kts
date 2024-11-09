@@ -1,3 +1,5 @@
+import config.AndroidSdk
+
 plugins {
     alias(libs.plugins.thoughtpad.android.library)
     alias(libs.plugins.thoughtpad.compose.library)
@@ -7,7 +9,12 @@ plugins {
 android {
     namespace = "com.gitsoft.thoughtpad.feature.settings"
 
-    defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+    buildFeatures { buildConfig = true }
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "APP_VERSION", "\"${AndroidSdk.versionName}\"")
+    }
 }
 
 dependencies {

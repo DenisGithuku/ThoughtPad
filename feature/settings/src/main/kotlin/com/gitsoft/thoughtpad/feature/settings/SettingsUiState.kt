@@ -16,10 +16,26 @@
 */
 package com.gitsoft.thoughtpad.feature.settings
 
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 
 data class SettingsUiState(
+    val isPeriodicRemindersEnabled: Boolean = false,
+    val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
+    val availableReminderDisplayStyles: List<ReminderDisplayStyle> =
+        listOf(ReminderDisplayStyle.LIST, ReminderDisplayStyle.CALENDAR),
+    val sortOrder: SortOrder = SortOrder.DATE,
+    val isSortDialogShown: Boolean = false,
+    val availableSortOrders: List<SortOrder> = listOf(SortOrder.DATE, SortOrder.TITLE),
+    val isReminderFrequencyDialogShown: Boolean = false,
+    val availableReminderFrequencies: List<ReminderFrequency> =
+        listOf(ReminderFrequency.NEVER, ReminderFrequency.DAILY, ReminderFrequency.WEEKLY),
+    val isReminderStyleDialogShown: Boolean = false,
+    val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER,
     val selectedTheme: ThemeConfig = ThemeConfig.LIGHT,
     val isThemeDialogShown: Boolean = false,
+    val isAppInfoDialogShown: Boolean = false,
     val availableThemes: List<ThemeConfig> = listOf(ThemeConfig.LIGHT, ThemeConfig.DARK)
 )

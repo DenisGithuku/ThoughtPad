@@ -19,6 +19,9 @@ package com.gitsoft.thoughtpad.core.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.model.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +36,17 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
                     themeConfig =
                         ThemeConfig.valueOf(it[PreferencesKeys.THEME_CONFIG] ?: ThemeConfig.LIGHT.name),
                     isNotificationPermissionsGranted =
-                        it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() == true
+                        it[PreferencesKeys.NOTIFICATION_PERMISSION]?.toBoolean() == true,
+                    sortOrder = SortOrder.valueOf(it[PreferencesKeys.SORT_ORDER] ?: SortOrder.DATE.name),
+                    reminderDisplayStyle =
+                        ReminderDisplayStyle.valueOf(
+                            it[PreferencesKeys.REMINDER_DISPLAY_STYLE] ?: ReminderDisplayStyle.LIST.name
+                        ),
+                    isPeriodicRemindersEnabled = it[PreferencesKeys.REMINDER_STATUS]?.toBoolean() == true,
+                    reminderFrequency =
+                        ReminderFrequency.valueOf(
+                            it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.NEVER.name
+                        )
                 )
             }
 
@@ -52,9 +65,34 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
     suspend fun updateNotificationPermission(isGranted: Boolean) {
         updateValue(PreferencesKeys.NOTIFICATION_PERMISSION, isGranted.toString())
     }
+
+    suspend fun clearAll() {
+        clearValue(PreferencesKeys.THEME_CONFIG)
+        clearValue(PreferencesKeys.NOTIFICATION_PERMISSION)
+    }
+
+    suspend fun updateReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
+        updateValue(PreferencesKeys.REMINDER_DISPLAY_STYLE, reminderDisplayStyle.name)
+    }
+
+    suspend fun updatePeriodicReminderStatus(status: Boolean) {
+        updateValue(PreferencesKeys.REMINDER_STATUS, status.toString())
+    }
+
+    suspend fun updateSortOrder(sortOrder: SortOrder) {
+        updateValue(PreferencesKeys.SORT_ORDER, sortOrder.name)
+    }
+
+    suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
+        updateValue(PreferencesKeys.REMINDER_FREQUENCY, reminderFrequency.name)
+    }
 }
 
 private object PreferencesKeys {
     val THEME_CONFIG = stringPreferencesKey("theme_config")
     val NOTIFICATION_PERMISSION = stringPreferencesKey("notification_permission")
+    val REMINDER_FREQUENCY = stringPreferencesKey("reminder_frequency")
+    val REMINDER_DISPLAY_STYLE = stringPreferencesKey("reminder_display_style")
+    val REMINDER_STATUS = stringPreferencesKey("reminder_status")
+    val SORT_ORDER = stringPreferencesKey("sort_order")
 }

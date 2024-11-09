@@ -143,7 +143,7 @@ internal val ThoughtPadTypography =
         // Used for Button
         labelLarge =
             TextStyle(
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
                 fontFamily = PoppinsFamily,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
@@ -153,7 +153,7 @@ internal val ThoughtPadTypography =
         // Used for Navigation items
         labelMedium =
             TextStyle(
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
                 fontFamily = PoppinsFamily,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
@@ -163,7 +163,7 @@ internal val ThoughtPadTypography =
         // Used for Tag
         labelSmall =
             TextStyle(
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
                 fontFamily = PoppinsFamily,
                 fontSize = 10.sp,
                 lineHeight = 14.sp,

@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -28,16 +29,13 @@ import androidx.compose.ui.unit.sp
 fun TogaCaption(
     modifier: Modifier = Modifier,
     caption: String,
-    color: Color = MaterialTheme.colorScheme.onSurface
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    style: TextStyle =
+        MaterialTheme.typography.labelSmall.copy(
+            fontSize = 10.sp,
+            color = color,
+            fontWeight = FontWeight.Normal
+        )
 ) {
-    Text(
-        modifier = modifier,
-        text = caption,
-        style =
-            MaterialTheme.typography.labelSmall.copy(
-                fontSize = 10.sp,
-                color = color,
-                fontWeight = FontWeight.Normal
-            )
-    )
+    Text(modifier = modifier, text = caption, style = style)
 }

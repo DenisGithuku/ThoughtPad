@@ -14,13 +14,22 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thoughtpad.core.model
+package com.gitsoft.thoughtpad.core.toga.components.dialog
 
-data class UserPreferences(
-    val themeConfig: ThemeConfig,
-    val isNotificationPermissionsGranted: Boolean = false,
-    val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
-    val sortOrder: SortOrder = SortOrder.DATE,
-    val isPeriodicRemindersEnabled: Boolean = false,
-    val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER
-)
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+
+@Composable
+fun TogaBasicDialog(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = true),
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}

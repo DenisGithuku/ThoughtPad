@@ -17,6 +17,9 @@
 package core.gitsoft.thoughtpad.core.data.repository
 
 import com.gitsoft.thoughtpad.core.datastore.UserPrefsDataSource
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.ReminderFrequency
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.model.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -33,5 +36,21 @@ class UserPrefsRepositoryImpl(private val userPrefsDataSource: UserPrefsDataSour
 
     override suspend fun updateNotificationPermission(isGranted: Boolean) {
         userPrefsDataSource.updateNotificationPermission(isGranted)
+    }
+
+    override suspend fun updateReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
+        userPrefsDataSource.updateReminderDisplayStyle(reminderDisplayStyle)
+    }
+
+    override suspend fun updatePeriodicReminderStatus(isEnabled: Boolean) {
+        userPrefsDataSource.updatePeriodicReminderStatus(isEnabled)
+    }
+
+    override suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
+        userPrefsDataSource.updatePeriodicReminderFrequency(reminderFrequency)
+    }
+
+    override suspend fun updateSortOrder(sortOrder: SortOrder) {
+        userPrefsDataSource.updateSortOrder(sortOrder)
     }
 }

@@ -18,11 +18,18 @@ package com.gitsoft.thoughtpad.feature.settings
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import core.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +47,22 @@ class SettingsScreenTest {
                     state = state.value,
                     onToggleTheme = { state.value = state.value.copy(selectedTheme = it) },
                     onToggleThemeDialog = { state.value = state.value.copy(isThemeDialogShown = it) },
-                    onNavigateBack = {}
+                    onNavigateBack = {},
+                    onToggleSortOrder = { state.value = state.value.copy(sortOrder = it) },
+                    onToggleSortDialog = { state.value = state.value.copy(isSortDialogShown = it) },
+                    onTogglePeriodicReminders = {
+                        state.value = state.value.copy(isPeriodicRemindersEnabled = it)
+                    },
+                    onToggleReminderFrequency = { state.value = state.value.copy(reminderFrequency = it) },
+                    onToggleReminderStyleDialog = {
+                        state.value = state.value.copy(isReminderStyleDialogShown = it)
+                    },
+                    onToggleReminderDisplayStyle = {
+                        state.value = state.value.copy(reminderDisplayStyle = it)
+                    },
+                    onToggleReminderFrequencyDialog = {
+                        state.value = state.value.copy(isReminderFrequencyDialogShown = it)
+                    }
                 )
             }
         }
@@ -48,18 +70,77 @@ class SettingsScreenTest {
 
     @Test
     fun settingsItemIsDisplayed() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).assertIsDisplayed()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().assertIsDisplayed()
     }
 
     @Test
     fun testSettingsItemIsClickable() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).performClick()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().performClick()
     }
 
     @Test
     fun testClickThemeSettingsItemOpensDialog() {
-        composeTestRule.onNodeWithTag(TestTags.SETTINGS_ITEM).performClick()
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM).onFirst().performClick()
 
         composeTestRule.onNodeWithTag(TestTags.THEME_COLUMN).assertIsDisplayed()
+    }
+
+    @Test
+    fun testToggleableSettingsItemIsClickable() {
+        composeTestRule.onAllNodesWithTag(TestTags.TOGGLEABLE_SETTING_ITEM).onFirst().performClick()
+
+        composeTestRule
+            .onAllNodesWithTag(TestTags.TOGGLEABLE_SETTING_ITEM)
+            .onFirst()
+            .onChildren()
+            .onLast()
+            .assertIsDisplayed()
+        composeTestRule
+            .onAllNodesWithTag(TestTags.TOGGLEABLE_SETTING_ITEM)
+            .onFirst()
+            .onChildren()
+            .onLast()
+            .assertIsToggleable()
+            .performClick()
+            .assertIsEnabled()
+
+        composeTestRule
+            .onAllNodesWithTag(TestTags.TOGGLEABLE_SETTING_ITEM)
+            .onFirst()
+            .onChildren()
+            .onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM)[4].assertIsDisplayed()
+    }
+
+    @Test
+    fun testToggleSortDialog() {
+        composeTestRule.onAllNodesWithTag(TestTags.SETTING_LIST_ITEM)[2].performClick()
+
+        composeTestRule
+            .onNodeWithTag(TestTags.SORT_ORDER_COLUMN)
+            .assertIsDisplayed()
+            .onChildren()
+            .onFirst()
+            .assertIsDisplayed()
+            .assertHasClickAction()
+    }
+
+    @Test
+    fun testToggleCalendarDisplayDialog() {
+        composeTestRule
+            .onAllNodesWithTag(TestTags.SETTING_LIST_ITEM)[1]
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag(TestTags.REMINDER_STYLE_COLUMN)
+            .assertIsDisplayed()
+            .onChildren()
+            .onFirst()
+            .assertIsDisplayed()
+            .assertHasClickAction()
     }
 }
