@@ -86,4 +86,8 @@ class SettingsViewModel(private val userPrefsRepository: UserPrefsRepository) : 
     fun onToggleSortOrder(sortOrder: SortOrder) {
         viewModelScope.launch { userPrefsRepository.updateSortOrder(sortOrder) }
     }
+
+    fun onToggleAppInfoDialog(isVisible: Boolean) {
+        _state.update { it.copy(isAppInfoDialogShown = isVisible) }
+    }
 }

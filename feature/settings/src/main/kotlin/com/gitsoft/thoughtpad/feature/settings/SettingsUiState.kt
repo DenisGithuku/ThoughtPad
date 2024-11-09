@@ -36,5 +36,6 @@ data class SettingsUiState(
     val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER,
     val selectedTheme: ThemeConfig = ThemeConfig.LIGHT,
     val isThemeDialogShown: Boolean = false,
+    val isAppInfoDialogShown: Boolean = false,
     val availableThemes: List<ThemeConfig> = listOf(ThemeConfig.LIGHT, ThemeConfig.DARK)
 )

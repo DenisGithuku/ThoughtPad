@@ -14,28 +14,22 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thoughtpad.core.toga.components.text
+package com.gitsoft.thoughtpad.core.toga.components.dialog
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun TogaCaption(
+fun TogaBasicDialog(
     modifier: Modifier = Modifier,
-    caption: String,
-    color: Color = MaterialTheme.colorScheme.onSurface,
-    style: TextStyle =
-        MaterialTheme.typography.labelSmall.copy(
-            fontSize = 10.sp,
-            color = color,
-            fontWeight = FontWeight.Normal
-        )
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
 ) {
-    Text(modifier = modifier, text = caption, style = style)
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = true),
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
 }

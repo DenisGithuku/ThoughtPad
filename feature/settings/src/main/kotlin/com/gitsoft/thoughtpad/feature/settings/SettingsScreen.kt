@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.settings
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -42,15 +43,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.toga.components.dialog.TogaContentDialog
 import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
+import com.gitsoft.thoughtpad.feature.settings.components.AppInfoDialog
 import com.gitsoft.thoughtpad.feature.settings.components.SettingListItem
 import com.gitsoft.thoughtpad.feature.settings.components.SettingSectionTitle
 import com.gitsoft.thoughtpad.feature.settings.components.ToggleableSettingItem
@@ -70,7 +74,8 @@ fun SettingsRoute(onNavigateBack: () -> Unit, viewModel: SettingsViewModel = koi
         onTogglePeriodicReminders = viewModel::onTogglePeriodicReminders,
         onToggleReminderStyleDialog = viewModel::onToggleReminderStyleDialog,
         onToggleSortDialog = viewModel::onToggleSortDialog,
-        onToggleSortOrder = viewModel::onToggleSortOrder
+        onToggleSortOrder = viewModel::onToggleSortOrder,
+        onToggleAppInfoDialog = viewModel::onToggleAppInfoDialog
     )
 }
 
@@ -87,8 +92,11 @@ internal fun SettingsScreen(
     onToggleReminderFrequencyDialog: (Boolean) -> Unit,
     onToggleReminderFrequency: (ReminderFrequency) -> Unit,
     onToggleSortOrder: (SortOrder) -> Unit,
-    onToggleSortDialog: (Boolean) -> Unit
+    onToggleSortDialog: (Boolean) -> Unit,
+    onToggleAppInfoDialog: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
+
     AnimatedVisibility(
         visible = state.isThemeDialogShown,
         enter =
@@ -200,6 +208,17 @@ internal fun SettingsScreen(
                 }
             },
             onDismissRequest = { onToggleReminderFrequencyDialog(false) }
+        )
+    }
+
+    if (state.isAppInfoDialogShown) {
+        AppInfoDialog(
+            onDismissRequest = { onToggleAppInfoDialog(false) },
+            onBuyCoffee = {
+                val intent =
+                    Intent(Intent.ACTION_VIEW, context.getString(R.string.buy_me_a_coffee_url).toUri())
+                context.startActivity(intent)
+            }
         )
     }
 
@@ -335,7 +354,7 @@ internal fun SettingsScreen(
                     modifier = Modifier.animateItem(),
                     leading = R.drawable.ic_info_circle,
                     title = R.string.app_info,
-                    onClick = {}
+                    onClick = { onToggleAppInfoDialog(true) }
                 )
             }
         }

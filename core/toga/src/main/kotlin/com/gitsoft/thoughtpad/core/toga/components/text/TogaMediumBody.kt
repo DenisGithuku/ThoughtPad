@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 
@@ -30,12 +31,13 @@ fun TogaMediumBody(
     text: String,
     maxLines: Int = 1,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = style,
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis,
         color = color,

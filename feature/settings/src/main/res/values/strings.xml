@@ -19,4 +19,20 @@
     <string name="daily_reminder_frequency_description">Daily</string>
     <string name="never_reminder_frequency_description">Never</string>
     <string name="weekly_reminder_frequency_description">Weekly</string>
+    <string name="about_app">
+        ThoughtPad is a simple yet powerful app designed to help you organize your thoughts, tasks, and reminders all in one place.
+    </string>
+    <string-array name="app_features">
+        <item>Create unlimited notes and reminders.</item>
+        <item>Simple, clean interface for a distraction-free experience.</item>
+        <item>Quick search to find your notes in seconds.</item>
+        <item>Dark mode for comfortable reading at night.</item>
+    </string-array>
+    <string name="about_developer">
+        As a solo developer, I’m passionate about creating simple tools that make your life a bit easier. If you’ve enjoyed using ThoughtPad, your support would mean the world to me!
+    </string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
+    <string name="buy_me_a_coffee_url">https://buymeacoffee.com/githukudenis</string>
+    <string name="about_app_title">About ThoughtPad</string>
+    <string name="about_developer_title">Developed by GitSoft Inc.</string>
 </resources>
