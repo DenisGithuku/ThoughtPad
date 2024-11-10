@@ -89,6 +89,7 @@ import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesOnSearchIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteActionBottomSheet
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
+import com.gitsoft.thoughtpad.feature.notelist.components.NotesAndTasksCompleted
 import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
 import com.gitsoft.thoughtpad.feature.notelist.components.SidebarRoute
 import kotlinx.coroutines.launch
@@ -136,7 +137,7 @@ internal fun NoteListScreen(
 
     val scope = rememberCoroutineScope()
 
-    val allSercheableNotes by
+    val allSearchableNotes by
         remember(state.notes, query) {
             derivedStateOf {
                 if (query.isNotEmpty()) {
@@ -152,13 +153,13 @@ internal fun NoteListScreen(
             }
         }
 
-    val trash = allSercheableNotes.filter { it.note.isDeleted }
+    val trash = allSearchableNotes.filter { it.note.isDeleted }
 
-    val reminders = allSercheableNotes.filter { it.note.reminderTime != null }
+    val reminders = allSearchableNotes.filter { it.note.reminderTime != null }
 
-    val archivedNotes = allSercheableNotes.filter { it.note.isArchived }
+    val archivedNotes = allSearchableNotes.filter { it.note.isArchived }
 
-    val allFilteredNotes = allSercheableNotes.filterNot { it.note.isDeleted || it.note.isArchived }
+    val allFilteredNotes = allSearchableNotes.filterNot { it.note.isDeleted || it.note.isArchived }
 
     val pinnedNotes by
         remember(allFilteredNotes, query) {
@@ -179,7 +180,7 @@ internal fun NoteListScreen(
         onDispose { LottieCompositionFactory.clearCache(context) }
     }
 
-    LaunchedEffect(state.archiveState, snackbarHostState) {
+    LaunchedEffect(state.archiveState) {
         if (state.archiveState.isArchived && state.archiveState.noteId != null) {
             val result =
                 snackbarHostState.showSnackbar(
@@ -198,7 +199,7 @@ internal fun NoteListScreen(
         }
     }
 
-    LaunchedEffect(state.deleteState, snackbarHostState) {
+    LaunchedEffect(state.deleteState) {
         if (state.deleteState.isDeleted && state.deleteState.noteId != null) {
             val result =
                 snackbarHostState.showSnackbar(
@@ -337,7 +338,7 @@ internal fun NoteListScreen(
                     }
 
                     AnimatedContent(
-                        targetState = pinnedNotes.isEmpty() && allOtherNotes.isEmpty(),
+                        targetState = allSearchableNotes.isEmpty(),
                         label = "Note List Visibility State"
                     ) { isEmpty ->
                         if (isEmpty) {
@@ -352,24 +353,32 @@ internal fun NoteListScreen(
                             ) {
                                 when (selectedDrawerItem) {
                                     DrawerItem.All -> {
-                                        item(span = StaggeredGridItemSpan.FullLine) {
-                                            AnimatedVisibility(visible = pinnedNotes.isNotEmpty()) {
-                                                SectionSeparator(title = R.string.pinned_notes)
+                                        if (pinnedNotes.isEmpty() && allOtherNotes.isEmpty()) {
+                                            item(span = StaggeredGridItemSpan.FullLine) {
+                                                NotesAndTasksCompleted(
+                                                    modifier = Modifier.testTag(TestTags.ALL_NOTES_AND_TASKS_COMPLETED)
+                                                )
                                             }
-                                        }
-                                        items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
-                                            NoteItemCard(
-                                                modifier =
-                                                    Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
-                                                isDarkTheme = state.isDarkTheme,
-                                                isSelected = state.selectedNote?.noteId == noteData.note.noteId,
-                                                noteData = noteData,
-                                                onClick = { onCreateNewNote(noteData.note.noteId) },
-                                                onLongClick = {
-                                                    onToggleSelectedNote(noteData.note)
-                                                    onToggleFilterDialog(true)
+                                        } else {
+                                            item(span = StaggeredGridItemSpan.FullLine) {
+                                                AnimatedVisibility(visible = pinnedNotes.isNotEmpty()) {
+                                                    SectionSeparator(title = R.string.pinned_notes)
                                                 }
-                                            )
+                                            }
+                                            items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
+                                                NoteItemCard(
+                                                    modifier =
+                                                        Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
+                                                    isDarkTheme = state.isDarkTheme,
+                                                    isSelected = state.selectedNote?.noteId == noteData.note.noteId,
+                                                    noteData = noteData,
+                                                    onClick = { onCreateNewNote(noteData.note.noteId) },
+                                                    onLongClick = {
+                                                        onToggleSelectedNote(noteData.note)
+                                                        onToggleFilterDialog(true)
+                                                    }
+                                                )
+                                            }
                                         }
                                         item(span = StaggeredGridItemSpan.FullLine) {
                                             AnimatedVisibility(visible = allOtherNotes.isNotEmpty()) {
@@ -567,4 +576,5 @@ internal object TestTags {
     const val NOTE_ITEM_CARD = "note_item_card"
     const val NOTE_ITEM_CARD_TITLE = "note_item_card_title"
     const val ADD_NOTE_FAB = "add_note_fab"
+    const val ALL_NOTES_AND_TASKS_COMPLETED = "all_notes_and_tasks_completed"
 }

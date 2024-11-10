@@ -6,8 +6,9 @@
     <string name="reminder_display_style_list">List</string>
     <string name="reminder_display_style_calendar">Calendar</string>
     <string name="sort_title">Sort by</string>
+    <string name="sort_by_title">Title</string>
+    <string name="sort_by_date">Date</string>
     <string name="sort_description">Date added</string>
-    <string name="sort_date">Date</string>
     <string name="notifications_and_reminders"><![CDATA[Notifications & Reminders]]></string>
     <string name="notifications_title">Periodic reminders</string>
     <string name="notifications_description">Enable regular reminders to keep up with tasks.</string>

@@ -37,7 +37,7 @@ import com.gitsoft.thoughtpad.feature.notelist.R
 @Composable
 fun NoNotesInCategoryIndicator(modifier: Modifier = Modifier, @StringRes category: Int) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(100.dp))
         Image(
             painter = painterResource(R.drawable.no_notes_on_search),
             contentDescription = stringResource(id = category),

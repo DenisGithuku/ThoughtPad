@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 @Composable
 fun TogaMediumTitle(
     text: String,
-    maxLines: Int = 1,
+    maxLines: Int = Int.MAX_VALUE,
     color: Color = MaterialTheme.colorScheme.onBackground,
     textAlign: TextAlign = TextAlign.Start
 ) {

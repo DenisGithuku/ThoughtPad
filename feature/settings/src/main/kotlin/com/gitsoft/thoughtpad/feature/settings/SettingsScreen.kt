@@ -296,8 +296,8 @@ internal fun SettingsScreen(
                     title = R.string.sort_title,
                     description =
                         when (state.sortOrder) {
-                            SortOrder.TITLE -> R.string.sort_title
-                            SortOrder.DATE -> R.string.sort_date
+                            SortOrder.TITLE -> R.string.sort_by_title
+                            SortOrder.DATE -> R.string.sort_by_date
                         },
                     onClick = { onToggleSortDialog(true) },
                     trailing = R.drawable.ic_chevron_right

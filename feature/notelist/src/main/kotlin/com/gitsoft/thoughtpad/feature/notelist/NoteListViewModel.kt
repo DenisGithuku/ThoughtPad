@@ -59,23 +59,31 @@ class NoteListViewModel(
 
     fun onToggleDelete(deleteState: DeleteState) {
         viewModelScope.launch {
-            val note = notesRepository.getNoteById(deleteState.noteId ?: return@launch)
-            notesRepository.updateNote(
-                note.copy(isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis())
-            )
-
-            // Update deleted state
-            _state.update { it.copy(deleteState = deleteState) }
+            if (deleteState.noteId == null) {
+                _state.update { it.copy(deleteState = DeleteState()) }
+            } else {
+                val note = notesRepository.getNoteById(deleteState.noteId)
+                notesRepository.updateNote(
+                    note.copy(isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis())
+                )
+                // Update deleted state in case reversal happens
+                _state.update { it.copy(deleteState = deleteState) }
+            }
         }
     }
 
     fun onToggleArchive(archiveState: ArchiveState) {
         viewModelScope.launch {
-            val note = notesRepository.getNoteById(archiveState.noteId ?: return@launch)
-            notesRepository.updateNote(note.copy(isArchived = archiveState.isArchived))
+            if (archiveState.noteId == null) {
+                // Restore delete state to default value
+                _state.update { it.copy(archiveState = ArchiveState()) }
+            } else {
+                val note = notesRepository.getNoteById(archiveState.noteId)
+                notesRepository.updateNote(note.copy(isArchived = archiveState.isArchived))
 
-            // Update archived state
-            _state.update { it.copy(archiveState = archiveState) }
+                // Update archived state in case reversal happens
+                _state.update { it.copy(archiveState = archiveState) }
+            }
         }
     }
 

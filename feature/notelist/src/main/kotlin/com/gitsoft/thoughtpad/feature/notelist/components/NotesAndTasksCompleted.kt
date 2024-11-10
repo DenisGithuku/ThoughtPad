@@ -16,40 +16,57 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.RenderMode
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumBody
 import com.gitsoft.thoughtpad.feature.notelist.R
 
 @Composable
-fun NoNotesOnSearchIndicator(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+fun NotesAndTasksCompleted(modifier: Modifier = Modifier) {
+    // Load the Lottie animation
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.notes_done))
+
+    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(100.dp))
-        Image(
-            painter = painterResource(R.drawable.no_notes_on_search),
-            contentDescription = stringResource(R.string.no_notes_on_search),
-            modifier = Modifier.align(Alignment.CenterHorizontally).size(200.dp),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TogaMediumBody(
-            text = stringResource(R.string.no_notes_on_search),
-            modifier = Modifier.padding(24.dp),
-            textAlign = TextAlign.Center,
-            maxLines = 10
-        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Display the Lottie animation
+            LottieAnimation(
+                composition = composition,
+                iterations = 1,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(150.dp),
+                renderMode = RenderMode.HARDWARE
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Display the text message
+            TogaMediumBody(
+                text = stringResource(R.string.all_clear),
+                modifier = Modifier.padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
     }
 }
