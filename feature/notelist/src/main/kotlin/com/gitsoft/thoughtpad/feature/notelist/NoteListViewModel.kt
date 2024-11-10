@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
+import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
@@ -98,7 +99,11 @@ class NoteListViewModel(
         combine(_state, notesRepository.allNotes, userPrefsRepository.userPrefs) { state, notes, prefs
                 ->
                 state.copy(
-                    notes = notes,
+                    notes =
+                        when (prefs.sortOrder) {
+                            SortOrder.TITLE -> notes.sortedBy { it.note.noteTitle }
+                            SortOrder.DATE -> notes.sortedByDescending { it.note.createdAt }
+                        },
                     isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
                     isLoading = false,
                     selectedNoteListType = prefs.noteListType
