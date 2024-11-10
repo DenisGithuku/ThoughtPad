@@ -16,6 +16,7 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository.fakes
 
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
@@ -24,6 +25,7 @@ import com.gitsoft.thoughtpad.core.model.UserPreferences
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class FakeUserPrefsRepository : UserPrefsRepository {
 
@@ -43,26 +45,30 @@ class FakeUserPrefsRepository : UserPrefsRepository {
         get() = _userPrefs
 
     override suspend fun updateTheme(themeConfig: ThemeConfig) {
-        _userPrefs.value = _userPrefs.value.copy(themeConfig = themeConfig)
+        _userPrefs.update { it.copy(themeConfig = themeConfig) }
     }
 
     override suspend fun updateNotificationPermission(isGranted: Boolean) {
-        _userPrefs.value = _userPrefs.value.copy(isNotificationPermissionsGranted = isGranted)
+        _userPrefs.update { it.copy(isNotificationPermissionsGranted = isGranted) }
     }
 
     override suspend fun updateReminderDisplayStyle(reminderDisplayStyle: ReminderDisplayStyle) {
-        _userPrefs.value = _userPrefs.value.copy(reminderDisplayStyle = reminderDisplayStyle)
+        _userPrefs.update { it.copy(reminderDisplayStyle = reminderDisplayStyle) }
     }
 
     override suspend fun updatePeriodicReminderStatus(isEnabled: Boolean) {
-        _userPrefs.value = _userPrefs.value.copy(isPeriodicRemindersEnabled = isEnabled)
+        _userPrefs.update { it.copy(isPeriodicRemindersEnabled = isEnabled) }
     }
 
     override suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
-        _userPrefs.value = _userPrefs.value.copy(reminderFrequency = reminderFrequency)
+        _userPrefs.update { it.copy(reminderFrequency = reminderFrequency) }
     }
 
     override suspend fun updateSortOrder(sortOrder: SortOrder) {
-        _userPrefs.value = _userPrefs.value.copy(sortOrder = sortOrder)
+        _userPrefs.update { it.copy(sortOrder = sortOrder) }
+    }
+
+    override suspend fun updateNoteListType(noteListType: NoteListType) {
+        _userPrefs.update { it.copy(noteListType = noteListType) }
     }
 }

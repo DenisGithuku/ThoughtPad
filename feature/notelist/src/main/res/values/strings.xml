@@ -42,4 +42,7 @@
     <string name="unarchive">Unarchive</string>
     <string name="restore">Restore</string>
     <string name="beta">Beta</string>
+    <string name="note_list_type">Note list type</string>
+    <string name="note_list">List layout</string>
+    <string name="note_grid">Grid layout</string>
 </resources>

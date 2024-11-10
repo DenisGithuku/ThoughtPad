@@ -17,6 +17,7 @@
 package core.gitsoft.thoughtpad.core.data.repository
 
 import com.gitsoft.thoughtpad.core.datastore.UserPrefsDataSource
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
@@ -52,5 +53,9 @@ class UserPrefsRepositoryImpl(private val userPrefsDataSource: UserPrefsDataSour
 
     override suspend fun updateSortOrder(sortOrder: SortOrder) {
         userPrefsDataSource.updateSortOrder(sortOrder)
+    }
+
+    override suspend fun updateNoteListType(noteListType: NoteListType) {
+        userPrefsDataSource.updateNoteListType(noteListType)
     }
 }

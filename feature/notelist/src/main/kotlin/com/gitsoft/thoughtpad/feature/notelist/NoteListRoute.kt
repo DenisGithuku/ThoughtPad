@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist
 
+import android.R.attr.onClick
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -76,6 +77,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieCompositionFactory
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
 import com.gitsoft.thoughtpad.core.toga.components.button.TogaIconButton
 import com.gitsoft.thoughtpad.core.toga.components.input.TogaSearchBar
@@ -112,7 +114,8 @@ fun NoteListRoute(
         onToggleFilterDialog = viewModel::onOpenFilterDialog,
         onToggleSelectedNote = viewModel::onToggleSelectNote,
         onToggleDeleteNote = viewModel::onToggleDelete,
-        onToggleArchiveNote = viewModel::onToggleArchive
+        onToggleArchiveNote = viewModel::onToggleArchive,
+        onToggleNoteListType = viewModel::onToggleNoteListType
     )
 }
 
@@ -127,6 +130,7 @@ internal fun NoteListScreen(
     onOpenTags: () -> Unit,
     onToggleNotePin: (Long, Boolean) -> Unit,
     onToggleArchiveNote: (ArchiveState) -> Unit,
+    onToggleNoteListType: (NoteListType) -> Unit,
     onToggleDeleteNote: (DeleteState) -> Unit
 ) {
     var query: String by rememberSaveable { mutableStateOf("") }
@@ -291,7 +295,9 @@ internal fun NoteListScreen(
                                 }
                             }
                         },
-                        onQueryChange = { query = it }
+                        onQueryChange = { query = it },
+                        selectedNoteListType = state.selectedNoteListType,
+                        onToggleNoteList = { onToggleNoteListType(it) }
                     )
 
                     if (state.isLoading) {
@@ -347,7 +353,11 @@ internal fun NoteListScreen(
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
                                 modifier = Modifier.fillMaxSize().imeNestedScroll().testTag(TestTags.NOTE_LIST),
-                                columns = StaggeredGridCells.Fixed(2),
+                                columns =
+                                    when (state.selectedNoteListType) {
+                                        NoteListType.GRID -> StaggeredGridCells.Fixed(2)
+                                        NoteListType.LIST -> StaggeredGridCells.Fixed(1)
+                                    },
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalItemSpacing = 8.dp
                             ) {
@@ -544,7 +554,13 @@ fun LazyStaggeredGridItemScope.animateNoteItemCard(): Modifier {
 }
 
 @Composable
-fun TopRow(query: String, onToggleSideBar: () -> Unit, onQueryChange: (String) -> Unit) {
+fun TopRow(
+    query: String,
+    selectedNoteListType: NoteListType,
+    onToggleSideBar: () -> Unit,
+    onQueryChange: (String) -> Unit,
+    onToggleNoteList: (NoteListType) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(PaddingValues(vertical = 16.dp)),
         verticalAlignment = Alignment.CenterVertically
@@ -560,6 +576,27 @@ fun TopRow(query: String, onToggleSideBar: () -> Unit, onQueryChange: (String) -
             query = query,
             onQueryChange = onQueryChange,
             onSearch = {}
+        )
+        TogaIconButton(
+            modifier = Modifier.sizeIn(24.dp).testTag(TestTags.NOTE_LIST_TYPE),
+            icon =
+                when (selectedNoteListType) {
+                    NoteListType.GRID -> R.drawable.ic_note_list
+                    NoteListType.LIST -> R.drawable.ic_grid
+                },
+            contentDescription =
+                when (selectedNoteListType) {
+                    NoteListType.GRID -> R.string.note_list
+                    NoteListType.LIST -> R.string.note_grid
+                },
+            onClick = {
+                onToggleNoteList(
+                    when (selectedNoteListType) {
+                        NoteListType.GRID -> NoteListType.LIST
+                        NoteListType.LIST -> NoteListType.GRID
+                    }
+                )
+            }
         )
     }
 }
@@ -577,4 +614,5 @@ internal object TestTags {
     const val NOTE_ITEM_CARD_TITLE = "note_item_card_title"
     const val ADD_NOTE_FAB = "add_note_fab"
     const val ALL_NOTES_AND_TASKS_COMPLETED = "all_notes_and_tasks_completed"
+    const val NOTE_LIST_TYPE = "note_list_type"
 }

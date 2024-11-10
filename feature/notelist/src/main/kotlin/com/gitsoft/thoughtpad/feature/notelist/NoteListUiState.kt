@@ -18,6 +18,7 @@ package com.gitsoft.thoughtpad.feature.notelist
 
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.NoteListType
 
 data class ArchiveState(val isArchived: Boolean = false, val noteId: Long? = null)
 
@@ -30,5 +31,6 @@ data class NoteListUiState(
     val deleteState: DeleteState = DeleteState(),
     val isDarkTheme: Boolean = false,
     val selectedNote: Note? = null,
+    val selectedNoteListType: NoteListType = NoteListType.GRID,
     val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
 )

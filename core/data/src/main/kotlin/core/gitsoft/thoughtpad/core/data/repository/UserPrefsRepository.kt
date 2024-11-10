@@ -16,6 +16,7 @@
 */
 package core.gitsoft.thoughtpad.core.data.repository
 
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
@@ -37,4 +38,6 @@ interface UserPrefsRepository {
     suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency)
 
     suspend fun updateSortOrder(sortOrder: SortOrder)
+
+    suspend fun updateNoteListType(noteListType: NoteListType)
 }
