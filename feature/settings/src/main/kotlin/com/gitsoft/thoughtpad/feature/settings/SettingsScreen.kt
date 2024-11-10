@@ -336,16 +336,16 @@ internal fun SettingsScreen(
                     )
                 }
             }
-            item {
-                SettingListItem(
-                    modifier = Modifier.animateItem(),
-                    leading = R.drawable.ic_notification_tone,
-                    title = R.string.notification_tone_title,
-                    description = R.string.notification_tone_description,
-                    onClick = {},
-                    trailing = R.drawable.ic_chevron_right
-                )
-            }
+            //            item {
+            //                SettingListItem(
+            //                    modifier = Modifier.animateItem(),
+            //                    leading = R.drawable.ic_notification_tone,
+            //                    title = R.string.notification_tone_title,
+            //                    description = R.string.notification_tone_description,
+            //                    onClick = {},
+            //                    trailing = R.drawable.ic_chevron_right
+            //                )
+            //            }
             item {
                 SettingSectionTitle(modifier = Modifier.animateItem(), title = R.string.help_and_support)
             }
@@ -369,4 +369,5 @@ internal object TestTags {
     const val REMINDER_FREQUENCY_COLUMN = "reminder_frequency_column"
     const val SORT_ORDER_COLUMN = "sort_type_column"
     const val TOGGLEABLE_SETTING_ITEM_SWITCH = "toggleable_setting_item_switch"
+    const val APP_INFO_COLUMN = "app_info_column"
 }

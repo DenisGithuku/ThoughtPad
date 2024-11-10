@@ -19,6 +19,8 @@ package com.gitsoft.thoughtpad
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.media.AudioAttributes
+import android.net.Uri
 import android.util.Log
 import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.database.databaseModule
@@ -77,6 +79,14 @@ class ThoughtPadApplication : Application() {
     }
 
     private fun createNotificationChannel() {
+        val audioAttributes =
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+
+        val soundUri = Uri.parse("android.resource://${this.packageName}/raw/lowport")
+
         val channel =
             NotificationChannel(
                     AppConstants.notificationChannelId,
@@ -86,6 +96,7 @@ class ThoughtPadApplication : Application() {
                 .apply {
                     setShowBadge(true)
                     enableVibration(true)
+                    setSound(soundUri, audioAttributes)
                     description = AppConstants.notificationChannelDescription
                 }
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager

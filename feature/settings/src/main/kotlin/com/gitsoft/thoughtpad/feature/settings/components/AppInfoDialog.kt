@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,6 +49,7 @@ import com.gitsoft.thoughtpad.core.toga.components.text.TogaCaption
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import com.gitsoft.thoughtpad.feature.settings.BuildConfig
 import com.gitsoft.thoughtpad.feature.settings.R
+import com.gitsoft.thoughtpad.feature.settings.TestTags
 
 @Composable
 fun AppInfoDialog(onDismissRequest: () -> Unit, onBuyCoffee: () -> Unit = {}) {
@@ -67,6 +69,7 @@ fun AppInfoDialog(onDismissRequest: () -> Unit, onBuyCoffee: () -> Unit = {}) {
                 modifier =
                     Modifier.scrollable(state = rememberScrollState(), orientation = Orientation.Vertical)
                         .padding(12.dp)
+                        .testTag(TestTags.APP_INFO_COLUMN)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.app_icon),
