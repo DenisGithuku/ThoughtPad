@@ -62,6 +62,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.NoteColor
@@ -76,6 +77,7 @@ import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
 import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaStandardScaffold
 import com.gitsoft.thoughtpad.core.toga.components.sheets.TogaModalBottomSheet
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaLargeLabel
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallBody
 import com.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import com.gitsoft.thoughtpad.feature.addnote.components.CheckList
 import com.gitsoft.thoughtpad.feature.addnote.components.ColorPill
@@ -84,6 +86,7 @@ import com.gitsoft.thoughtpad.feature.addnote.components.ReminderContent
 import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
 import com.gitsoft.thoughtpad.feature.addnote.components.TagList
 import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionContent
+import com.gitsoft.thoughtpad.feature.addnote.util.formatTimeAgo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.PermissionStatus
@@ -405,6 +408,13 @@ internal fun AddNoteScreen(
                             if (!state.hasReminder) {
                                 MaterialTheme.colorScheme.onBackground
                             } else MaterialTheme.colorScheme.primary
+                    )
+                    TogaSmallBody(
+                        text =
+                            buildString {
+                                append(stringResource(R.string.edited))
+                                append(formatTimeAgo(state.note.updatedAt ?: System.currentTimeMillis()))
+                            }
                     )
                 }
             )

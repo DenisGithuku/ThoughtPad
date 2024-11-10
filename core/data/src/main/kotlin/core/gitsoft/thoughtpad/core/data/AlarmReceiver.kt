@@ -21,6 +21,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.core.app.NotificationCompat
 import com.gitsoft.thoughtpad.core.common.AppConstants
 import com.gitsoft.thoughtpad.core.data.R
@@ -62,6 +63,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 mainIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
+        val soundUri = Uri.parse("android.resource://${context.packageName}/raw/lowport")
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -73,6 +75,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_time)
+                .setSound(soundUri)
                 .build()
 
         notificationManager.notify(notificationId, notification)

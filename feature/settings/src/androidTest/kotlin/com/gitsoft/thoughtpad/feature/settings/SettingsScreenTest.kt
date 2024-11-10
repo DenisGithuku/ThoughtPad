@@ -62,7 +62,8 @@ class SettingsScreenTest {
                     },
                     onToggleReminderFrequencyDialog = {
                         state.value = state.value.copy(isReminderFrequencyDialogShown = it)
-                    }
+                    },
+                    onToggleAppInfoDialog = { state.value = state.value.copy(isAppInfoDialogShown = it) }
                 )
             }
         }
@@ -142,5 +143,16 @@ class SettingsScreenTest {
             .onFirst()
             .assertIsDisplayed()
             .assertHasClickAction()
+    }
+
+    @Test
+    fun testToggleAppInfoDialog() {
+        composeTestRule
+            .onAllNodesWithTag(TestTags.SETTING_LIST_ITEM)
+            .onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.onNodeWithTag(TestTags.APP_INFO_COLUMN).assertIsDisplayed()
     }
 }
