@@ -18,8 +18,10 @@ package com.gitsoft.thoughtpad.feature.notelist
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -30,6 +32,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
+import androidx.test.platform.app.InstrumentationRegistry
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
@@ -40,6 +43,8 @@ import org.junit.Test
 class NoteListScreenTest {
 
     @get:Rule val composeTestRule = createComposeRule()
+
+    private val context = InstrumentationRegistry.getInstrumentation().context
 
     @Before
     fun setUp() {
@@ -81,7 +86,8 @@ class NoteListScreenTest {
                     onToggleFilterDialog = { state.value = state.value.copy(isFilterDialogVisible = it) },
                     onOpenSettings = {},
                     onOpenTags = {},
-                    onToggleDeleteNote = {}
+                    onToggleDeleteNote = {},
+                    onToggleNoteListType = { state.value = state.value.copy(selectedNoteListType = it) }
                 )
             }
         }
@@ -89,8 +95,11 @@ class NoteListScreenTest {
 
     @Test
     fun testToggleSearchBarIsDisplayedAndTakesInput() {
-        composeTestRule.onNodeWithTag(TestTags.SEARCH_BAR).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(TestTags.SEARCH_BAR).performTextInput("Search keyword")
+        composeTestRule
+            .onNodeWithTag(TestTags.SEARCH_BAR)
+            .assertIsDisplayed()
+            .performTextInput("Search keyword")
+        composeTestRule.onNodeWithTag(TestTags.SEARCH_BAR).assertTextContains("Search keyword")
     }
 
     @Test
@@ -122,15 +131,26 @@ class NoteListScreenTest {
 
     @Test
     fun testAddNoteFabIsClickable() {
-        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB).assertHasClickAction()
+        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB).assertIsDisplayed().assertHasClickAction()
     }
 
     @Test
     fun testToggleSideDrawerIsDisplayed() {
-        composeTestRule.onNodeWithTag(TestTags.SIDEBAR_TOGGLE).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(TestTags.SIDEBAR_TOGGLE).assertHasClickAction()
-        composeTestRule.onNodeWithTag(TestTags.SIDEBAR_TOGGLE).performClick()
+        composeTestRule
+            .onNodeWithTag(TestTags.SIDEBAR_TOGGLE)
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
         composeTestRule.onNodeWithTag(TestTags.SIDEBAR).assertIsDisplayed()
+    }
+
+    @Test
+    fun testToggleNoteListType() {
+        composeTestRule
+            .onNodeWithTag(TestTags.NOTE_LIST_TYPE)
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
+            .assertContentDescriptionEquals(context.getString(R.string.note_grid))
     }
 }

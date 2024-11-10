@@ -18,6 +18,7 @@ package com.gitsoft.thoughtpad.feature.notelist
 
 import androidx.test.filters.MediumTest
 import com.gitsoft.thoughtpad.core.common.MainCoroutineRule
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeNotesRepository
@@ -99,5 +100,13 @@ class NoteListViewModelTest {
         val state = viewModel.state.value
         println(state.notes.find { it.note.noteId == 1L })
         assertTrue(state.notes.find { it.note.noteId == 1L }!!.note.isDeleted)
+    }
+
+    @Test
+    fun `test toggle note list type`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onToggleNoteListType(NoteListType.LIST)
+        val state = viewModel.state.value
+        assertEquals(state.selectedNoteListType, NoteListType.LIST)
     }
 }

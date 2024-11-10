@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad.core.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
@@ -46,7 +47,9 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
                     reminderFrequency =
                         ReminderFrequency.valueOf(
                             it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.NEVER.name
-                        )
+                        ),
+                    noteListType =
+                        NoteListType.valueOf(it[PreferencesKeys.NOTE_LIST_TYPE] ?: NoteListType.GRID.name)
                 )
             }
 
@@ -86,6 +89,10 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
     suspend fun updatePeriodicReminderFrequency(reminderFrequency: ReminderFrequency) {
         updateValue(PreferencesKeys.REMINDER_FREQUENCY, reminderFrequency.name)
     }
+
+    suspend fun updateNoteListType(noteListType: NoteListType) {
+        updateValue(PreferencesKeys.NOTE_LIST_TYPE, noteListType.name)
+    }
 }
 
 private object PreferencesKeys {
@@ -95,4 +102,5 @@ private object PreferencesKeys {
     val REMINDER_DISPLAY_STYLE = stringPreferencesKey("reminder_display_style")
     val REMINDER_STATUS = stringPreferencesKey("reminder_status")
     val SORT_ORDER = stringPreferencesKey("sort_order")
+    val NOTE_LIST_TYPE = stringPreferencesKey("note_list_type")
 }

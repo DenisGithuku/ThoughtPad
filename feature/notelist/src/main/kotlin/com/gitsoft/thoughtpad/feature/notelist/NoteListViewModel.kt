@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad.feature.notelist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
+import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
@@ -87,6 +88,10 @@ class NoteListViewModel(
         }
     }
 
+    fun onToggleNoteListType(noteListType: NoteListType) {
+        viewModelScope.launch { userPrefsRepository.updateNoteListType(noteListType) }
+    }
+
     private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())
 
     val state: StateFlow<NoteListUiState> =
@@ -95,7 +100,8 @@ class NoteListViewModel(
                 state.copy(
                     notes = notes,
                     isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
-                    isLoading = false
+                    isLoading = false,
+                    selectedNoteListType = prefs.noteListType
                 )
             }
             .stateIn(
