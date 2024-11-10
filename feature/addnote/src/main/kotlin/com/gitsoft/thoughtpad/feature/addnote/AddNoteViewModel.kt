@@ -295,18 +295,21 @@ class AddNoteViewModel(
 
     private fun update() {
         viewModelScope.launch {
-            notesRepository.updateNoteWithDetails(
-                note =
-                    _state.value.note.copy(
-                        updatedAt = Calendar.getInstance().timeInMillis,
-                        color = _state.value.selectedNoteColor,
-                        reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
-                        noteTitle = _state.value.note.noteTitle?.trim(),
-                        noteText = _state.value.note.noteText?.trim()
-                    ),
-                checklistItems = _state.value.checkListItems,
-                tags = _state.value.selectedTags
-            )
+            val hasChanged = notesRepository.getNoteById(_state.value.note.noteId) != _state.value.note
+            if (hasChanged) {
+                notesRepository.updateNoteWithDetails(
+                    note =
+                        _state.value.note.copy(
+                            updatedAt = Calendar.getInstance().timeInMillis,
+                            color = _state.value.selectedNoteColor,
+                            reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
+                            noteTitle = _state.value.note.noteTitle?.trim(),
+                            noteText = _state.value.note.noteText?.trim()
+                        ),
+                    checklistItems = _state.value.checkListItems,
+                    tags = _state.value.selectedTags
+                )
+            }
             _state.update { it.copy(insertionSuccessful = true) }
         }
     }

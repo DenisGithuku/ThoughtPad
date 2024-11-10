@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":core:common"))
 
     implementation(libs.lottie.compose)
+    implementation(libs.kiziton.compose.calendar)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.truth)
