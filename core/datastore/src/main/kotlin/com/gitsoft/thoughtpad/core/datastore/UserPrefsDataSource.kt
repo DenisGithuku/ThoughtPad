@@ -95,7 +95,7 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
     }
 }
 
-private object PreferencesKeys {
+object PreferencesKeys {
     val THEME_CONFIG = stringPreferencesKey("theme_config")
     val NOTIFICATION_PERMISSION = stringPreferencesKey("notification_permission")
     val REMINDER_FREQUENCY = stringPreferencesKey("reminder_frequency")

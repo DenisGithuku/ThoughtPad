@@ -24,6 +24,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.gitsoft.thoughtpad.core.datastore.migrations.Migration_0_1
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -38,7 +39,8 @@ val prefsModule = module {
                 ReplaceFileCorruptionHandler(
                     produceNewData = { emptyPreferences() }
                 ), // list of migrations on how to move from the previous datastore
-            migrations = listOf(SharedPreferencesMigration(get<Context>(), USER_PREFERENCES)),
+            migrations =
+                listOf(SharedPreferencesMigration(get<Context>(), USER_PREFERENCES), Migration_0_1),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { get<Context>().preferencesDataStoreFile(USER_PREFERENCES) }
         )
