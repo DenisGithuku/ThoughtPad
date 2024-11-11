@@ -106,6 +106,7 @@ class NoteListViewModel(
                         },
                     isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
                     isLoading = false,
+                    reminderDisplayStyle = prefs.reminderDisplayStyle,
                     selectedNoteListType = prefs.noteListType
                 )
             }

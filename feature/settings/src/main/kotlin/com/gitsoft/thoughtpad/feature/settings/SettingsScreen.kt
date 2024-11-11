@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.settings
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -39,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +50,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.gitsoft.thoughtpad.core.common.AppUsageReminderWorker
+import com.gitsoft.thoughtpad.core.common.WorkConstants
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 import com.gitsoft.thoughtpad.core.model.ReminderFrequency
 import com.gitsoft.thoughtpad.core.model.SortOrder
@@ -58,7 +66,9 @@ import com.gitsoft.thoughtpad.feature.settings.components.AppInfoDialog
 import com.gitsoft.thoughtpad.feature.settings.components.SettingListItem
 import com.gitsoft.thoughtpad.feature.settings.components.SettingSectionTitle
 import com.gitsoft.thoughtpad.feature.settings.components.ToggleableSettingItem
+import java.util.concurrent.TimeUnit
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun SettingsRoute(onNavigateBack: () -> Unit, viewModel: SettingsViewModel = koinViewModel()) {
@@ -96,6 +106,27 @@ internal fun SettingsScreen(
     onToggleAppInfoDialog: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
+
+    LaunchedEffect(state.isPeriodicRemindersEnabled, state.reminderFrequency) {
+        if (!state.isPeriodicRemindersEnabled) {
+            if (BuildConfig.DEBUG) {
+                Timber.i("Periodic reminders disabled, canceling work.")
+            }
+            cancelWork(context)
+        } else {
+            val interval =
+                when (state.reminderFrequency) {
+                    ReminderFrequency.DAILY -> 24L // hours
+                    ReminderFrequency.WEEKLY -> 24L * 7 // hours
+                }
+            if (BuildConfig.DEBUG) {
+                Timber.i(
+                    "Scheduling periodic reminders with frequency: ${state.reminderFrequency} (interval: $interval hours)"
+                )
+            }
+            schedulePeriodicReminders(context, interval)
+        }
+    }
 
     AnimatedVisibility(
         visible = state.isThemeDialogShown,
@@ -327,7 +358,6 @@ internal fun SettingsScreen(
                         title = R.string.reminder_frequency_title,
                         description =
                             when (state.reminderFrequency) {
-                                ReminderFrequency.NEVER -> R.string.never_reminder_frequency_description
                                 ReminderFrequency.DAILY -> R.string.daily_reminder_frequency_description
                                 ReminderFrequency.WEEKLY -> R.string.weekly_reminder_frequency_description
                             },
@@ -359,6 +389,31 @@ internal fun SettingsScreen(
             }
         }
     }
+}
+
+private fun schedulePeriodicReminders(context: Context, interval: Long) {
+    val workManager = WorkManager.getInstance(context)
+
+    val constraints =
+        Constraints.Builder().setRequiresBatteryNotLow(true).setRequiresDeviceIdle(true).build()
+
+    // Create a work request
+    val workRequest =
+        PeriodicWorkRequestBuilder<AppUsageReminderWorker>(interval, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+    // Enqueue work to run periodically
+    workManager.enqueueUniquePeriodicWork(
+        WorkConstants.WORK_NAME,
+        ExistingPeriodicWorkPolicy.REPLACE,
+        workRequest
+    )
+}
+
+private fun cancelWork(context: Context) {
+    val workManager = WorkManager.getInstance(context)
+    workManager.cancelUniqueWork(WorkConstants.WORK_NAME)
 }
 
 internal object TestTags {

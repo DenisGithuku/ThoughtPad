@@ -19,6 +19,7 @@ package com.gitsoft.thoughtpad.feature.notelist
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
+import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
 
 data class ArchiveState(val isArchived: Boolean = false, val noteId: Long? = null)
 
@@ -32,5 +33,6 @@ data class NoteListUiState(
     val isDarkTheme: Boolean = false,
     val selectedNote: Note? = null,
     val selectedNoteListType: NoteListType = NoteListType.GRID,
+    val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
     val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
 )

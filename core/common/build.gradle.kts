@@ -3,6 +3,7 @@ plugins { alias(libs.plugins.thoughtpad.android.library) }
 android { namespace = "com.gitsoft.thoughtpad.core.common" }
 
 dependencies {
+    implementation(libs.androidx.work)
     implementation(libs.coroutines.test)
     implementation(libs.test.runner)
     implementation(libs.test.rules)

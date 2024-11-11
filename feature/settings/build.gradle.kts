@@ -22,7 +22,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:toga"))
     implementation(project(":core:common"))
-
+    implementation(libs.androidx.work)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.truth)
     testImplementation(libs.test.runner)

@@ -46,7 +46,7 @@ class UserPrefsDataSource(private val preferences: DataStore<Preferences>) {
                     isPeriodicRemindersEnabled = it[PreferencesKeys.REMINDER_STATUS]?.toBoolean() == true,
                     reminderFrequency =
                         ReminderFrequency.valueOf(
-                            it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.NEVER.name
+                            it[PreferencesKeys.REMINDER_FREQUENCY] ?: ReminderFrequency.WEEKLY.name
                         ),
                     noteListType =
                         NoteListType.valueOf(it[PreferencesKeys.NOTE_LIST_TYPE] ?: NoteListType.GRID.name)
