@@ -31,9 +31,9 @@ data class SettingsUiState(
     val availableSortOrders: List<SortOrder> = listOf(SortOrder.DATE, SortOrder.TITLE),
     val isReminderFrequencyDialogShown: Boolean = false,
     val availableReminderFrequencies: List<ReminderFrequency> =
-        listOf(ReminderFrequency.NEVER, ReminderFrequency.DAILY, ReminderFrequency.WEEKLY),
+        listOf(ReminderFrequency.DAILY, ReminderFrequency.WEEKLY),
     val isReminderStyleDialogShown: Boolean = false,
-    val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER,
+    val reminderFrequency: ReminderFrequency = ReminderFrequency.WEEKLY,
     val selectedTheme: ThemeConfig = ThemeConfig.LIGHT,
     val isThemeDialogShown: Boolean = false,
     val isAppInfoDialogShown: Boolean = false,

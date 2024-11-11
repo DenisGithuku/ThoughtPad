@@ -212,6 +212,7 @@ fun Day(isToday: Boolean, isReminder: Boolean, day: CalendarDay, onSelectNote: (
     Box(
         modifier =
             Modifier.aspectRatio(1f) // This is important for square sizing!
+                .clip(CircleShape)
                 .border(
                     shape = CircleShape,
                     color =

@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:toga"))
+    implementation(libs.androidx.work)
     implementation(libs.lottie.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit)

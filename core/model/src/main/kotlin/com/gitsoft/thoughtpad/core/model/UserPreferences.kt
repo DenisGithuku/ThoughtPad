@@ -22,6 +22,6 @@ data class UserPreferences(
     val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
     val sortOrder: SortOrder = SortOrder.DATE,
     val isPeriodicRemindersEnabled: Boolean = false,
-    val reminderFrequency: ReminderFrequency = ReminderFrequency.NEVER,
+    val reminderFrequency: ReminderFrequency = ReminderFrequency.WEEKLY,
     val noteListType: NoteListType = NoteListType.GRID
 )
