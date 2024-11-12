@@ -295,7 +295,7 @@ class AddNoteViewModel(
 
     private fun update() {
         viewModelScope.launch {
-            val hasChanged = notesRepository.getNoteById(_state.value.note.noteId) != _state.value.note
+            val hasChanged = noteHasChanged()
             if (hasChanged) {
                 notesRepository.updateNoteWithDetails(
                     note =
@@ -349,6 +349,17 @@ class AddNoteViewModel(
 
     private suspend fun storeTag(tag: Tag): Long {
         return notesRepository.insertTag(tag)
+    }
+
+    private suspend fun noteHasChanged(): Boolean {
+        val noteData = notesRepository.getNoteWithDataById(_state.value.note.noteId)
+        return noteData != _state.value.note ||
+            _state.value.checkListItems != noteData.checkListItems ||
+            _state.value.selectedTags != noteData.tags ||
+            _state.value.selectedNoteColor != noteData.note.color ||
+            _state.value.selectedDate != noteData.note.reminderTime ||
+            _state.value.hasTags != noteData.tags.isNotEmpty() ||
+            _state.value.hasReminder != (noteData.note.reminderTime != null)
     }
 
     override fun onCleared() {

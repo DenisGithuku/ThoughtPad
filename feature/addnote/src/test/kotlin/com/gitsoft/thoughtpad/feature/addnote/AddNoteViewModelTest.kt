@@ -32,6 +32,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -306,5 +307,75 @@ class AddNoteViewModelTest {
         viewModel.onEvent(AddNoteEvent.UpdateNotificationPermissions)
         advanceUntilIdle()
         assertTrue(viewModel.state.value.permissionsNotificationsGranted)
+    }
+
+    @Test
+    fun `test save new note`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.ChangeTitle(value = "New title"))
+        viewModel.onEvent(AddNoteEvent.ChangeText(value = "New text"))
+        viewModel.onEvent(AddNoteEvent.ChangeNoteColor(value = NoteColor.Lavender))
+        viewModel.onEvent(AddNoteEvent.ToggleTags(true))
+        viewModel.onEvent(AddNoteEvent.AddTag(Tag(name = "School", color = TagColor.Yellow)))
+        viewModel.onEvent(AddNoteEvent.AddTag(Tag(name = "Fun", color = TagColor.Blue)))
+        viewModel.onEvent(AddNoteEvent.AddTag(Tag(name = "Private", color = TagColor.Purple)))
+        viewModel.onEvent(AddNoteEvent.ToggleCheckList(true))
+        viewModel.onEvent(
+            AddNoteEvent.AddCheckListItem(
+                CheckListItem(noteId = 1L, text = "New check list item", isChecked = true)
+            )
+        )
+        viewModel.onEvent(AddNoteEvent.ToggleReminders(true))
+        viewModel.onEvent(AddNoteEvent.TogglePin(true))
+        viewModel.onEvent(AddNoteEvent.Save)
+        advanceUntilIdle()
+        val hasSaved =
+            notesRepository.allNotes.first().any {
+                it.note.noteTitle == "New title" &&
+                    it.note.noteText == "New text" &&
+                    it.note.color == NoteColor.Lavender &&
+                    it.tags.any { it.name == "School" } &&
+                    it.tags.any { it.name == "Fun" } &&
+                    it.tags.any { it.name == "Private" } &&
+                    it.checkListItems.any { it.text == "New check list item" } &&
+                    it.checkListItems.first().isChecked &&
+                    it.note.reminderTime != null &&
+                    it.note.isPinned
+            }
+
+        assertTrue(hasSaved)
+    }
+
+    @Test
+    fun `test update note`() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel =
+            AddNoteViewModel(
+                SavedStateHandle(mapOf("noteId" to 1.toLong())),
+                notesRepository,
+                userPrefsRepository
+            )
+        viewModel.onEvent(AddNoteEvent.ChangeTitle(value = "New title"))
+        viewModel.onEvent(AddNoteEvent.ChangeText(value = "New text"))
+        viewModel.onEvent(AddNoteEvent.ChangeNoteColor(value = NoteColor.Lavender))
+        viewModel.onEvent(AddNoteEvent.ToggleTags(true))
+        viewModel.onEvent(AddNoteEvent.AddTag(Tag(name = "School", color = TagColor.Yellow)))
+        viewModel.onEvent(
+            AddNoteEvent.AddCheckListItem(
+                CheckListItem(noteId = 1L, text = "New check list item", isChecked = true)
+            )
+        )
+        viewModel.onEvent(AddNoteEvent.Save)
+        advanceUntilIdle()
+        val hasUpdated =
+            notesRepository.allNotes.first().any {
+                it.note.noteTitle == "New title" &&
+                    it.note.noteText == "New text" &&
+                    it.note.color == NoteColor.Lavender &&
+                    it.checkListItems.any { it.text == "New check list item" } &&
+                    it.checkListItems.first().isChecked &&
+                    it.tags.any { it.name == "School" }
+            }
+        assertTrue(hasUpdated)
     }
 }
