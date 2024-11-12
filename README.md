@@ -8,7 +8,7 @@
 
 ThoughtPad is a simple yet powerful app designed to help you organize your thoughts, tasks, and reminders all in one place. Whether you’re planning your day, jotting down ideas, or keeping record of your day, ThoughtPad is here to help you achieve your goals.
 
-Key features of ThoughPad include:
+Key features of ThoughtPad include:
 
 - **Search**: Quickly find notes by searching keywords or tags. 
 - **Reminders**: Set custom reminders for individual notes to receive notifications on important dates. 
@@ -23,13 +23,9 @@ Key features of ThoughPad include:
 
 ---
 
-Wetha strives to provide an intuitive and user-friendly experience, ensuring that you can access the weather information you need with just a few taps. So download WeatherNow today and never be caught off guard by the weather again!
-
-Note: Wetha requires an active internet connection to fetch the most accurate and up-to-date weather data.
-
 #### Modularization
 
-**NB**: The app has 4 modules `app` and `notelist` , `notedetail` `addnote` and `settings`.
+**NB**: The app has 3 modules `app` and `notelist` , `notedetail/addnote` and `settings`.
 
 **Components:**
 
@@ -47,7 +43,9 @@ Note: Wetha requires an active internet connection to fetch the most accurate an
 
 7. [Datastore](https://developer.android.com/jetpack/androidx/releases/datastore): Store data asynchronously, consistently, and transactionally, overcoming some of the drawbacks of SharedPreferences.
 
-**Coming up**
+
+
+#### Coming up
 
 - Widget
 
