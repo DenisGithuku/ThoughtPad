@@ -74,6 +74,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-glance = { module = "androidx.glance:glance-material3", version.ref = "androidx-glance" }
+androidx-glance-app-widget = { module = "androidx.glance:glance-appwidget", version.ref = "androidx-glance" }
 androidx-glance-preview = { module = "androidx.glance:glance-preview", version.ref = "androidx-glance"}
 androidx-glance-testing = { module = "androidx.glance:glance-testing", version.ref = "androidx-glance"}
 androidx-navigation-safeargs = { group = "androidx.navigation", name ="navigation-safe-args-gradle-plugin", version.ref = "navigation" }
