@@ -339,7 +339,7 @@ internal fun NoteListScreen(
                         } else {
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
-                                modifier = Modifier.fillMaxSize().imeNestedScroll().testTag(TestTags.NOTE_LIST),
+                                modifier = Modifier.fillMaxSize().testTag(TestTags.NOTE_LIST),
                                 columns =
                                     when (state.selectedNoteListType) {
                                         NoteListType.GRID -> StaggeredGridCells.Fixed(2)
