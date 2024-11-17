@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -21,25 +22,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.view.WindowCompat
-import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
-import com.gitsoft.thoughtpad.widget.TasksWidget
 import com.gitsoft.thoughtpad.widget.UpdateWidgetWorker
 import com.gitsoft.thoughtpad.widget.WORK_NAME
-import com.gitsoft.thoughtpad.widget.WidgetData
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -73,13 +70,15 @@ class MainActivity : ComponentActivity() {
     private fun scheduleWidgetUpdateWorker() {
         val workManager = WorkManager.getInstance(applicationContext)
         val constraints =
-            Constraints.Builder().setRequiresCharging(false).setRequiresDeviceIdle(false)
-                .setRequiresBatteryNotLow(true).build()
+            Constraints.Builder()
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
+                .setRequiresBatteryNotLow(true)
+                .build()
         val workRequest =
             PeriodicWorkRequestBuilder<UpdateWidgetWorker>(15, TimeUnit.MINUTES)
-                .setConstraints(
-                    constraints
-                ).build()
+                .setConstraints(constraints)
+                .build()
         workManager.enqueueUniquePeriodicWork(
             WORK_NAME,
             ExistingPeriodicWorkPolicy.REPLACE,
