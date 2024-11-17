@@ -56,9 +56,6 @@ class UpdateWidgetWorker(context: Context, workerParams: WorkerParameters) :
             } catch (e: CancellationException) {
                 Timber.tag("UpdateWidgetWorker").e(e)
                 Result.failure()
-            } catch (e: Exception) {
-                Timber.tag("General exception").e(e)
-                Result.failure()
             }
         }
     }
