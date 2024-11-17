@@ -93,6 +93,7 @@ class NoteColorConverter {
 )
 data class NoteTagCrossRef(val noteId: Long, val tagId: Long)
 
+@Serializable
 data class DataWithNotesCheckListItemsAndTags(
     @Embedded val note: Note,
     @Relation(parentColumn = "noteId", entityColumn = "noteId")

@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -339,7 +338,7 @@ internal fun NoteListScreen(
                         } else {
                             LazyVerticalStaggeredGrid(
                                 state = noteListState,
-                                modifier = Modifier.fillMaxSize().imeNestedScroll().testTag(TestTags.NOTE_LIST),
+                                modifier = Modifier.fillMaxSize().testTag(TestTags.NOTE_LIST),
                                 columns =
                                     when (state.selectedNoteListType) {
                                         NoteListType.GRID -> StaggeredGridCells.Fixed(2)
