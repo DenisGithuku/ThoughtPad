@@ -25,8 +25,15 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import com.gitsoft.thoughtpad.core.toga.theme.ThoughtPadTheme
+import com.gitsoft.thoughtpad.widget.UpdateWidgetWorker
+import com.gitsoft.thoughtpad.widget.WORK_NAME
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -56,5 +63,26 @@ class MainActivity : ComponentActivity() {
                 MainNavGraph(appState)
             }
         }
+
+        scheduleWidgetUpdateWorker()
+    }
+
+    private fun scheduleWidgetUpdateWorker() {
+        val workManager = WorkManager.getInstance(applicationContext)
+        val constraints =
+            Constraints.Builder()
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
+                .setRequiresBatteryNotLow(true)
+                .build()
+        val workRequest =
+            PeriodicWorkRequestBuilder<UpdateWidgetWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
+        workManager.enqueueUniquePeriodicWork(
+            WORK_NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest
+        )
     }
 }

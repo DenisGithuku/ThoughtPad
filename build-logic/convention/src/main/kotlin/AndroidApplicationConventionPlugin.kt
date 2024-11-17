@@ -13,6 +13,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
+                apply("kotlinx-serialization")
             }
 
             extensions.configure<ApplicationExtension> {
@@ -23,6 +24,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             dependencies {
                 add("implementation", libs.findLibrary("material").get())
                 add("implementation", libs.findLibrary("timber").get())
+                add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
             }
         }
     }
