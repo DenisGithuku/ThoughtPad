@@ -24,7 +24,10 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -97,11 +100,19 @@ import java.util.Calendar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinViewModel()) {
+fun AddNoteRoute(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
+    onNavigateBack: () -> Unit,
+    viewModel: AddNoteViewModel = koinViewModel()
+) {
     val state: AddNoteUiState by viewModel.state.collectAsState()
     AddNoteScreen(
         state = state,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedContentScope = animatedContentScope,
         onNavigateBack = onNavigateBack,
         onSave = { viewModel.onEvent(AddNoteEvent.Save) },
         onChangeTitle = { viewModel.onEvent(AddNoteEvent.ChangeTitle(it)) },
@@ -135,11 +146,14 @@ fun AddNoteRoute(onNavigateBack: () -> Unit, viewModel: AddNoteViewModel = koinV
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalPermissionsApi::class,
-    ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class,
+    ExperimentalSharedTransitionApi::class
 )
 @Composable
 internal fun AddNoteScreen(
     state: AddNoteUiState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onNavigateBack: () -> Unit,
     onSave: () -> Unit,
     onChangeTitle: (String) -> Unit,
@@ -427,114 +441,142 @@ internal fun AddNoteScreen(
                     } else state.selectedNoteColor.lightColor.toComposeColor()
             )
     ) { innerPadding ->
-        LazyColumn(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(innerPadding)
-                    .background(
-                        if (state.systemInDarkMode) {
-                            state.selectedNoteColor.darkColor.toComposeColor()
-                        } else state.selectedNoteColor.lightColor.toComposeColor()
-                    ),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
-                TogaTextField(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag(TestTags.NOTE_TITLE_INPUT),
-                    value = state.note.noteTitle ?: "",
-                    onValueChange = onChangeTitle,
-                    textStyle = MaterialTheme.typography.titleMedium,
-                    label = R.string.note_title,
-                    minLines = 1
-                )
-            }
-            item {
-                TogaTextField(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag(TestTags.NOTE_TEXT_INPUT),
-                    value = state.note.noteText ?: "",
-                    onValueChange = onChangeContent,
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    label = R.string.note_content
-                )
-            }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = state.note.isCheckList,
-                        onCheckedChange = onToggleCheckList,
-                        modifier = Modifier.testTag(TestTags.TOGGLE_CHECKLIST_BUTTON)
-                    )
-                    TogaLargeLabel(R.string.has_checklist)
-                }
-            }
-            item {
-                AnimatedVisibility(visible = state.note.isCheckList) {
-                    CheckList(
-                        modifier = Modifier.testTag(TestTags.CHECK_LIST),
-                        checklistItems = state.checkListItems,
-                        onCheckedChange = onCheckListItemCheckedChange,
-                        onAddItem = onAddCheckListItem,
-                        onDeleteItem = onRemoveCheckListItem
+        with(sharedTransitionScope) {
+            LazyColumn(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .padding(innerPadding)
+                        .background(
+                            if (state.systemInDarkMode) {
+                                state.selectedNoteColor.darkColor.toComposeColor()
+                            } else state.selectedNoteColor.lightColor.toComposeColor()
+                        ),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    TogaTextField(
+                        modifier =
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "title-${state.note.noteId}"
+                                        ),
+                                    animatedVisibilityScope = animatedContentScope
+                                )
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .testTag(TestTags.NOTE_TITLE_INPUT),
+                        value = state.note.noteTitle ?: "",
+                        onValueChange = onChangeTitle,
+                        textStyle = MaterialTheme.typography.titleMedium,
+                        label = R.string.note_title,
+                        minLines = 1
                     )
                 }
-            }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = state.hasTags,
-                        onCheckedChange = onToggleTags,
-                        modifier = Modifier.testTag(TestTags.NOTE_TAG_TOGGLE)
+                item {
+                    TogaTextField(
+                        modifier =
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "text-${state.note.noteId}"
+                                        ),
+                                    animatedVisibilityScope = animatedContentScope
+                                )
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .testTag(TestTags.NOTE_TEXT_INPUT),
+                        value = state.note.noteText ?: "",
+                        onValueChange = onChangeContent,
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                        label = R.string.note_content
                     )
-                    TogaLargeLabel(R.string.has_tags, modifier = Modifier.weight(1f))
-                    AnimatedVisibility(visible = state.hasTags, modifier = Modifier) {
-                        TogaIconButton(
-                            modifier = Modifier.testTag(TestTags.ADD_TAG_BUTTON),
-                            icon = R.drawable.ic_add,
-                            onClick = { onToggleTagSheet(true) },
-                            contentDescription = R.string.add_tag
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = state.note.isCheckList,
+                            onCheckedChange = onToggleCheckList,
+                            modifier = Modifier.testTag(TestTags.TOGGLE_CHECKLIST_BUTTON)
+                        )
+                        TogaLargeLabel(R.string.has_checklist)
+                    }
+                }
+                item {
+                    AnimatedVisibility(visible = state.note.isCheckList) {
+                        CheckList(
+                            modifier =
+                                Modifier.sharedElement(
+                                        state =
+                                            sharedTransitionScope.rememberSharedContentState(
+                                                key = "checklist-${state.note.noteId}"
+                                            ),
+                                        animatedVisibilityScope = animatedContentScope
+                                    )
+                                    .testTag(TestTags.CHECK_LIST),
+                            checklistItems = state.checkListItems,
+                            onCheckedChange = onCheckListItemCheckedChange,
+                            onAddItem = onAddCheckListItem,
+                            onDeleteItem = onRemoveCheckListItem
                         )
                     }
                 }
-            }
-            item {
-                AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
-                    visible = state.hasTags,
-                    enter = fadeIn(initialAlpha = 0.3f),
-                    exit = fadeOut(targetAlpha = 0.3f)
-                ) {
-                    TagList(
-                        modifier = Modifier.testTag(TestTags.TAG_LIST),
-                        isSystemInDarkTheme = state.systemInDarkMode,
-                        tags = state.selectedTags,
-                        onDeleteTag = onRemoveTag
-                    )
-                }
-            }
-            item {
-                AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
-                    visible = state.hasReminder && state.selectedDate != null,
-                    enter = scaleIn() + slideInVertically(),
-                    exit = scaleOut() + slideOutVertically()
-                ) {
-                    state.selectedDate?.let {
-                        ReminderRow(
-                            modifier = Modifier.testTag(TestTags.REMINDER_ROW),
-                            reminderTime = state.selectedDate,
-                            onChangeDate = onToggleDateDialog,
-                            onChangeTime = onToggleTimeDialog
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = state.hasTags,
+                            onCheckedChange = onToggleTags,
+                            modifier = Modifier.testTag(TestTags.NOTE_TAG_TOGGLE)
                         )
+                        TogaLargeLabel(R.string.has_tags, modifier = Modifier.weight(1f))
+                        AnimatedVisibility(visible = state.hasTags, modifier = Modifier) {
+                            TogaIconButton(
+                                modifier = Modifier.testTag(TestTags.ADD_TAG_BUTTON),
+                                icon = R.drawable.ic_add,
+                                onClick = { onToggleTagSheet(true) },
+                                contentDescription = R.string.add_tag
+                            )
+                        }
+                    }
+                }
+                item {
+                    AnimatedVisibility(
+                        modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
+                        visible = state.hasTags,
+                        enter = fadeIn(initialAlpha = 0.3f),
+                        exit = fadeOut(targetAlpha = 0.3f)
+                    ) {
+                        TagList(
+                            modifier = Modifier.testTag(TestTags.TAG_LIST),
+                            isSystemInDarkTheme = state.systemInDarkMode,
+                            tags = state.selectedTags,
+                            onDeleteTag = onRemoveTag
+                        )
+                    }
+                }
+                item {
+                    AnimatedVisibility(
+                        modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp),
+                        visible = state.hasReminder && state.selectedDate != null,
+                        enter = scaleIn() + slideInVertically(),
+                        exit = scaleOut() + slideOutVertically()
+                    ) {
+                        state.selectedDate?.let {
+                            ReminderRow(
+                                modifier = Modifier.testTag(TestTags.REMINDER_ROW),
+                                reminderTime = state.selectedDate,
+                                onChangeDate = onToggleDateDialog,
+                                onChangeTime = onToggleTimeDialog
+                            )
+                        }
                     }
                 }
             }

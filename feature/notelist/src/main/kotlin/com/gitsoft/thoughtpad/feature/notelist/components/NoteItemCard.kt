@@ -16,6 +16,9 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist.components
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
@@ -62,10 +65,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun NoteItemCard(
     isDarkTheme: Boolean,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
     noteData: DataWithNotesCheckListItemsAndTags,
     isSelected: Boolean,
@@ -105,105 +110,136 @@ fun NoteItemCard(
             label = "spot color"
         )
 
-    Box(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(shape = MaterialTheme.shapes.medium)
-                .shadow(
-                    elevation = elevation,
-                    shape = MaterialTheme.shapes.medium,
-                    ambientColor = ambientColor,
-                    spotColor = spotColor
-                )
-                .border(
-                    border = BorderStroke(width = borderWidth, color = borderColor),
-                    shape = MaterialTheme.shapes.medium
-                )
-                .background(
-                    color =
-                        if (isDarkTheme) {
-                            noteData.note.color.darkColor.toComposeColor()
-                        } else noteData.note.color.lightColor.toComposeColor(),
-                    shape = MaterialTheme.shapes.medium
-                )
-                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            // Note title
-            noteData.note.noteTitle?.let { title ->
-                TogaSmallTitle(
-                    modifier = Modifier.fillMaxWidth().testTag(TestTags.NOTE_ITEM_CARD_TITLE),
-                    text = title,
-                    maxLines = 1
-                )
-            }
-
-            // Note text
-            noteData.note.noteText?.let { noteText ->
-                Spacer(modifier = Modifier.height(4.dp))
-                TogaSmallBody(text = noteText, maxLines = 2)
-            }
-
-            // Checklist (if available)
-            if (noteData.checkListItems.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Column {
-                    noteData.checkListItems.take(3).forEach { checklistItem ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 2.dp)
-                        ) {
-                            Checkbox(
-                                checked = checklistItem.isChecked,
-                                onCheckedChange = null // Static for display purposes
-                            )
-                            checklistItem.text?.let {
-                                TogaSmallBody(
-                                    text = it,
-                                    maxLines = 1,
-                                    style =
-                                        MaterialTheme.typography.bodySmall.copy(
-                                            textDecoration =
-                                                if (checklistItem.isChecked) {
-                                                    TextDecoration.LineThrough
-                                                } else {
-                                                    TextDecoration.None
-                                                }
-                                        )
+    with(sharedTransitionScope) {
+        Box(
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .clip(shape = MaterialTheme.shapes.medium)
+                    .shadow(
+                        elevation = elevation,
+                        shape = MaterialTheme.shapes.medium,
+                        ambientColor = ambientColor,
+                        spotColor = spotColor
+                    )
+                    .border(
+                        border = BorderStroke(width = borderWidth, color = borderColor),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .background(
+                        color =
+                            if (isDarkTheme) {
+                                noteData.note.color.darkColor.toComposeColor()
+                            } else noteData.note.color.lightColor.toComposeColor(),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                // Note title
+                noteData.note.noteTitle?.let { title ->
+                    TogaSmallTitle(
+                        modifier =
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "title-${noteData.note.noteId}"
+                                        ),
+                                    animatedVisibilityScope = animatedContentScope
                                 )
+                                .fillMaxWidth()
+                                .testTag(TestTags.NOTE_ITEM_CARD_TITLE),
+                        text = title,
+                        maxLines = 1
+                    )
+                }
+
+                // Note text
+                noteData.note.noteText?.let { noteText ->
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TogaSmallBody(
+                        text = noteText,
+                        maxLines = 2,
+                        modifier =
+                            Modifier.sharedElement(
+                                state =
+                                    sharedTransitionScope.rememberSharedContentState(
+                                        key = "text-${noteData.note.noteId}"
+                                    ),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                    )
+                }
+
+                // Checklist (if available)
+                if (noteData.checkListItems.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Column(
+                        modifier =
+                            Modifier.sharedElement(
+                                state =
+                                    sharedTransitionScope.rememberSharedContentState(
+                                        key = "checklist-${noteData.note.noteId}"
+                                    ),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                    ) {
+                        noteData.checkListItems.take(3).forEach { checklistItem ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            ) {
+                                Checkbox(
+                                    checked = checklistItem.isChecked,
+                                    onCheckedChange = null // Static for display purposes
+                                )
+                                checklistItem.text?.let {
+                                    TogaSmallBody(
+                                        text = it,
+                                        maxLines = 1,
+                                        style =
+                                            MaterialTheme.typography.bodySmall.copy(
+                                                textDecoration =
+                                                    if (checklistItem.isChecked) {
+                                                        TextDecoration.LineThrough
+                                                    } else {
+                                                        TextDecoration.None
+                                                    }
+                                            )
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    // If there are more than 3 checklist items
-                    if (noteData.checkListItems.size > 3) {
-                        val text =
-                            if (noteData.checkListItems.size - 3 > 1) {
-                                "+${noteData.checkListItems.size - 3} more items"
-                            } else {
-                                "+1 more item"
-                            }
-                        TogaSmallLabel(text = text)
+                        // If there are more than 3 checklist items
+                        if (noteData.checkListItems.size > 3) {
+                            val text =
+                                if (noteData.checkListItems.size - 3 > 1) {
+                                    "+${noteData.checkListItems.size - 3} more items"
+                                } else {
+                                    "+1 more item"
+                                }
+                            TogaSmallLabel(text = text)
+                        }
                     }
                 }
-            }
 
-            // Additional Info (e.g., pinned or reminder)
-            Spacer(modifier = Modifier.height(6.dp))
+                // Additional Info (e.g., pinned or reminder)
+                Spacer(modifier = Modifier.height(6.dp))
 
-            noteData.note.reminderTime?.let {
-                val formattedReminder = formatReminderDate(it)
+                noteData.note.reminderTime?.let {
+                    val formattedReminder = formatReminderDate(it)
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.ic_reminder),
-                        contentDescription = stringResource(R.string.reminder)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    TogaSmallLabel(text = formattedReminder)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            modifier = Modifier.size(16.dp),
+                            painter = painterResource(R.drawable.ic_reminder),
+                            contentDescription = stringResource(R.string.reminder)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        TogaSmallLabel(text = formattedReminder)
+                    }
                 }
             }
         }

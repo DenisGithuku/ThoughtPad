@@ -18,7 +18,10 @@ package com.gitsoft.thoughtpad.feature.notelist
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -84,8 +87,11 @@ import com.gitsoft.thoughtpad.feature.notelist.notelist_sections.trash
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NoteListRoute(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     viewModel: NoteListViewModel = koinViewModel(),
     onCreateNewNote: (Long?) -> Unit,
     onOpenSettings: () -> Unit,
@@ -94,6 +100,8 @@ fun NoteListRoute(
     val state by viewModel.state.collectAsState()
     NoteListScreen(
         state = state,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedContentScope = animatedContentScope,
         onCreateNewNote = onCreateNewNote,
         onOpenSettings = onOpenSettings,
         onOpenTags = onOpenTags,
@@ -106,10 +114,12 @@ fun NoteListRoute(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun NoteListScreen(
     state: NoteListUiState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onToggleSelectedNote: (Note?) -> Unit,
     onCreateNewNote: (Long?) -> Unit,
     onToggleFilterDialog: (Boolean) -> Unit,
@@ -351,6 +361,8 @@ internal fun NoteListScreen(
                                 when (selectedDrawerItem) {
                                     DrawerItem.All -> {
                                         all(
+                                            sharedTransitionScope = sharedTransitionScope,
+                                            animatedContentScope = animatedContentScope,
                                             pinnedNotes = pinnedNotes,
                                             allOtherNotes = allOtherNotes,
                                             isDarkTheme = state.isDarkTheme,
@@ -362,6 +374,8 @@ internal fun NoteListScreen(
                                     }
                                     DrawerItem.Archived -> {
                                         archived(
+                                            sharedTransitionScope = sharedTransitionScope,
+                                            animatedContentScope = animatedContentScope,
                                             archivedNotes = archivedNotes,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,
@@ -372,6 +386,8 @@ internal fun NoteListScreen(
                                     }
                                     DrawerItem.Reminders -> {
                                         reminders(
+                                            sharedTransitionScope = sharedTransitionScope,
+                                            animatedContentScope = animatedContentScope,
                                             reminders = reminders,
                                             reminderDisplayStyle = state.reminderDisplayStyle,
                                             isDarkTheme = state.isDarkTheme,
@@ -383,6 +399,8 @@ internal fun NoteListScreen(
                                     }
                                     DrawerItem.Trash -> {
                                         trash(
+                                            sharedTransitionScope = sharedTransitionScope,
+                                            animatedContentScope = animatedContentScope,
                                             trash = trash,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,

@@ -17,6 +17,9 @@
 package com.gitsoft.thoughtpad.feature.notelist.notelist_sections
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,11 +87,14 @@ import java.util.Locale
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyStaggeredGridScope.reminders(
     reminders: List<DataWithNotesCheckListItemsAndTags>,
     reminderDisplayStyle: ReminderDisplayStyle,
     isDarkTheme: Boolean,
     selectedNote: Note? = null,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onCreateNewNote: (Long?) -> Unit,
     onToggleSelectedNote: (Note) -> Unit,
     onToggleFilterDialog: (Boolean) -> Unit
@@ -112,6 +118,8 @@ fun LazyStaggeredGridScope.reminders(
                         isSelected = selectedNote?.noteId == noteData.note.noteId,
                         noteData = noteData,
                         onClick = { onCreateNewNote(noteData.note.noteId) },
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedContentScope = animatedContentScope,
                         onLongClick = {
                             onToggleSelectedNote(noteData.note)
                             onToggleFilterDialog(true)

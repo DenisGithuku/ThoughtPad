@@ -16,7 +16,10 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist.notelist_sections
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -33,9 +36,12 @@ import com.gitsoft.thoughtpad.feature.notelist.components.NotesAndTasksCompleted
 import com.gitsoft.thoughtpad.feature.notelist.components.SectionSeparator
 import com.gitsoft.thoughtpad.feature.notelist.components.animateNoteItemCard
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyStaggeredGridScope.all(
     pinnedNotes: List<DataWithNotesCheckListItemsAndTags>,
     allOtherNotes: List<DataWithNotesCheckListItemsAndTags>,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     selectedNote: Note? = null,
     isDarkTheme: Boolean,
     onCreateNewNote: (noteId: Long?) -> Unit,
@@ -57,6 +63,8 @@ fun LazyStaggeredGridScope.all(
                 modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                 isDarkTheme = isDarkTheme,
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
                 noteData = noteData,
                 onClick = { onCreateNewNote(noteData.note.noteId) },
                 onLongClick = {
@@ -78,6 +86,8 @@ fun LazyStaggeredGridScope.all(
                 isDarkTheme = isDarkTheme,
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
                 noteData = noteData,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
                 onClick = { onCreateNewNote(noteData.note.noteId) },
                 onLongClick = {
                     onToggleSelectedNote(noteData.note)
