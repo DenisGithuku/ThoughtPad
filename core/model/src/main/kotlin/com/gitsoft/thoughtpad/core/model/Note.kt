@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.core.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -40,7 +41,9 @@ data class Note(
     val isDeleted: Boolean = false,
     val isCheckList: Boolean = false,
     val reminderTime: Long? = null,
-    val attachments: List<String> = emptyList()
+    val attachments: List<String> = emptyList(),
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    val password: ByteArray? = null
 )
 
 class AttachmentTypeConverter {

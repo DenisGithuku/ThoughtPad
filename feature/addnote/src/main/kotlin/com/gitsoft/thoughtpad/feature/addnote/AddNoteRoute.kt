@@ -87,6 +87,7 @@ import com.gitsoft.thoughtpad.feature.addnote.components.ColorPill
 import com.gitsoft.thoughtpad.feature.addnote.components.NoteColorPicker
 import com.gitsoft.thoughtpad.feature.addnote.components.ReminderContent
 import com.gitsoft.thoughtpad.feature.addnote.components.ReminderRow
+import com.gitsoft.thoughtpad.feature.addnote.components.SecureNoteContent
 import com.gitsoft.thoughtpad.feature.addnote.components.TagList
 import com.gitsoft.thoughtpad.feature.addnote.components.TagSelectionContent
 import com.gitsoft.thoughtpad.feature.addnote.util.formatTimeAgo
@@ -139,7 +140,11 @@ fun AddNoteRoute(
         onChangeTime = { viewModel.onEvent(AddNoteEvent.ChangeTime(it)) },
         updatePermissionsStatus = { viewModel.onEvent(AddNoteEvent.UpdateNotificationPermissions) },
         onToggleDateSheet = { viewModel.onEvent(AddNoteEvent.ToggleDateSheet(it)) },
-        onDiscardNote = { viewModel.onEvent(AddNoteEvent.DiscardNote) }
+        onDiscardNote = { viewModel.onEvent(AddNoteEvent.DiscardNote) },
+        onTogglePasswordSheet = { viewModel.onEvent(AddNoteEvent.TogglePasswordDialog(it)) },
+        onPasswordChange = { viewModel.onEvent(AddNoteEvent.ChangePassword(it)) },
+        onRemovePassword = { viewModel.onEvent(AddNoteEvent.RemovePassword) },
+        onSecureNote = { viewModel.onEvent(AddNoteEvent.SecureNote) }
     )
 }
 
@@ -178,7 +183,11 @@ internal fun AddNoteScreen(
     onToggleTimeDialog: (Boolean) -> Unit,
     onToggleTagSheet: (Boolean) -> Unit,
     onToggleDateSheet: (Boolean) -> Unit,
-    onCheckListItemCheckedChange: (CheckListItem, Boolean) -> Unit
+    onCheckListItemCheckedChange: (CheckListItem, Boolean) -> Unit,
+    onTogglePasswordSheet: (Boolean) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRemovePassword: () -> Unit,
+    onSecureNote: () -> Unit,
 ) {
     val navigateToNoteList by rememberUpdatedState(onNavigateBack)
 
@@ -309,6 +318,20 @@ internal fun AddNoteScreen(
         )
     }
 
+    if (state.isPasswordSheetVisible) {
+        TogaModalBottomSheet(
+            modifier = Modifier.testTag(TestTags.PASSWORD_SHEET),
+            onDismissRequest = { onTogglePasswordSheet(false) }
+        ) {
+            SecureNoteContent(
+                password = state.password ?: "",
+                onPasswordChange = onPasswordChange,
+                onSecureNote = onSecureNote,
+                onDismissRequest = { onTogglePasswordSheet(false) }
+            )
+        }
+    }
+
     /** check if user has entered any text and pressed back button before they could save. */
     BackHandler(enabled = true) {
         if (state.noteIsValid) {
@@ -339,6 +362,23 @@ internal fun AddNoteScreen(
                         MaterialTheme.colorScheme.onBackground
                     },
                 onClick = { onTogglePin(!state.note.isPinned) }
+            )
+            TogaIconButton(
+                modifier = Modifier.testTag(TestTags.SECURE_BUTTON),
+                icon = if(state.encryptedPassword != null) R.drawable.ic_lock_filled else R.drawable.ic_unlock,
+                tint = if(state.encryptedPassword != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                onClick = {
+                    if (state.encryptedPassword != null) {
+                        onRemovePassword()
+                    } else {
+                        onTogglePasswordSheet(!state.isPasswordSheetVisible)
+                    }
+                },
+                contentDescription = if (state.password.isNullOrEmpty()) {
+                    R.string.lock_note
+                } else {
+                    R.string.unlock_note
+                },
             )
             TogaTextButton(
                 modifier = Modifier.testTag(TestTags.SAVE_BUTTON),
@@ -444,28 +484,30 @@ internal fun AddNoteScreen(
         with(sharedTransitionScope) {
             LazyColumn(
                 modifier =
-                    Modifier.fillMaxSize()
-                        .padding(innerPadding)
-                        .background(
-                            if (state.systemInDarkMode) {
-                                state.selectedNoteColor.darkColor.toComposeColor()
-                            } else state.selectedNoteColor.lightColor.toComposeColor()
-                        ),
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(
+                        if (state.systemInDarkMode) {
+                            state.selectedNoteColor.darkColor.toComposeColor()
+                        } else state.selectedNoteColor.lightColor.toComposeColor()
+                    ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
                     TogaTextField(
                         modifier =
-                            Modifier.sharedElement(
-                                    state =
-                                        sharedTransitionScope.rememberSharedContentState(
-                                            key = "title-${state.note.noteId}"
-                                        ),
-                                    animatedVisibilityScope = animatedContentScope
-                                )
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .testTag(TestTags.NOTE_TITLE_INPUT),
+                        Modifier
+                            .sharedElement(
+                                state =
+                                sharedTransitionScope.rememberSharedContentState(
+                                    key = "title-${state.note.noteId}"
+                                ),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .testTag(TestTags.NOTE_TITLE_INPUT),
                         value = state.note.noteTitle ?: "",
                         onValueChange = onChangeTitle,
                         textStyle = MaterialTheme.typography.titleMedium,
@@ -476,16 +518,17 @@ internal fun AddNoteScreen(
                 item {
                     TogaTextField(
                         modifier =
-                            Modifier.sharedElement(
-                                    state =
-                                        sharedTransitionScope.rememberSharedContentState(
-                                            key = "text-${state.note.noteId}"
-                                        ),
-                                    animatedVisibilityScope = animatedContentScope
-                                )
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .testTag(TestTags.NOTE_TEXT_INPUT),
+                        Modifier
+                            .sharedElement(
+                                state =
+                                sharedTransitionScope.rememberSharedContentState(
+                                    key = "text-${state.note.noteId}"
+                                ),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .testTag(TestTags.NOTE_TEXT_INPUT),
                         value = state.note.noteText ?: "",
                         onValueChange = onChangeContent,
                         textStyle = MaterialTheme.typography.bodyMedium,
@@ -663,4 +706,6 @@ internal object TestTags {
     const val REMINDER_DATE = "reminder_date"
     const val REMINDER_TIME = "reminder_time"
     const val REMINDER_TIME_ENTRY = "reminder_time_entry"
+    const val SECURE_BUTTON = "secure_button"
+    const val PASSWORD_SHEET = "password_sheet"
 }

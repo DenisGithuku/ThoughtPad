@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaCaption
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
 
 @Composable
@@ -39,6 +40,7 @@ fun TogaTextField(
     keyboardOptions: KeyboardOptions? = null,
     keyboardActions: KeyboardActions? = null,
     minLines: Int = 1,
+    supportingText: (@Composable () -> Unit)? = null,
     singleLine: Boolean = false,
     @StringRes label: Int? = null
 ) {
@@ -48,6 +50,7 @@ fun TogaTextField(
         onValueChange = onValueChange,
         textStyle = textStyle,
         singleLine = singleLine,
+        supportingText = supportingText,
         keyboardOptions =
             keyboardOptions
                 ?: KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),

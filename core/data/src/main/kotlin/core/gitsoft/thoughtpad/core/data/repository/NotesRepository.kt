@@ -21,6 +21,7 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import kotlinx.coroutines.flow.Flow
+import java.io.InputStream
 
 interface NotesRepository {
     val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
@@ -54,6 +55,10 @@ interface NotesRepository {
     suspend fun deleteTag(tag: Tag): Int
 
     suspend fun getTagById(tagId: Long): Tag
+
+    suspend fun encryptPassword(password: String): ByteArray?
+
+    suspend fun decryptPassword(inputStream: InputStream): ByteArray?
 
     val allTags: Flow<List<Tag>>
 }

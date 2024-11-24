@@ -28,4 +28,6 @@
     <string name="alarm_permissions_required">You need alarm permissions to schedule reminders.</string>
     <string name="allow">Allow</string>
     <string name="edited">"Edited: "</string>
+    <string name="unlock_note">Unlock note</string>
+    <string name="lock_note">Lock note</string>
 </resources>

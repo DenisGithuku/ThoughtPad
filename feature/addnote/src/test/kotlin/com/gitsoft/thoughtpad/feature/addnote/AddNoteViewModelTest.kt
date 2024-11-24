@@ -40,6 +40,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertNull
 
 @MediumTest
 class AddNoteViewModelTest {
@@ -377,5 +378,30 @@ class AddNoteViewModelTest {
                     it.tags.any { it.name == "School" }
             }
         assertTrue(hasUpdated)
+    }
+
+    @Test
+    fun testChangePassword() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.ChangePassword("password"))
+        assertEquals(viewModel.state.value.password, "password")
+
+        viewModel.onEvent(AddNoteEvent.ChangePassword(null))
+        assertEquals(viewModel.state.value.password, null)
+    }
+
+    @Test
+    fun togglePasswordSheet() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.TogglePasswordDialog(true))
+        assertTrue(viewModel.state.value.isPasswordSheetVisible)
+    }
+
+    @Test
+    fun removePassWord() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.RemovePassword)
+        assertNull(viewModel.state.value.password)
+        assertNull(viewModel.state.value.encryptedPassword)
     }
 }

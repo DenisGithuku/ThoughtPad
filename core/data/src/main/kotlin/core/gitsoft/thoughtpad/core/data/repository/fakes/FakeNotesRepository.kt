@@ -25,6 +25,7 @@ import com.gitsoft.thoughtpad.core.model.TagColor
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.InputStream
 
 class FakeNotesRepository : NotesRepository {
 
@@ -127,6 +128,10 @@ class FakeNotesRepository : NotesRepository {
         _notesData.value = allNotes
         return if (isRemoved) 1 else 0
     }
+
+    override suspend fun encryptPassword(password: String): ByteArray? = null
+
+    override suspend fun decryptPassword(inputStream: InputStream): ByteArray? = null
 
     override suspend fun insertTags(tags: List<Tag>) {
         val allTags = _tagsData.value.toMutableList()

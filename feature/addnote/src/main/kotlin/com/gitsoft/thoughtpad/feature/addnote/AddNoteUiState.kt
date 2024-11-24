@@ -34,6 +34,9 @@ data class AddNoteUiState(
     val hasTags: Boolean = false,
     val systemInDarkMode: Boolean = false,
     val deletedSuccessfully: Boolean = false,
+    val password: String? = null,
+    val isPasswordSheetVisible: Boolean = false,
+    val encryptedPassword: ByteArray? = null,
     val noteColors: List<NoteColor> =
         listOf(
             NoteColor.Default,

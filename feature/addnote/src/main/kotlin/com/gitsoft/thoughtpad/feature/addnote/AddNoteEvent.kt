@@ -65,7 +65,15 @@ sealed interface AddNoteEvent {
 
     data class ChangeTime(val value: Long) : AddNoteEvent
 
+    data class ChangePassword(val value: String?) : AddNoteEvent
+
+    data class TogglePasswordDialog(val isVisible: Boolean) : AddNoteEvent
+
     data object DiscardNote : AddNoteEvent
+
+    data object SecureNote : AddNoteEvent
+
+    data object RemovePassword: AddNoteEvent
 
     data object UpdateNotificationPermissions : AddNoteEvent
 
