@@ -16,6 +16,9 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist.notelist_sections
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,10 +37,13 @@ import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesInCategoryIndic
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.animateNoteItemCard
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyStaggeredGridScope.archived(
     archivedNotes: List<DataWithNotesCheckListItemsAndTags>,
     isDarkTheme: Boolean,
     selectedNote: Note? = null,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onCreateNewNote: (noteId: Long?) -> Unit,
     onToggleFilterDialog: (show: Boolean) -> Unit,
     onToggleSelectedNote: (note: Note?) -> Unit
@@ -56,6 +62,8 @@ fun LazyStaggeredGridScope.archived(
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
                 noteData = noteData,
                 onClick = { onCreateNewNote(noteData.note.noteId) },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
                 onLongClick = {
                     onToggleSelectedNote(noteData.note)
                     onToggleFilterDialog(true)
