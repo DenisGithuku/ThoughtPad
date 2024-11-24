@@ -1,0 +1,45 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="add_note"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_circle"
+        android:shortcutShortLabel="@string/shortcut_add_note_short"
+        android:shortcutLongLabel="@string/shortcut_add_note_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="thoughtpad://add_note" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="add_task"
+        android:enabled="true"
+        android:icon="@drawable/ic_reminder"
+        android:shortcutShortLabel="@string/shortcut_add_task_short"
+        android:shortcutLongLabel="@string/shortcut_add_task_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="thoughtpad://add_task" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:shortcutShortLabel="@string/shortcut_search_short"
+        android:shortcutLongLabel="@string/shortcut_search_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="thoughtpad://search" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="count_tasks"
+        android:enabled="true"
+        android:icon="@drawable/ic_tasks_count"
+        android:shortcutShortLabel="@string/shortcut_count_tasks_short"
+        android:shortcutLongLabel="@string/shortcut_count_tasks_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="thoughtpad://count_tasks" />
+    </shortcut>
+</shortcuts>

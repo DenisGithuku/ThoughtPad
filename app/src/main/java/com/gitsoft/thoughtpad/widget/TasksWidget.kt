@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -17,18 +16,13 @@
 package com.gitsoft.thoughtpad.widget
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.Button
-import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.Image
-import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
@@ -50,7 +44,6 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import com.gitsoft.thoughtpad.MainActivity
-import com.gitsoft.thoughtpad.R
 import com.gitsoft.thoughtpad.core.model.CheckListItem
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -64,16 +57,12 @@ class TasksWidget : GlanceAppWidget() {
         provideContent {
             val widgetData: WidgetData =
                 currentState<Preferences>()[widgetDataKey]?.decodeFromString() ?: WidgetData()
-            Log.d("WidgetData", widgetData.toString())
             TasksWidgetContent(widgetData = widgetData)
         }
     }
 
     override fun onCompositionError(
-        context: Context,
-        glanceId: GlanceId,
-        appWidgetId: Int,
-        throwable: Throwable
+        context: Context, glanceId: GlanceId, appWidgetId: Int, throwable: Throwable
     ) {
         throwable.printStackTrace()
         Timber.tag("Glance Error").d(throwable.message ?: "Unknown error")
@@ -90,18 +79,10 @@ class TasksWidget : GlanceAppWidget() {
     fun TasksWidgetContent(widgetData: WidgetData) {
         LocalContext.current
 
-        Box(
-            modifier =
-                GlanceModifier.fillMaxWidth().background(GlanceTheme.colors.background).clickable {
-                    actionStartActivity<MainActivity>()
-                }
-        ) {
-            Image(
-                provider = ImageProvider(R.drawable.circular_background),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.background),
-                modifier = GlanceModifier.fillMaxWidth()
-            )
+        Box(modifier = GlanceModifier.fillMaxWidth().background(GlanceTheme.colors.background)
+            .clickable {
+                actionStartActivity<MainActivity>()
+            }) {
             LazyColumn(modifier = GlanceModifier.padding(16.dp)) {
                 if (widgetData.title != null) {
                     item {
@@ -126,15 +107,13 @@ class TasksWidget : GlanceAppWidget() {
                     }
                 }
             }
-            Button(text = ">", onClick = { actionStartActivity<MainActivity>() })
         }
     }
 }
 
 @Serializable
 data class WidgetData(
-    val title: String? = null,
-    val checkListItems: List<CheckListItem> = emptyList()
+    val title: String? = null, val checkListItems: List<CheckListItem> = emptyList()
 ) {
     fun encodeToString(): String {
         return Json.encodeToString(this)
@@ -142,5 +121,5 @@ data class WidgetData(
 }
 
 fun String.decodeFromString(): WidgetData {
-    return Json.decodeFromString(this)
+    return Json.decodeFromString<WidgetData>(this)
 }
