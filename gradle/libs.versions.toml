@@ -18,6 +18,7 @@ firebase-bom = "33.5.1"
 firebase-crashlytics-plugin = "3.0.2"
 firebase-performance-plugin = "1.4.2"
 google-services = "4.4.2"
+haze-chrisbanes = "1.0.2"
 hilt = "2.49"
 junit = "4.13.2"
 junit-ext = "1.2.1"
@@ -87,6 +88,7 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf"}
 firebase-performance-gradle = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebase-performance-plugin" }
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+haze-chrisbanes = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze-chrisbanes"}
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 kiziton-compose-calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "kiziton-compose-calendar"}
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }

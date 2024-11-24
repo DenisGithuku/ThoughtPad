@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -26,6 +25,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -40,13 +42,17 @@ import com.gitsoft.thoughtpad.feature.notelist.TestTags
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesInCategoryIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.animateNoteItemCard
+import dev.chrisbanes.haze.HazeState
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyStaggeredGridScope.trash(
     trash: List<DataWithNotesCheckListItemsAndTags>,
     isDarkTheme: Boolean,
     selectedNote: Note? = null,
-    onCreateNewNote: (noteId: Long?) -> Unit,
+    hazeState: HazeState,
+    unlockedNotes: List<Long>,
+    unlockNote: (Note) -> Unit,
+    onOpenDetails: (noteId: Long?) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     onToggleFilterDialog: (show: Boolean) -> Unit,
@@ -61,25 +67,50 @@ fun LazyStaggeredGridScope.trash(
     }
     if (trash.isEmpty()) {
         item(span = StaggeredGridItemSpan.FullLine) {
-            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                NoNotesInCategoryIndicator(modifier = Modifier.fillMaxSize(), category = R.string.no_trash)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                NoNotesInCategoryIndicator(
+                    modifier = Modifier.fillMaxSize(),
+                    category = R.string.no_trash
+                )
             }
         }
     } else {
         items(items = trash, key = { it.note.noteId }) { noteData ->
-            NoteItemCard(
-                modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
+            val isUnlocked by remember(unlockedNotes) {
+                derivedStateOf {
+                    noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                }
+            }
+            NoteItemCard(modifier = Modifier
+                .then(animateNoteItemCard())
+                .testTag(TestTags.NOTE_ITEM_CARD),
                 isDarkTheme = isDarkTheme,
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
                 noteData = noteData,
-                onClick = { onCreateNewNote(noteData.note.noteId) },
+                onClick = {
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onOpenDetails(noteData.note.noteId)
+                    }
+                },
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
+                hazeState = hazeState,
+                isUnlocked = isUnlocked,
                 onLongClick = {
-                    onToggleSelectedNote(noteData.note)
-                    onToggleFilterDialog(true)
-                }
-            )
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onToggleSelectedNote(noteData.note)
+                        onToggleFilterDialog(true)
+                    }
+                })
         }
     }
 }

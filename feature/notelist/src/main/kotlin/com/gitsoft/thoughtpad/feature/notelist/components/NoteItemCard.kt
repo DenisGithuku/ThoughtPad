@@ -60,18 +60,27 @@ import com.gitsoft.thoughtpad.core.toga.theme.SnowDrift
 import com.gitsoft.thoughtpad.core.toga.theme.toComposeColor
 import com.gitsoft.thoughtpad.feature.notelist.R
 import com.gitsoft.thoughtpad.feature.notelist.TestTags
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalHazeMaterialsApi::class
+)
 @Composable
 fun NoteItemCard(
+    modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
-    modifier: Modifier = Modifier,
+    hazeState: HazeState,
+    isUnlocked: Boolean,
     noteData: DataWithNotesCheckListItemsAndTags,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -116,6 +125,20 @@ fun NoteItemCard(
                 modifier
                     .fillMaxWidth()
                     .clip(shape = MaterialTheme.shapes.medium)
+                    .then(
+                        if (!isUnlocked) {
+                            Modifier.hazeChild(
+                                state = hazeState,
+                                style = HazeMaterials.ultraThin(
+                                    containerColor = if (isDarkTheme) {
+                                        noteData.note.color.darkColor.toComposeColor()
+                                    } else noteData.note.color.lightColor.toComposeColor(),
+                                )
+                            )
+                        } else {
+                            Modifier
+                        }
+                    )
                     .shadow(
                         elevation = elevation,
                         shape = MaterialTheme.shapes.medium,
@@ -241,6 +264,14 @@ fun NoteItemCard(
                         TogaSmallLabel(text = formattedReminder)
                     }
                 }
+            }
+            if (!isUnlocked) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_lock),
+                    modifier = Modifier.align(Alignment.Center).size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null
+                )
             }
         }
     }

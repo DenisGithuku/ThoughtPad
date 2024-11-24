@@ -32,7 +32,11 @@ data class NoteListUiState(
     val deleteState: DeleteState = DeleteState(),
     val isDarkTheme: Boolean = false,
     val selectedNote: Note? = null,
+    val noteToUnlock: Note? = null,
     val selectedNoteListType: NoteListType = NoteListType.GRID,
     val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
-    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
+    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList(),
+    val unlockedNotes: List<Long> = emptyList(),
+    val unlockDialogIsVisible: Boolean = false,
+    val unlockNotePassword: String? = null
 )

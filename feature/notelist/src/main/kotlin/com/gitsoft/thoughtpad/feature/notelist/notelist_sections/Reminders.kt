@@ -42,6 +42,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -78,6 +80,7 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
+import dev.chrisbanes.haze.HazeState
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
@@ -93,9 +96,12 @@ fun LazyStaggeredGridScope.reminders(
     reminderDisplayStyle: ReminderDisplayStyle,
     isDarkTheme: Boolean,
     selectedNote: Note? = null,
+    hazeState: HazeState,
+    unlockedNotes: List<Long>,
+    unlockNote: (Note) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
-    onCreateNewNote: (Long?) -> Unit,
+    onOpenDetails: (Long?) -> Unit,
     onToggleSelectedNote: (Note) -> Unit,
     onToggleFilterDialog: (Boolean) -> Unit
 ) {
@@ -112,24 +118,41 @@ fun LazyStaggeredGridScope.reminders(
         when (reminderDisplayStyle) {
             ReminderDisplayStyle.LIST -> {
                 this.items(items = reminders, key = { it.note.noteId }) { noteData ->
+                    val isUnlocked by remember(unlockedNotes) {
+                        derivedStateOf {
+                            noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                        }
+                    }
                     NoteItemCard(
                         modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                         isDarkTheme = isDarkTheme,
                         isSelected = selectedNote?.noteId == noteData.note.noteId,
                         noteData = noteData,
-                        onClick = { onCreateNewNote(noteData.note.noteId) },
+                        onClick = {
+                            if (!isUnlocked) {
+                                unlockNote(noteData.note)
+                            } else {
+                                onOpenDetails(noteData.note.noteId)
+                            }
+                        },
                         sharedTransitionScope = sharedTransitionScope,
                         animatedContentScope = animatedContentScope,
+                        hazeState = hazeState,
+                        isUnlocked = isUnlocked,
                         onLongClick = {
-                            onToggleSelectedNote(noteData.note)
-                            onToggleFilterDialog(true)
+                            if (!isUnlocked) {
+                                unlockNote(noteData.note)
+                            } else {
+                                onToggleSelectedNote(noteData.note)
+                                onToggleFilterDialog(true)
+                            }
                         }
                     )
                 }
             }
             ReminderDisplayStyle.CALENDAR -> {
                 item(span = StaggeredGridItemSpan.FullLine) {
-                    CalendarComponent(reminders = reminders, onSelectNote = { onCreateNewNote(it) })
+                    CalendarComponent(reminders = reminders, onSelectNote = { onOpenDetails(it) })
                 }
             }
         }

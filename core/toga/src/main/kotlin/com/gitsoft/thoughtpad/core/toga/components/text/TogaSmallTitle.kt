@@ -21,12 +21,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun TogaSmallTitle(
     modifier: Modifier = Modifier,
     text: String,
+    textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
     color: Color = MaterialTheme.colorScheme.onBackground
 ) {
@@ -36,6 +38,7 @@ fun TogaSmallTitle(
         style = MaterialTheme.typography.titleSmall,
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis,
-        color = color
+        color = color,
+        textAlign = textAlign
     )
 }

@@ -1,4 +1,3 @@
-
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -16,6 +15,7 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.ByteArrayInputStream
 
 class NoteListViewModel(
     private val notesRepository: NotesRepository,
@@ -66,7 +67,9 @@ class NoteListViewModel(
             } else {
                 val note = notesRepository.getNoteById(deleteState.noteId)
                 notesRepository.updateNote(
-                    note.copy(isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis())
+                    note.copy(
+                        isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis()
+                    )
                 )
                 // Update deleted state in case reversal happens
                 _state.update { it.copy(deleteState = deleteState) }
@@ -93,28 +96,66 @@ class NoteListViewModel(
         viewModelScope.launch { userPrefsRepository.updateNoteListType(noteListType) }
     }
 
+    fun onToggleUnlockNote(note: Note) {
+        _state.update { it.copy(noteToUnlock = note) }
+        onToggleNotePasswordDialog(true)
+    }
+
+    fun onToggleNotePasswordDialog(isVisible: Boolean) {
+        _state.update {
+            it.copy(
+                unlockDialogIsVisible = isVisible,
+            )
+        }
+        if (!isVisible) {
+            onUnlockNotePasswordChange(null)
+        }
+    }
+
+    fun onUnlockNotePasswordChange(password: String?) {
+        _state.update { it.copy(unlockNotePassword = password) }
+    }
+
+    fun onUnlockNote() {
+        viewModelScope.launch {
+            val password = _state.value.unlockNotePassword?.trim()
+            if (!password.isNullOrEmpty()) {
+                val passwordArray = ByteArrayInputStream(_state.value.noteToUnlock?.password)
+                val decryptedBytePassword = notesRepository.decryptPassword(passwordArray)
+                decryptedBytePassword?.let {
+                    if (decryptedBytePassword.decodeToString() == password) {
+                        val unlockedNotes = _state.value.unlockedNotes.toMutableList().apply {
+                            _state.value.noteToUnlock?.noteId?.let { it1 -> add(it1) }
+                        }
+                        _state.update {
+                            it.copy(
+                                unlockedNotes = unlockedNotes,
+                                noteToUnlock = null,
+                                unlockNotePassword = null
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())
 
-    val state: StateFlow<NoteListUiState> =
-        combine(_state, notesRepository.allNotes, userPrefsRepository.userPrefs) { state, notes, prefs
-                ->
-                state.copy(
-                    notes =
-                        when (prefs.sortOrder) {
-                            SortOrder.TITLE -> notes.sortedBy { it.note.noteTitle }
-                            SortOrder.DATE -> notes.sortedByDescending { it.note.createdAt }
-                        },
-                    isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
-                    isLoading = false,
-                    reminderDisplayStyle = prefs.reminderDisplayStyle,
-                    selectedNoteListType = prefs.noteListType
-                )
-            }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                NoteListUiState(isLoading = true)
-            )
+    val state: StateFlow<NoteListUiState> = combine(
+        _state, notesRepository.allNotes, userPrefsRepository.userPrefs
+    ) { state, notes, prefs ->
+        state.copy(notes = when (prefs.sortOrder) {
+            SortOrder.TITLE -> notes.sortedBy { it.note.noteTitle }
+            SortOrder.DATE -> notes.sortedByDescending { it.note.createdAt }
+        },
+            isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
+            isLoading = false,
+            reminderDisplayStyle = prefs.reminderDisplayStyle,
+            selectedNoteListType = prefs.noteListType)
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState(isLoading = true)
+    )
 
     override fun onCleared() {
         super.onCleared()

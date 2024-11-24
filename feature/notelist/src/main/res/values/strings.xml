@@ -45,4 +45,8 @@
     <string name="note_list_type">Note list type</string>
     <string name="note_list">List layout</string>
     <string name="note_grid">Grid layout</string>
+    <string name="unlock_note_dialog_title">Unlock Note</string>
+    <string name="cancel">Cancel</string>
+    <string name="unlock">Unlock</string>
+    <string name="unlock_input_label">Enter password</string>
 </resources>
