@@ -32,16 +32,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -63,14 +68,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieCompositionFactory
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.toga.components.button.TogaFloatingActionButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaPrimaryButton
+import com.gitsoft.thoughtpad.core.toga.components.button.TogaTextButton
+import com.gitsoft.thoughtpad.core.toga.components.dialog.TogaBasicDialog
+import com.gitsoft.thoughtpad.core.toga.components.input.TogaTextField
 import com.gitsoft.thoughtpad.core.toga.components.scaffold.TogaBasicScaffold
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaButtonText
+import com.gitsoft.thoughtpad.core.toga.components.text.TogaSmallTitle
 import com.gitsoft.thoughtpad.feature.notelist.components.DrawerContent
 import com.gitsoft.thoughtpad.feature.notelist.components.DrawerItem
 import com.gitsoft.thoughtpad.feature.notelist.components.LoadingIndicator
@@ -109,17 +125,23 @@ fun NoteListRoute(
         onToggleSelectedNote = viewModel::onToggleSelectNote,
         onToggleDeleteNote = viewModel::onToggleDelete,
         onToggleArchiveNote = viewModel::onToggleArchive,
-        onToggleNoteListType = viewModel::onToggleNoteListType
+        onToggleNoteListType = viewModel::onToggleNoteListType,
+        onToggleUnlockNote = viewModel::onToggleUnlockNote,
+        onUnlockNotePasswordChange = viewModel::onUnlockNotePasswordChange,
+        onTogglePasswordDialog = viewModel::onToggleNotePasswordDialog,
+        onUnlockNote = viewModel::onUnlockNote,
+        onDismissMessage = viewModel::onDismissMessage
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun NoteListScreen(
     state: NoteListUiState,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     onToggleSelectedNote: (Note?) -> Unit,
+    onToggleUnlockNote: (Note) -> Unit,
     onCreateNewNote: (Long?) -> Unit,
     onToggleFilterDialog: (Boolean) -> Unit,
     onOpenSettings: () -> Unit,
@@ -127,7 +149,11 @@ internal fun NoteListScreen(
     onToggleNotePin: (Long, Boolean) -> Unit,
     onToggleArchiveNote: (ArchiveState) -> Unit,
     onToggleNoteListType: (NoteListType) -> Unit,
-    onToggleDeleteNote: (DeleteState) -> Unit
+    onToggleDeleteNote: (DeleteState) -> Unit,
+    onUnlockNotePasswordChange: (String) -> Unit,
+    onTogglePasswordDialog: (Boolean) -> Unit,
+    onDismissMessage: (Int) -> Unit,
+    onUnlockNote: () -> Unit
 ) {
     var query: String by rememberSaveable { mutableStateOf("") }
 
@@ -175,9 +201,21 @@ internal fun NoteListScreen(
 
     val context = LocalContext.current
 
+    val graphicsLayer = rememberGraphicsLayer()
+
     DisposableEffect(Unit) {
         LottieCompositionFactory.fromAsset(context, "no_notes.json")
         onDispose { LottieCompositionFactory.clearCache(context) }
+    }
+
+    LaunchedEffect(state.userMessages) {
+        if (state.userMessages.isNotEmpty()) {
+            val userMessage = state.userMessages.first()
+            userMessage.message?.let { message ->
+                snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Short)
+                onDismissMessage(userMessage.id)
+            }
+        }
     }
 
     LaunchedEffect(state.archiveState) {
@@ -339,6 +377,65 @@ internal fun NoteListScreen(
                         }
                     }
 
+                    if (state.unlockDialogIsVisible) {
+                        TogaBasicDialog(
+                            content = {
+                                Box(
+                                    modifier =
+                                        Modifier.fillMaxWidth(0.8f)
+                                            .clip(MaterialTheme.shapes.large)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.surface,
+                                                shape = MaterialTheme.shapes.large
+                                            )
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        TogaSmallTitle(
+                                            text = stringResource(R.string.unlock_note_dialog_title),
+                                            textAlign = TextAlign.Center
+                                        )
+                                        TogaTextField(
+                                            value = state.unlockNotePassword ?: "",
+                                            onValueChange = onUnlockNotePasswordChange,
+                                            label = R.string.unlock_input_label,
+                                            keyboardOptions =
+                                                KeyboardOptions(
+                                                    imeAction =
+                                                        state.unlockNotePassword?.let {
+                                                            if (it.length >= 4) ImeAction.Done else ImeAction.Default
+                                                        } ?: ImeAction.Default
+                                                ),
+                                            keyboardActions = KeyboardActions(onDone = { onUnlockNote() }),
+                                            minLines = 1,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+                                            TogaTextButton(
+                                                text = R.string.cancel,
+                                                onClick = { onTogglePasswordDialog(false) }
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            TogaPrimaryButton(
+                                                enabled = state.unlockNotePassword?.let { it.trim().length >= 4 } ?: false,
+                                                onClick = onUnlockNote
+                                            ) {
+                                                TogaButtonText(text = stringResource(R.string.unlock))
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            onDismissRequest = { onTogglePasswordDialog(false) }
+                        )
+                    }
+
                     AnimatedContent(
                         targetState = allSearchableNotes.isEmpty(),
                         label = "Note List Visibility State"
@@ -366,9 +463,12 @@ internal fun NoteListScreen(
                                             allOtherNotes = allOtherNotes,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,
-                                            onCreateNewNote = onCreateNewNote,
+                                            graphicsLayer = graphicsLayer,
+                                            onOpenDetails = onCreateNewNote,
+                                            unlockNote = onToggleUnlockNote,
                                             onToggleSelectedNote = onToggleSelectedNote,
-                                            onToggleFilterDialog = onToggleFilterDialog
+                                            onToggleFilterDialog = onToggleFilterDialog,
+                                            unlockedNotes = state.unlockedNotes
                                         )
                                     }
                                     DrawerItem.Archived -> {
@@ -378,9 +478,12 @@ internal fun NoteListScreen(
                                             archivedNotes = archivedNotes,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,
-                                            onCreateNewNote = onCreateNewNote,
+                                            graphicsLayer = graphicsLayer,
+                                            onOpenDetails = onCreateNewNote,
+                                            unlockNote = onToggleUnlockNote,
                                             onToggleSelectedNote = onToggleSelectedNote,
-                                            onToggleFilterDialog = onToggleFilterDialog
+                                            onToggleFilterDialog = onToggleFilterDialog,
+                                            unlockedNotes = state.unlockedNotes
                                         )
                                     }
                                     DrawerItem.Reminders -> {
@@ -391,9 +494,12 @@ internal fun NoteListScreen(
                                             reminderDisplayStyle = state.reminderDisplayStyle,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,
-                                            onCreateNewNote = onCreateNewNote,
+                                            graphicsLayer = graphicsLayer,
+                                            onOpenDetails = onCreateNewNote,
+                                            unlockNote = onToggleUnlockNote,
                                             onToggleSelectedNote = onToggleSelectedNote,
-                                            onToggleFilterDialog = onToggleFilterDialog
+                                            onToggleFilterDialog = onToggleFilterDialog,
+                                            unlockedNotes = state.unlockedNotes
                                         )
                                     }
                                     DrawerItem.Trash -> {
@@ -403,9 +509,12 @@ internal fun NoteListScreen(
                                             trash = trash,
                                             isDarkTheme = state.isDarkTheme,
                                             selectedNote = state.selectedNote,
-                                            onCreateNewNote = onCreateNewNote,
+                                            graphicsLayer = graphicsLayer,
+                                            onOpenDetails = onCreateNewNote,
+                                            unlockNote = onToggleUnlockNote,
                                             onToggleSelectedNote = onToggleSelectedNote,
-                                            onToggleFilterDialog = onToggleFilterDialog
+                                            onToggleFilterDialog = onToggleFilterDialog,
+                                            unlockedNotes = state.unlockedNotes
                                         )
                                     }
                                 }

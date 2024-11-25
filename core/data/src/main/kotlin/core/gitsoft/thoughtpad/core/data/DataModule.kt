@@ -25,5 +25,6 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<UserPrefsRepository> { UserPrefsRepositoryImpl(get()) }
-    single<NotesRepository> { NotesRepositoryImpl(get(), get(), androidContext()) }
+    single<NotesRepository> { NotesRepositoryImpl(get(), get(), get(), androidContext()) }
+    single { CryptoManager() }
 }

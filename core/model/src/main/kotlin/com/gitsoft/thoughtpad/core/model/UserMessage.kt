@@ -14,20 +14,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thoughtpad.core.database
+package com.gitsoft.thoughtpad.core.model
 
-import android.app.Application
-import androidx.room.Room
-import com.gitsoft.thoughtpad.core.database.migrations.Migration_1_2
-import com.gitsoft.thoughtpad.core.database.migrations.Migration_2_3
-import org.koin.dsl.module
-
-val databaseModule = module {
-    single<NotesDatabase> {
-        Room.databaseBuilder(get<Application>(), NotesDatabase::class.java, "notes_database")
-            .addMigrations(Migration_1_2, Migration_2_3)
-            .build()
-    }
-
-    single<NotesDatabaseDao> { get<NotesDatabase>().dao() }
-}
+data class UserMessage(val id: Int = 0, val message: String? = null)

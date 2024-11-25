@@ -30,9 +30,14 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import core.gitsoft.thoughtpad.core.data.AlarmReceiver
+import core.gitsoft.thoughtpad.core.data.CryptoManager
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.security.KeyStoreException
 import java.util.Calendar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 private const val TAG = "NotesRepositoryImpl"
 private val taskReminderTitles =
@@ -72,6 +77,7 @@ private val taskReminderTitles =
 internal class NotesRepositoryImpl(
     private val notesDatabaseDao: NotesDatabaseDao,
     private val userPrefsRepository: UserPrefsRepository,
+    private val cypherManager: CryptoManager,
     private val context: Context
 ) : NotesRepository {
     override val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>
@@ -160,6 +166,26 @@ internal class NotesRepositoryImpl(
 
     override suspend fun deleteTag(tag: Tag): Int = safeDbCall {
         notesDatabaseDao.deleteTagWithNoteAssociation(tag)
+    }
+
+    override suspend fun encryptPassword(password: String): ByteArray? {
+        return try {
+            val outputStream = ByteArrayOutputStream()
+            cypherManager.encrypt(password.toByteArray(), outputStream)
+            outputStream.toByteArray()
+        } catch (e: KeyStoreException) {
+            Timber.tag("Encryption exception").e(e)
+            null
+        }
+    }
+
+    override suspend fun decryptPassword(inputStream: InputStream): ByteArray? {
+        return try {
+            cypherManager.decrypt(inputStream)
+        } catch (e: KeyStoreException) {
+            Timber.tag("Encryption exception").e(e)
+            null
+        }
     }
 
     private fun setTaskReminder(alarmTime: Long, notificationTitle: String, taskTitle: String) {

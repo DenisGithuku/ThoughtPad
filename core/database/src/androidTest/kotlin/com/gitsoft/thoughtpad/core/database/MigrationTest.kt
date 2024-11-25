@@ -20,6 +20,7 @@ import androidx.room.Room
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import com.gitsoft.thoughtpad.core.database.migrations.Migration_1_2
+import com.gitsoft.thoughtpad.core.database.migrations.Migration_2_3
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
@@ -48,6 +49,32 @@ class MigrationTest {
             }
             assertTrue(
                 columns.containsAll(listOf("noteId", "noteTitle", "noteText", "color", "attachments"))
+            )
+        }
+    }
+
+    @Test
+    fun testMigration2To3() {
+        // Create a Room database with the old version
+        database =
+            Room.inMemoryDatabaseBuilder(
+                    ApplicationProvider.getApplicationContext(),
+                    NotesDatabase::class.java
+                )
+                .addMigrations(Migration_1_2) // Previous migration
+                .addMigrations(Migration_2_3) // Migration under test
+                .build()
+                .openHelper
+                .writableDatabase
+
+        // Verify the new schema is correct
+        database.query("PRAGMA table_info(notes_table)").use { cursor ->
+            val columns = mutableListOf<String>()
+            while (cursor.moveToNext()) {
+                columns.add(cursor.getString(1))
+            }
+            assertTrue(
+                columns.contains("password") // Expected column after migration
             )
         }
     }

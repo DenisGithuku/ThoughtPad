@@ -30,6 +30,7 @@ import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeNotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeUserPrefsRepository
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -377,5 +378,30 @@ class AddNoteViewModelTest {
                     it.tags.any { it.name == "School" }
             }
         assertTrue(hasUpdated)
+    }
+
+    @Test
+    fun testChangePassword() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.ChangePassword("password"))
+        assertEquals(viewModel.state.value.password, "password")
+
+        viewModel.onEvent(AddNoteEvent.ChangePassword(null))
+        assertEquals(viewModel.state.value.password, null)
+    }
+
+    @Test
+    fun togglePasswordSheet() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.TogglePasswordDialog(true))
+        assertTrue(viewModel.state.value.isPasswordSheetVisible)
+    }
+
+    @Test
+    fun removePassWord() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect() }
+        viewModel.onEvent(AddNoteEvent.RemovePassword)
+        assertNull(viewModel.state.value.password)
+        assertNull(viewModel.state.value.encryptedPassword)
     }
 }

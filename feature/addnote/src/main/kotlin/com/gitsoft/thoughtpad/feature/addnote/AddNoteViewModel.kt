@@ -16,6 +16,7 @@
 */
 package com.gitsoft.thoughtpad.feature.addnote
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,7 @@ import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
 import java.util.Calendar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,6 +37,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AddNoteViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -73,7 +76,8 @@ class AddNoteViewModel(
                         hasReminder = noteData.note.reminderTime != null,
                         hasTags = noteData.tags.isNotEmpty(),
                         selectedNoteColor = noteData.note.color,
-                        isNewNote = false
+                        isNewNote = false,
+                        encryptedPassword = noteData.note.password
                     )
                 }
             }
@@ -106,6 +110,10 @@ class AddNoteViewModel(
             is AddNoteEvent.ChangeTime -> changeTime(event.value)
             is AddNoteEvent.DiscardNote -> onDiscardNote()
             is AddNoteEvent.UpdateNotificationPermissions -> updatePermissionsStatus()
+            is AddNoteEvent.ChangePassword -> changePassword(event.value)
+            is AddNoteEvent.TogglePasswordDialog -> togglePasswordSheet(event.isVisible)
+            AddNoteEvent.SecureNote -> secureNote()
+            AddNoteEvent.RemovePassword -> removePassWord()
             AddNoteEvent.Save -> save()
         }
     }
@@ -269,6 +277,22 @@ class AddNoteViewModel(
         _state.update { it.copy(note = it.note.copy(isCheckList = value)) }
     }
 
+    private fun secureNote() {
+        viewModelScope.launch {
+            val password = _state.value.password?.trim()
+            if (password != null) {
+                val encryptedPassword =
+                    withContext(Dispatchers.IO) { notesRepository.encryptPassword(password) }
+                encryptedPassword?.let {
+                    Log.d("Encrypted password", it.toString())
+                    _state.update { state ->
+                        state.copy(encryptedPassword = it, isPasswordSheetVisible = false)
+                    }
+                }
+            }
+        }
+    }
+
     private fun addTag(tag: Tag) {
         val trimmedTag = tag.copy(name = tag.name?.trim())
         if (_state.value.defaultTags.none { it.name.equals(trimmedTag.name, true) }) {
@@ -293,6 +317,20 @@ class AddNoteViewModel(
         _state.update { it.copy(selectedTagColor = color) }
     }
 
+    private fun changePassword(value: String?) {
+        _state.update { it.copy(password = value) }
+    }
+
+    private fun togglePasswordSheet(isVisible: Boolean) {
+        _state.update {
+            it.copy(isPasswordSheetVisible = isVisible, password = null, encryptedPassword = null)
+        }
+    }
+
+    private fun removePassWord() {
+        _state.update { it.copy(password = null, encryptedPassword = null) }
+    }
+
     private fun update() {
         viewModelScope.launch {
             val hasChanged = noteHasChanged()
@@ -304,7 +342,8 @@ class AddNoteViewModel(
                             color = _state.value.selectedNoteColor,
                             reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
                             noteTitle = _state.value.note.noteTitle?.trim(),
-                            noteText = _state.value.note.noteText?.trim()
+                            noteText = _state.value.note.noteText?.trim(),
+                            password = _state.value.encryptedPassword
                         ),
                     checklistItems = _state.value.checkListItems,
                     tags = _state.value.selectedTags
@@ -332,7 +371,8 @@ class AddNoteViewModel(
                     color = _state.value.selectedNoteColor,
                     reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
                     noteTitle = _state.value.note.noteTitle?.trim(),
-                    noteText = _state.value.note.noteText?.trim()
+                    noteText = _state.value.note.noteText?.trim(),
+                    password = _state.value.encryptedPassword
                 )
             notesRepository.insertNoteWithDetails(
                 note = note,

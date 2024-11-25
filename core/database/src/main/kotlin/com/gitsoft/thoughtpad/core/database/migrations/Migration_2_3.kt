@@ -14,20 +14,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thoughtpad.core.database
+package com.gitsoft.thoughtpad.core.database.migrations
 
-import android.app.Application
-import androidx.room.Room
-import com.gitsoft.thoughtpad.core.database.migrations.Migration_1_2
-import com.gitsoft.thoughtpad.core.database.migrations.Migration_2_3
-import org.koin.dsl.module
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import timber.log.Timber
 
-val databaseModule = module {
-    single<NotesDatabase> {
-        Room.databaseBuilder(get<Application>(), NotesDatabase::class.java, "notes_database")
-            .addMigrations(Migration_1_2, Migration_2_3)
-            .build()
+// spotless:off
+val Migration_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL("ALTER TABLE notes ADD COLUMN password BLOB")
+        } catch (e: Exception) {
+            // Handle the exception, e.g., log it
+            Timber.tag("Migration").e("Error adding password column")
+        }
     }
-
-    single<NotesDatabaseDao> { get<NotesDatabase>().dao() }
 }
+// spotless:on

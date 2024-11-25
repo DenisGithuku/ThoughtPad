@@ -8,6 +8,7 @@ android-test-runner = "1.6.2"
 androidx-compose-bom = "2024.10.01"
 androidx-glance = "1.1.1"
 appcompat = "1.7.0"
+cloudy = "0.2.3"
 compose = "1.7.5"
 coroutines = "1.7.3"
 core-ktx = "1.15.0"
@@ -80,6 +81,7 @@ androidx-glance-testing = { module = "androidx.glance:glance-testing", version.r
 androidx-navigation-safeargs = { group = "androidx.navigation", name ="navigation-safe-args-gradle-plugin", version.ref = "navigation" }
 androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work"}
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 firebase-bom = { module  = "com.google.firebase:firebase-bom", version.ref = "firebase-bom"}
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}

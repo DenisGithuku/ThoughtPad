@@ -18,6 +18,7 @@ dependencies {
 
     implementation(libs.lottie.compose)
     implementation(libs.kiziton.compose.calendar)
+    implementation(libs.compose.cloudy)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.truth)

@@ -39,6 +39,7 @@ fun TogaTextField(
     keyboardOptions: KeyboardOptions? = null,
     keyboardActions: KeyboardActions? = null,
     minLines: Int = 1,
+    supportingText: (@Composable () -> Unit)? = null,
     singleLine: Boolean = false,
     @StringRes label: Int? = null
 ) {
@@ -48,6 +49,7 @@ fun TogaTextField(
         onValueChange = onValueChange,
         textStyle = textStyle,
         singleLine = singleLine,
+        supportingText = supportingText,
         keyboardOptions =
             keyboardOptions
                 ?: KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),

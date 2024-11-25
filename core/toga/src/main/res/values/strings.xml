@@ -8,4 +8,8 @@
     <string name="dimiss">Dismiss</string>
     <string name="add_note">Add note</string>
     <string name="search_notes">Search notes and tasks...</string>
+    <string name="password_size_requirement">Password length should not be less than four characters.</string>
+    <string name="cancel">Cancel</string>
+    <string name="secure_note">Secure</string>
+    <string name="password_label">Enter password</string>
 </resources>

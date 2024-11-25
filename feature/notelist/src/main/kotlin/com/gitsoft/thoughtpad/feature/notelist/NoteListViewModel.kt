@@ -22,8 +22,10 @@ import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import com.gitsoft.thoughtpad.core.model.UserMessage
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
+import java.io.ByteArrayInputStream
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -74,6 +76,16 @@ class NoteListViewModel(
         }
     }
 
+    private fun onShowUserMessage(userMessage: UserMessage) {
+        val userMessages = _state.value.userMessages.toMutableList()
+        userMessages.add(userMessage)
+        _state.update { it.copy(userMessages = userMessages) }
+    }
+
+    fun onDismissMessage(messageId: Int) {
+        _state.update { it.copy(userMessages = it.userMessages.filterNot { it.id == messageId }) }
+    }
+
     fun onToggleArchive(archiveState: ArchiveState) {
         viewModelScope.launch {
             if (archiveState.noteId == null) {
@@ -91,6 +103,51 @@ class NoteListViewModel(
 
     fun onToggleNoteListType(noteListType: NoteListType) {
         viewModelScope.launch { userPrefsRepository.updateNoteListType(noteListType) }
+    }
+
+    fun onToggleUnlockNote(note: Note) {
+        _state.update { it.copy(noteToUnlock = note) }
+        onToggleNotePasswordDialog(true)
+    }
+
+    fun onToggleNotePasswordDialog(isVisible: Boolean) {
+        _state.update { it.copy(unlockDialogIsVisible = isVisible) }
+        if (!isVisible) {
+            onUnlockNotePasswordChange(null)
+        }
+    }
+
+    fun onUnlockNotePasswordChange(password: String?) {
+        _state.update { it.copy(unlockNotePassword = password) }
+    }
+
+    fun onUnlockNote() {
+        viewModelScope.launch {
+            val password = _state.value.unlockNotePassword?.trim()
+            if (!password.isNullOrEmpty()) {
+                val passwordArray = ByteArrayInputStream(_state.value.noteToUnlock?.password)
+                val decryptedBytePassword = notesRepository.decryptPassword(passwordArray)
+                decryptedBytePassword?.let {
+                    if (decryptedBytePassword.decodeToString() == password) {
+                        val unlockedNotes =
+                            _state.value.unlockedNotes.toMutableList().apply {
+                                _state.value.noteToUnlock?.noteId?.let { it1 -> add(it1) }
+                            }
+                        _state.update {
+                            it.copy(
+                                unlockedNotes = unlockedNotes,
+                                noteToUnlock = null,
+                                unlockNotePassword = null,
+                                unlockDialogIsVisible = false
+                            )
+                        }
+                        onShowUserMessage(UserMessage(message = "Note unlocked successfully!"))
+                    } else {
+                        onShowUserMessage(UserMessage(message = "Invalid password. Try again!"))
+                    }
+                }
+            }
+        }
     }
 
     private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())

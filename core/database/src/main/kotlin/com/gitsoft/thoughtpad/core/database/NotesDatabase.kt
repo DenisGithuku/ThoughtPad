@@ -29,7 +29,7 @@ import com.gitsoft.thoughtpad.core.model.TagColorConverter
 
 @Database(
     entities = [Note::class, Tag::class, CheckListItem::class, NoteTagCrossRef::class],
-    version = 2
+    version = 3
 )
 @TypeConverters(AttachmentTypeConverter::class, NoteColorConverter::class, TagColorConverter::class)
 abstract class NotesDatabase : RoomDatabase() {

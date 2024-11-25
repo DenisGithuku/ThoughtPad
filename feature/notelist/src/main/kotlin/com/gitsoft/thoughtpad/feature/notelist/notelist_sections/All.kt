@@ -24,7 +24,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
@@ -40,11 +44,14 @@ import com.gitsoft.thoughtpad.feature.notelist.components.animateNoteItemCard
 fun LazyStaggeredGridScope.all(
     pinnedNotes: List<DataWithNotesCheckListItemsAndTags>,
     allOtherNotes: List<DataWithNotesCheckListItemsAndTags>,
+    unlockedNotes: List<Long>,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
+    graphicsLayer: GraphicsLayer,
     selectedNote: Note? = null,
     isDarkTheme: Boolean,
-    onCreateNewNote: (noteId: Long?) -> Unit,
+    unlockNote: (Note) -> Unit,
+    onOpenDetails: (noteId: Long?) -> Unit,
     onToggleFilterDialog: (show: Boolean) -> Unit,
     onToggleSelectedNote: (note: Note?) -> Unit
 ) {
@@ -59,6 +66,12 @@ fun LazyStaggeredGridScope.all(
             }
         }
         items(items = pinnedNotes, key = { it.note.noteId }) { noteData ->
+            val isUnlocked by
+                remember(unlockedNotes) {
+                    derivedStateOf {
+                        noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                    }
+                }
             NoteItemCard(
                 modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                 isDarkTheme = isDarkTheme,
@@ -66,10 +79,22 @@ fun LazyStaggeredGridScope.all(
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
                 noteData = noteData,
-                onClick = { onCreateNewNote(noteData.note.noteId) },
+                isUnlocked = isUnlocked,
+                graphicsLayer = graphicsLayer,
+                onClick = {
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onOpenDetails(noteData.note.noteId)
+                    }
+                },
                 onLongClick = {
-                    onToggleSelectedNote(noteData.note)
-                    onToggleFilterDialog(true)
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onToggleSelectedNote(noteData.note)
+                        onToggleFilterDialog(true)
+                    }
                 }
             )
         }
@@ -81,17 +106,35 @@ fun LazyStaggeredGridScope.all(
         }
 
         items(items = allOtherNotes, key = { it.note.noteId }) { noteData ->
+            val isUnlocked by
+                remember(unlockedNotes) {
+                    derivedStateOf {
+                        noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                    }
+                }
             NoteItemCard(
                 modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                 isDarkTheme = isDarkTheme,
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
                 noteData = noteData,
+                isUnlocked = isUnlocked,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
-                onClick = { onCreateNewNote(noteData.note.noteId) },
+                graphicsLayer = graphicsLayer,
+                onClick = {
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onOpenDetails(noteData.note.noteId)
+                    }
+                },
                 onLongClick = {
-                    onToggleSelectedNote(noteData.note)
-                    onToggleFilterDialog(true)
+                    if (!isUnlocked) {
+                        unlockNote(noteData.note)
+                    } else {
+                        onToggleSelectedNote(noteData.note)
+                        onToggleFilterDialog(true)
+                    }
                 }
             )
         }

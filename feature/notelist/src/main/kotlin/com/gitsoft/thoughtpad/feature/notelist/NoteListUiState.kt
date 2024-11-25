@@ -20,6 +20,7 @@ import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.ReminderDisplayStyle
+import com.gitsoft.thoughtpad.core.model.UserMessage
 
 data class ArchiveState(val isArchived: Boolean = false, val noteId: Long? = null)
 
@@ -32,7 +33,12 @@ data class NoteListUiState(
     val deleteState: DeleteState = DeleteState(),
     val isDarkTheme: Boolean = false,
     val selectedNote: Note? = null,
+    val noteToUnlock: Note? = null,
     val selectedNoteListType: NoteListType = NoteListType.GRID,
     val reminderDisplayStyle: ReminderDisplayStyle = ReminderDisplayStyle.LIST,
-    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList()
+    val notes: List<DataWithNotesCheckListItemsAndTags> = emptyList(),
+    val unlockedNotes: List<Long> = emptyList(),
+    val unlockDialogIsVisible: Boolean = false,
+    val unlockNotePassword: String? = null,
+    val userMessages: List<UserMessage> = emptyList()
 )
