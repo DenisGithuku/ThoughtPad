@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
@@ -39,7 +40,6 @@ import com.gitsoft.thoughtpad.feature.notelist.TestTags
 import com.gitsoft.thoughtpad.feature.notelist.components.NoNotesInCategoryIndicator
 import com.gitsoft.thoughtpad.feature.notelist.components.NoteItemCard
 import com.gitsoft.thoughtpad.feature.notelist.components.animateNoteItemCard
-import dev.chrisbanes.haze.HazeState
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyStaggeredGridScope.archived(
@@ -48,7 +48,7 @@ fun LazyStaggeredGridScope.archived(
     selectedNote: Note? = null,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
-    hazeState: HazeState,
+    graphicsLayer: GraphicsLayer,
     unlockedNotes: List<Long>,
     unlockNote: (Note) -> Unit,
     onOpenDetails: (noteId: Long?) -> Unit,
@@ -63,17 +63,17 @@ fun LazyStaggeredGridScope.archived(
         }
     } else {
         items(items = archivedNotes, key = { it.note.noteId }) { noteData ->
-            val isUnlocked by remember(unlockedNotes) {
-                derivedStateOf {
-                    noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+            val isUnlocked by
+                remember(unlockedNotes) {
+                    derivedStateOf {
+                        noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                    }
                 }
-            }
             NoteItemCard(
                 modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                 isDarkTheme = isDarkTheme,
                 isSelected = selectedNote?.noteId == noteData.note.noteId,
                 noteData = noteData,
-                hazeState = hazeState,
                 isUnlocked = isUnlocked,
                 onClick = {
                     if (!isUnlocked) {
@@ -84,6 +84,7 @@ fun LazyStaggeredGridScope.archived(
                 },
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
+                graphicsLayer = graphicsLayer,
                 onLongClick = {
                     if (!isUnlocked) {
                         unlockNote(noteData.note)

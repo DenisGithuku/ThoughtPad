@@ -42,8 +42,7 @@ data class Note(
     val isCheckList: Boolean = false,
     val reminderTime: Long? = null,
     val attachments: List<String> = emptyList(),
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val password: ByteArray? = null
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val password: ByteArray? = null
 )
 
 class AttachmentTypeConverter {

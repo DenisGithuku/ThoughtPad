@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import com.gitsoft.thoughtpad.core.toga.components.text.TogaCaption
 import com.gitsoft.thoughtpad.core.toga.components.text.TogaMediumLabel
 
 @Composable

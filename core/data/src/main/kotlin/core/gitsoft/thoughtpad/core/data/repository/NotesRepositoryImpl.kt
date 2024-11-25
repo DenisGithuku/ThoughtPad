@@ -31,14 +31,13 @@ import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
 import core.gitsoft.thoughtpad.core.data.AlarmReceiver
 import core.gitsoft.thoughtpad.core.data.CryptoManager
-import java.util.Calendar
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.serialization.Serializer
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.security.KeyStoreException
+import java.util.Calendar
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 private const val TAG = "NotesRepositoryImpl"
 private val taskReminderTitles =
@@ -188,7 +187,6 @@ internal class NotesRepositoryImpl(
             null
         }
     }
-
 
     private fun setTaskReminder(alarmTime: Long, notificationTitle: String, taskTitle: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

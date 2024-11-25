@@ -73,7 +73,7 @@ sealed interface AddNoteEvent {
 
     data object SecureNote : AddNoteEvent
 
-    data object RemovePassword: AddNoteEvent
+    data object RemovePassword : AddNoteEvent
 
     data object UpdateNotificationPermissions : AddNoteEvent
 

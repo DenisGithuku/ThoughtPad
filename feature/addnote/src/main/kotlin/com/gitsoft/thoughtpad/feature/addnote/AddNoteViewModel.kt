@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -26,6 +27,7 @@ import com.gitsoft.thoughtpad.core.model.TagColor
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
+import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +38,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 
 class AddNoteViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -46,15 +47,16 @@ class AddNoteViewModel(
 
     private val _state: MutableStateFlow<AddNoteUiState> = MutableStateFlow(AddNoteUiState())
 
-    val state: StateFlow<AddNoteUiState> = combine(
-        _state, notesRepository.allTags, userPrefsRepository.userPrefs
-    ) { state, tags, userPrefs ->
-        state.copy(
-            defaultTags = tags,
-            systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK,
-            permissionsNotificationsGranted = userPrefs.isNotificationPermissionsGranted
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddNoteUiState())
+    val state: StateFlow<AddNoteUiState> =
+        combine(_state, notesRepository.allTags, userPrefsRepository.userPrefs) { state, tags, userPrefs
+                ->
+                state.copy(
+                    defaultTags = tags,
+                    systemInDarkMode = userPrefs.themeConfig == ThemeConfig.DARK,
+                    permissionsNotificationsGranted = userPrefs.isNotificationPermissionsGranted
+                )
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddNoteUiState())
 
     init {
         getNoteDetails()
@@ -98,10 +100,8 @@ class AddNoteViewModel(
             is AddNoteEvent.TogglePin -> togglePin(event.value)
             is AddNoteEvent.ToggleDateSheet -> toggleDateSheet(event.value)
             is AddNoteEvent.ToggleReminders -> toggleReminders(event.value)
-            is AddNoteEvent.CheckListItemCheckedChange -> onCheckedChange(
-                event.checkListItem, event.checked
-            )
-
+            is AddNoteEvent.CheckListItemCheckedChange ->
+                onCheckedChange(event.checkListItem, event.checked)
             is AddNoteEvent.ToggleTagSheet -> toggleTagSheet(event.isVisible)
             is AddNoteEvent.ToggleTagSelection -> toggleTagSelection(event.tag)
             is AddNoteEvent.ToggleDateDialog -> toggleDateDialog(event.value)
@@ -125,10 +125,12 @@ class AddNoteViewModel(
     private fun addCheckListItem(checkListItem: CheckListItem) {
         _state.update {
             it.copy(
-                checkListItems = it.checkListItems + checkListItem.copy(
-                    checkListItemId = it.checkListItems.size.toLong(),
-                    text = checkListItem.text?.trim()
-                )
+                checkListItems =
+                    it.checkListItems +
+                        checkListItem.copy(
+                            checkListItemId = it.checkListItems.size.toLong(),
+                            text = checkListItem.text?.trim()
+                        )
             )
         }
     }
@@ -144,12 +146,12 @@ class AddNoteViewModel(
 
     private fun onCheckedChange(checkListItem: CheckListItem, checked: Boolean) {
         _state.update { prevState ->
-            val index = prevState.checkListItems.indexOfFirst {
-                it.checkListItemId == checkListItem.checkListItemId
-            }
+            val index =
+                prevState.checkListItems.indexOfFirst {
+                    it.checkListItemId == checkListItem.checkListItemId
+                }
             if (index != -1) {
-                val updatedItems =
-                    prevState.checkListItems.toMutableList() // Convert to mutable list
+                val updatedItems = prevState.checkListItems.toMutableList() // Convert to mutable list
                 updatedItems[index] = updatedItems[index].copy(isChecked = checked)
                 prevState.copy(checkListItems = updatedItems)
             } else {
@@ -164,17 +166,21 @@ class AddNoteViewModel(
 
     private fun changeDate(value: Long) {
         _state.value.selectedDate?.let { selectedDate ->
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = value // Set to the new date value (should only have date)
-            }
+            val calendar =
+                Calendar.getInstance().apply {
+                    timeInMillis = value // Set to the new date value (should only have date)
+                }
 
             // Retain the time and update the state with the new date
-            val updatedDate = Calendar.getInstance().apply {
-                timeInMillis = selectedDate // Get the current selected date
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR)) // Update year
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH)) // Update month
-                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)) // Update day
-            }.timeInMillis
+            val updatedDate =
+                Calendar.getInstance()
+                    .apply {
+                        timeInMillis = selectedDate // Get the current selected date
+                        set(Calendar.YEAR, calendar.get(Calendar.YEAR)) // Update year
+                        set(Calendar.MONTH, calendar.get(Calendar.MONTH)) // Update month
+                        set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)) // Update day
+                    }
+                    .timeInMillis
 
             _state.update { it.copy(selectedDate = updatedDate) }
         }
@@ -182,22 +188,26 @@ class AddNoteViewModel(
 
     private fun changeTime(value: Long) {
         _state.value.selectedDate?.let { selectedDate ->
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = selectedDate // Start with the current selected date
-                timeInMillis = value // Set to the new time value (which should only have time)
+            val calendar =
+                Calendar.getInstance().apply {
+                    timeInMillis = selectedDate // Start with the current selected date
+                    timeInMillis = value // Set to the new time value (which should only have time)
 
-                set(Calendar.SECOND, 0) // Ensure seconds are set to 0
-                set(Calendar.MILLISECOND, 0) // Ensure milliseconds are set to 0
-            }
+                    set(Calendar.SECOND, 0) // Ensure seconds are set to 0
+                    set(Calendar.MILLISECOND, 0) // Ensure milliseconds are set to 0
+                }
 
             // Retain the date and update the state with the new time
-            val updatedTime = Calendar.getInstance().apply {
-                timeInMillis = selectedDate // Get the current selected date
-                set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)) // Update hour
-                set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)) // Update minute
-                set(Calendar.SECOND, 0) // Reset seconds
-                set(Calendar.MILLISECOND, 0) // Reset milliseconds
-            }.timeInMillis
+            val updatedTime =
+                Calendar.getInstance()
+                    .apply {
+                        timeInMillis = selectedDate // Get the current selected date
+                        set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)) // Update hour
+                        set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)) // Update minute
+                        set(Calendar.SECOND, 0) // Reset seconds
+                        set(Calendar.MILLISECOND, 0) // Reset milliseconds
+                    }
+                    .timeInMillis
 
             _state.update { it.copy(selectedDate = updatedTime) }
         }
@@ -229,11 +239,14 @@ class AddNoteViewModel(
     }
 
     private fun toggleReminders(value: Boolean) {
-        val defaultReminderTime = Calendar.getInstance().apply {
-            set(Calendar.MINUTE, get(Calendar.MINUTE) + 30)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
+        val defaultReminderTime =
+            Calendar.getInstance()
+                .apply {
+                    set(Calendar.MINUTE, get(Calendar.MINUTE) + 30)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                .timeInMillis
         _state.update {
             it.copy(hasReminder = value, selectedDate = if (!value) null else defaultReminderTime)
         }
@@ -268,21 +281,17 @@ class AddNoteViewModel(
         viewModelScope.launch {
             val password = _state.value.password?.trim()
             if (password != null) {
-                val encryptedPassword = withContext(Dispatchers.IO) {
-                    notesRepository.encryptPassword(password)
-                }
+                val encryptedPassword =
+                    withContext(Dispatchers.IO) { notesRepository.encryptPassword(password) }
                 encryptedPassword?.let {
                     Log.d("Encrypted password", it.toString())
                     _state.update { state ->
-                        state.copy(
-                            encryptedPassword = it, isPasswordSheetVisible = false
-                        )
+                        state.copy(encryptedPassword = it, isPasswordSheetVisible = false)
                     }
                 }
             }
         }
     }
-
 
     private fun addTag(tag: Tag) {
         val trimmedTag = tag.copy(name = tag.name?.trim())
@@ -314,9 +323,7 @@ class AddNoteViewModel(
 
     private fun togglePasswordSheet(isVisible: Boolean) {
         _state.update {
-            it.copy(
-                isPasswordSheetVisible = isVisible, password = null, encryptedPassword = null
-            )
+            it.copy(isPasswordSheetVisible = isVisible, password = null, encryptedPassword = null)
         }
     }
 
@@ -329,14 +336,15 @@ class AddNoteViewModel(
             val hasChanged = noteHasChanged()
             if (hasChanged) {
                 notesRepository.updateNoteWithDetails(
-                    note = _state.value.note.copy(
-                        updatedAt = Calendar.getInstance().timeInMillis,
-                        color = _state.value.selectedNoteColor,
-                        reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
-                        noteTitle = _state.value.note.noteTitle?.trim(),
-                        noteText = _state.value.note.noteText?.trim(),
-                        password = _state.value.encryptedPassword
-                    ),
+                    note =
+                        _state.value.note.copy(
+                            updatedAt = Calendar.getInstance().timeInMillis,
+                            color = _state.value.selectedNoteColor,
+                            reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
+                            noteTitle = _state.value.note.noteTitle?.trim(),
+                            noteText = _state.value.note.noteText?.trim(),
+                            password = _state.value.encryptedPassword
+                        ),
                     checklistItems = _state.value.checkListItems,
                     tags = _state.value.selectedTags
                 )
@@ -356,15 +364,16 @@ class AddNoteViewModel(
     private fun insert() {
         viewModelScope.launch {
             val timeMillis = Calendar.getInstance().timeInMillis
-            val note = _state.value.note.copy(
-                createdAt = timeMillis,
-                updatedAt = timeMillis,
-                color = _state.value.selectedNoteColor,
-                reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
-                noteTitle = _state.value.note.noteTitle?.trim(),
-                noteText = _state.value.note.noteText?.trim(),
-                password = _state.value.encryptedPassword
-            )
+            val note =
+                _state.value.note.copy(
+                    createdAt = timeMillis,
+                    updatedAt = timeMillis,
+                    color = _state.value.selectedNoteColor,
+                    reminderTime = if (_state.value.hasReminder) _state.value.selectedDate else null,
+                    noteTitle = _state.value.note.noteTitle?.trim(),
+                    noteText = _state.value.note.noteText?.trim(),
+                    password = _state.value.encryptedPassword
+                )
             notesRepository.insertNoteWithDetails(
                 note = note,
                 checklistItems = _state.value.checkListItems,
@@ -384,7 +393,13 @@ class AddNoteViewModel(
 
     private suspend fun noteHasChanged(): Boolean {
         val noteData = notesRepository.getNoteWithDataById(_state.value.note.noteId)
-        return noteData != _state.value.note || _state.value.checkListItems != noteData.checkListItems || _state.value.selectedTags != noteData.tags || _state.value.selectedNoteColor != noteData.note.color || _state.value.selectedDate != noteData.note.reminderTime || _state.value.hasTags != noteData.tags.isNotEmpty() || _state.value.hasReminder != (noteData.note.reminderTime != null)
+        return noteData != _state.value.note ||
+            _state.value.checkListItems != noteData.checkListItems ||
+            _state.value.selectedTags != noteData.tags ||
+            _state.value.selectedNoteColor != noteData.note.color ||
+            _state.value.selectedDate != noteData.note.reminderTime ||
+            _state.value.hasTags != noteData.tags.isNotEmpty() ||
+            _state.value.hasReminder != (noteData.note.reminderTime != null)
     }
 
     override fun onCleared() {

@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -62,7 +63,10 @@ class TasksWidget : GlanceAppWidget() {
     }
 
     override fun onCompositionError(
-        context: Context, glanceId: GlanceId, appWidgetId: Int, throwable: Throwable
+        context: Context,
+        glanceId: GlanceId,
+        appWidgetId: Int,
+        throwable: Throwable
     ) {
         throwable.printStackTrace()
         Timber.tag("Glance Error").d(throwable.message ?: "Unknown error")
@@ -79,10 +83,12 @@ class TasksWidget : GlanceAppWidget() {
     fun TasksWidgetContent(widgetData: WidgetData) {
         LocalContext.current
 
-        Box(modifier = GlanceModifier.fillMaxWidth().background(GlanceTheme.colors.background)
-            .clickable {
-                actionStartActivity<MainActivity>()
-            }) {
+        Box(
+            modifier =
+                GlanceModifier.fillMaxWidth().background(GlanceTheme.colors.background).clickable {
+                    actionStartActivity<MainActivity>()
+                }
+        ) {
             LazyColumn(modifier = GlanceModifier.padding(16.dp)) {
                 if (widgetData.title != null) {
                     item {
@@ -113,7 +119,8 @@ class TasksWidget : GlanceAppWidget() {
 
 @Serializable
 data class WidgetData(
-    val title: String? = null, val checkListItems: List<CheckListItem> = emptyList()
+    val title: String? = null,
+    val checkListItems: List<CheckListItem> = emptyList()
 ) {
     fun encodeToString(): String {
         return Json.encodeToString(this)

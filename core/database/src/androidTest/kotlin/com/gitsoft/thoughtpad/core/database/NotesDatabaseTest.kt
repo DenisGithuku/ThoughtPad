@@ -187,7 +187,7 @@ class NotesDatabaseTest {
     }
 }
 
-object TestData {
+private object TestData {
     val note =
         Note(
             noteId = 1,

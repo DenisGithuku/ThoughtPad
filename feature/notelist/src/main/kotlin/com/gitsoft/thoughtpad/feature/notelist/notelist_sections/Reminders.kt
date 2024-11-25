@@ -53,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -80,7 +81,6 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
-import dev.chrisbanes.haze.HazeState
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
@@ -96,9 +96,9 @@ fun LazyStaggeredGridScope.reminders(
     reminderDisplayStyle: ReminderDisplayStyle,
     isDarkTheme: Boolean,
     selectedNote: Note? = null,
-    hazeState: HazeState,
     unlockedNotes: List<Long>,
     unlockNote: (Note) -> Unit,
+    graphicsLayer: GraphicsLayer,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     onOpenDetails: (Long?) -> Unit,
@@ -118,11 +118,12 @@ fun LazyStaggeredGridScope.reminders(
         when (reminderDisplayStyle) {
             ReminderDisplayStyle.LIST -> {
                 this.items(items = reminders, key = { it.note.noteId }) { noteData ->
-                    val isUnlocked by remember(unlockedNotes) {
-                        derivedStateOf {
-                            noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                    val isUnlocked by
+                        remember(unlockedNotes) {
+                            derivedStateOf {
+                                noteData.note.password == null || unlockedNotes.any { it == noteData.note.noteId }
+                            }
                         }
-                    }
                     NoteItemCard(
                         modifier = Modifier.then(animateNoteItemCard()).testTag(TestTags.NOTE_ITEM_CARD),
                         isDarkTheme = isDarkTheme,
@@ -137,8 +138,8 @@ fun LazyStaggeredGridScope.reminders(
                         },
                         sharedTransitionScope = sharedTransitionScope,
                         animatedContentScope = animatedContentScope,
-                        hazeState = hazeState,
                         isUnlocked = isUnlocked,
+                        graphicsLayer = graphicsLayer,
                         onLongClick = {
                             if (!isUnlocked) {
                                 unlockNote(noteData.note)

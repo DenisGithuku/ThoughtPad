@@ -14,21 +14,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.gitsoft.thoughtpad.core.database.migrations
+package com.gitsoft.thoughtpad.core.model
 
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import timber.log.Timber
-
-// spotless:off
-val Migration_2_3 = object : Migration(2, 3) {
-    override fun migrate(db: SupportSQLiteDatabase) {
-        try {
-            db.execSQL("ALTER TABLE notes ADD COLUMN password BLOB")
-        } catch (e: Exception) {
-            // Handle the exception, e.g., log it
-            Timber.tag("Migration").e("Error adding password column")
-        }
-    }
-}
-// spotless:on
+data class UserMessage(val id: Int = 0, val message: String? = null)

@@ -20,8 +20,8 @@ import com.gitsoft.thoughtpad.core.model.CheckListItem
 import com.gitsoft.thoughtpad.core.model.DataWithNotesCheckListItemsAndTags
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.Tag
-import kotlinx.coroutines.flow.Flow
 import java.io.InputStream
+import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {
     val allNotes: Flow<List<DataWithNotesCheckListItemsAndTags>>

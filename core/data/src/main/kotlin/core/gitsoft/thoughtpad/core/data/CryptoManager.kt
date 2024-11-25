@@ -1,10 +1,26 @@
-package core.gitsoft.thoughtpad.core.data;
+
+/*
+* Copyright 2024 Denis Githuku
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package core.gitsoft.thoughtpad.core.data
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import java.io.InputStream
 import java.io.OutputStream
-import java.security.KeyStore;
+import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -13,25 +29,25 @@ import javax.crypto.spec.IvParameterSpec
 internal class CryptoManager {
 
     // Get a reference to the keystore api
-    private val keystore = KeyStore.getInstance(KeystoreType).apply {
-        load(null)
-    }
+    private val keystore = KeyStore.getInstance(KeystoreType).apply { load(null) }
 
     // Generate key to encrypt and decrypt secret
     private fun createKey(): SecretKey {
-        return KeyGenerator.getInstance(ALGORITHM).apply {
-            init(
-                KeyGenParameterSpec.Builder(
-                    keystoreAlias,
-                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        return KeyGenerator.getInstance(ALGORITHM)
+            .apply {
+                init(
+                    KeyGenParameterSpec.Builder(
+                            keystoreAlias,
+                            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                        )
+                        .setBlockModes(BLOCK_MODE)
+                        .setEncryptionPaddings(PADDING)
+                        .setUserAuthenticationRequired(false)
+                        .setRandomizedEncryptionRequired(true)
+                        .build()
                 )
-                    .setBlockModes(BLOCK_MODE)
-                    .setEncryptionPaddings(PADDING)
-                    .setUserAuthenticationRequired(false)
-                    .setRandomizedEncryptionRequired(true)
-                    .build()
-            )
-        }.generateKey()
+            }
+            .generateKey()
     }
 
     // Fetch key and create new one if does not exist
@@ -42,12 +58,11 @@ internal class CryptoManager {
 
     // Create an encryption cipher with a fresh IV
     private fun getEncryptionCipher(): Cipher {
-        return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.ENCRYPT_MODE, getKey())
-        }
+        return Cipher.getInstance(TRANSFORMATION).apply { init(Cipher.ENCRYPT_MODE, getKey()) }
     }
 
-    // Create an initialization vector -> initial state of our decryption (randomized sequence of bytes)
+    // Create an initialization vector -> initial state of our decryption (randomized sequence of
+    // bytes)
     private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))

@@ -187,7 +187,7 @@ internal fun AddNoteScreen(
     onTogglePasswordSheet: (Boolean) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRemovePassword: () -> Unit,
-    onSecureNote: () -> Unit,
+    onSecureNote: () -> Unit
 ) {
     val navigateToNoteList by rememberUpdatedState(onNavigateBack)
 
@@ -365,8 +365,12 @@ internal fun AddNoteScreen(
             )
             TogaIconButton(
                 modifier = Modifier.testTag(TestTags.SECURE_BUTTON),
-                icon = if(state.encryptedPassword != null) R.drawable.ic_lock_filled else R.drawable.ic_unlock,
-                tint = if(state.encryptedPassword != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                icon =
+                    if (state.encryptedPassword != null) R.drawable.ic_lock_filled else R.drawable.ic_unlock,
+                tint =
+                    if (state.encryptedPassword != null) {
+                        MaterialTheme.colorScheme.primary
+                    } else MaterialTheme.colorScheme.onBackground,
                 onClick = {
                     if (state.encryptedPassword != null) {
                         onRemovePassword()
@@ -374,11 +378,12 @@ internal fun AddNoteScreen(
                         onTogglePasswordSheet(!state.isPasswordSheetVisible)
                     }
                 },
-                contentDescription = if (state.password.isNullOrEmpty()) {
-                    R.string.lock_note
-                } else {
-                    R.string.unlock_note
-                },
+                contentDescription =
+                    if (state.password.isNullOrEmpty()) {
+                        R.string.lock_note
+                    } else {
+                        R.string.unlock_note
+                    }
             )
             TogaTextButton(
                 modifier = Modifier.testTag(TestTags.SAVE_BUTTON),
@@ -484,30 +489,28 @@ internal fun AddNoteScreen(
         with(sharedTransitionScope) {
             LazyColumn(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(
-                        if (state.systemInDarkMode) {
-                            state.selectedNoteColor.darkColor.toComposeColor()
-                        } else state.selectedNoteColor.lightColor.toComposeColor()
-                    ),
+                    Modifier.fillMaxSize()
+                        .padding(innerPadding)
+                        .background(
+                            if (state.systemInDarkMode) {
+                                state.selectedNoteColor.darkColor.toComposeColor()
+                            } else state.selectedNoteColor.lightColor.toComposeColor()
+                        ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
                     TogaTextField(
                         modifier =
-                        Modifier
-                            .sharedElement(
-                                state =
-                                sharedTransitionScope.rememberSharedContentState(
-                                    key = "title-${state.note.noteId}"
-                                ),
-                                animatedVisibilityScope = animatedContentScope
-                            )
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .testTag(TestTags.NOTE_TITLE_INPUT),
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "title-${state.note.noteId}"
+                                        ),
+                                    animatedVisibilityScope = animatedContentScope
+                                )
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .testTag(TestTags.NOTE_TITLE_INPUT),
                         value = state.note.noteTitle ?: "",
                         onValueChange = onChangeTitle,
                         textStyle = MaterialTheme.typography.titleMedium,
@@ -518,17 +521,16 @@ internal fun AddNoteScreen(
                 item {
                     TogaTextField(
                         modifier =
-                        Modifier
-                            .sharedElement(
-                                state =
-                                sharedTransitionScope.rememberSharedContentState(
-                                    key = "text-${state.note.noteId}"
-                                ),
-                                animatedVisibilityScope = animatedContentScope
-                            )
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .testTag(TestTags.NOTE_TEXT_INPUT),
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "text-${state.note.noteId}"
+                                        ),
+                                    animatedVisibilityScope = animatedContentScope
+                                )
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .testTag(TestTags.NOTE_TEXT_INPUT),
                         value = state.note.noteText ?: "",
                         onValueChange = onChangeContent,
                         textStyle = MaterialTheme.typography.bodyMedium,

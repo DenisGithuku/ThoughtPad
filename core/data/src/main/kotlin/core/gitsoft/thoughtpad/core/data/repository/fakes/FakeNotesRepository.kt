@@ -23,9 +23,9 @@ import com.gitsoft.thoughtpad.core.model.NoteColor
 import com.gitsoft.thoughtpad.core.model.Tag
 import com.gitsoft.thoughtpad.core.model.TagColor
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
+import java.io.InputStream
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.io.InputStream
 
 class FakeNotesRepository : NotesRepository {
 

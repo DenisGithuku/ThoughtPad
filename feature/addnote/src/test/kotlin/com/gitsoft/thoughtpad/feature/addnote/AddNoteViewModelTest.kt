@@ -30,6 +30,7 @@ import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeNotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.fakes.FakeUserPrefsRepository
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -40,7 +41,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertNull
 
 @MediumTest
 class AddNoteViewModelTest {

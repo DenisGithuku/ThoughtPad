@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2024 Denis Githuku
 *
@@ -15,15 +16,16 @@
 */
 package com.gitsoft.thoughtpad.feature.notelist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gitsoft.thoughtpad.core.model.Note
 import com.gitsoft.thoughtpad.core.model.NoteListType
 import com.gitsoft.thoughtpad.core.model.SortOrder
 import com.gitsoft.thoughtpad.core.model.ThemeConfig
+import com.gitsoft.thoughtpad.core.model.UserMessage
 import core.gitsoft.thoughtpad.core.data.repository.NotesRepository
 import core.gitsoft.thoughtpad.core.data.repository.UserPrefsRepository
+import java.io.ByteArrayInputStream
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +33,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.ByteArrayInputStream
 
 class NoteListViewModel(
     private val notesRepository: NotesRepository,
@@ -67,14 +68,22 @@ class NoteListViewModel(
             } else {
                 val note = notesRepository.getNoteById(deleteState.noteId)
                 notesRepository.updateNote(
-                    note.copy(
-                        isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis()
-                    )
+                    note.copy(isDeleted = deleteState.isDeleted, updatedAt = System.currentTimeMillis())
                 )
                 // Update deleted state in case reversal happens
                 _state.update { it.copy(deleteState = deleteState) }
             }
         }
+    }
+
+    private fun onShowUserMessage(userMessage: UserMessage) {
+        val userMessages = _state.value.userMessages.toMutableList()
+        userMessages.add(userMessage)
+        _state.update { it.copy(userMessages = userMessages) }
+    }
+
+    fun onDismissMessage(messageId: Int) {
+        _state.update { it.copy(userMessages = it.userMessages.filterNot { it.id == messageId }) }
     }
 
     fun onToggleArchive(archiveState: ArchiveState) {
@@ -102,11 +111,7 @@ class NoteListViewModel(
     }
 
     fun onToggleNotePasswordDialog(isVisible: Boolean) {
-        _state.update {
-            it.copy(
-                unlockDialogIsVisible = isVisible,
-            )
-        }
+        _state.update { it.copy(unlockDialogIsVisible = isVisible) }
         if (!isVisible) {
             onUnlockNotePasswordChange(null)
         }
@@ -124,16 +129,21 @@ class NoteListViewModel(
                 val decryptedBytePassword = notesRepository.decryptPassword(passwordArray)
                 decryptedBytePassword?.let {
                     if (decryptedBytePassword.decodeToString() == password) {
-                        val unlockedNotes = _state.value.unlockedNotes.toMutableList().apply {
-                            _state.value.noteToUnlock?.noteId?.let { it1 -> add(it1) }
-                        }
+                        val unlockedNotes =
+                            _state.value.unlockedNotes.toMutableList().apply {
+                                _state.value.noteToUnlock?.noteId?.let { it1 -> add(it1) }
+                            }
                         _state.update {
                             it.copy(
                                 unlockedNotes = unlockedNotes,
                                 noteToUnlock = null,
-                                unlockNotePassword = null
+                                unlockNotePassword = null,
+                                unlockDialogIsVisible = false
                             )
                         }
+                        onShowUserMessage(UserMessage(message = "Note unlocked successfully!"))
+                    } else {
+                        onShowUserMessage(UserMessage(message = "Invalid password. Try again!"))
                     }
                 }
             }
@@ -142,20 +152,26 @@ class NoteListViewModel(
 
     private val _state: MutableStateFlow<NoteListUiState> = MutableStateFlow(NoteListUiState())
 
-    val state: StateFlow<NoteListUiState> = combine(
-        _state, notesRepository.allNotes, userPrefsRepository.userPrefs
-    ) { state, notes, prefs ->
-        state.copy(notes = when (prefs.sortOrder) {
-            SortOrder.TITLE -> notes.sortedBy { it.note.noteTitle }
-            SortOrder.DATE -> notes.sortedByDescending { it.note.createdAt }
-        },
-            isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
-            isLoading = false,
-            reminderDisplayStyle = prefs.reminderDisplayStyle,
-            selectedNoteListType = prefs.noteListType)
-    }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListUiState(isLoading = true)
-    )
+    val state: StateFlow<NoteListUiState> =
+        combine(_state, notesRepository.allNotes, userPrefsRepository.userPrefs) { state, notes, prefs
+                ->
+                state.copy(
+                    notes =
+                        when (prefs.sortOrder) {
+                            SortOrder.TITLE -> notes.sortedBy { it.note.noteTitle }
+                            SortOrder.DATE -> notes.sortedByDescending { it.note.createdAt }
+                        },
+                    isDarkTheme = prefs.themeConfig == ThemeConfig.DARK,
+                    isLoading = false,
+                    reminderDisplayStyle = prefs.reminderDisplayStyle,
+                    selectedNoteListType = prefs.noteListType
+                )
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                NoteListUiState(isLoading = true)
+            )
 
     override fun onCleared() {
         super.onCleared()
