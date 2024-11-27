@@ -99,6 +99,7 @@ import com.gitsoft.thoughtpad.feature.notelist.notelist_sections.all
 import com.gitsoft.thoughtpad.feature.notelist.notelist_sections.archived
 import com.gitsoft.thoughtpad.feature.notelist.notelist_sections.reminders
 import com.gitsoft.thoughtpad.feature.notelist.notelist_sections.trash
+import com.gitsoft.thoughtpad.feature.notelist.utils.shareAsPdf
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -358,7 +359,18 @@ internal fun NoteListScreen(
                                     onToggleFilterDialog(false)
                                 },
                                 onTogglePin = onToggleNotePin,
-                                onShare = {},
+                                onShare = { noteId ->
+                                    context.shareAsPdf(
+                                        noteTitle = state.selectedNote.noteTitle,
+                                        noteText = state.selectedNote.noteText,
+                                        checklist =
+                                            state.notes
+                                                .find { it.note.noteId == noteId }
+                                                ?.checkListItems
+                                                ?.mapNotNull { it.text?.let { text -> Pair(it.isChecked, text) } }
+                                                ?: emptyList()
+                                    )
+                                },
                                 onToggleArchive = { id, isArchived ->
                                     onToggleArchiveNote(ArchiveState(isArchived = isArchived, noteId = id))
                                     onToggleSelectedNote(null)

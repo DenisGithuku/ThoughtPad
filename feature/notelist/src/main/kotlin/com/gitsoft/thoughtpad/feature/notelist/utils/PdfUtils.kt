@@ -93,7 +93,7 @@ fun Context.shareAsPdf(
 
     /** Share the file */
     val pdfUri =
-        FileProvider.getUriForFile(this, "${applicationContext.packageName}.fileprovider", tempFile)
+        FileProvider.getUriForFile(this, "${applicationContext.packageName}.fileProvider", tempFile)
 
     /** Create share intent */
     val shareIntent =
