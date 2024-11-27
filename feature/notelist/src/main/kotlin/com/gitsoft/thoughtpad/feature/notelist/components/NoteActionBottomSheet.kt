@@ -92,8 +92,7 @@ fun NoteActionBottomSheet(
         NoteAction(
             title = stringResource(R.string.share),
             onClick = { onShare(noteId) },
-            icon = R.drawable.ic_share,
-            textTag = R.string.beta
+            icon = R.drawable.ic_share
         )
     }
 }
