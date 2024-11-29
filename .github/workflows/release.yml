@@ -33,6 +33,9 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_BASE_64 }}" | base64 --decode > app/keystore.jks
         # Decode the base64 encoded keystore file and save it to app/keystore.jks
         
+      - name: Verify Keystore File
+        run: ls -l keystore.jks
+        
       - name: Create missing schema directory
         run: mkdir -p core/model/schemas
 
@@ -47,13 +50,13 @@ jobs:
         # Build the Android App Bundle (AAB) for release, using the specified signing configurations
 
       - name: Decode Service Account JSON
-        run: echo "${{ secrets.SERVICE_ACCOUNT_JSON }}" | base64 --decode > service-account-key.json
+        run: echo "${{ secrets.APP_SERVICE_ACCOUNT_JSON }}" | base64 --decode > service-account-key.json
         # Decode the base64 encoded service account JSON file for Google Play API access
 
       - name: Upload AAB to Google Play Store
         uses: r0adkll/upload-google-play@v1.0.0  # Use action to upload AAB to Google Play Store
         with:
-            service_account_json: ${{ secrets.SERVICE_ACCOUNT_JSON }}  # Provide service account JSON for authentication
+            service_account_json: ${{ secrets.APP_SERVICE_ACCOUNT_JSON }}  # Provide service account JSON for authentication
             package_name: "com.gitsoft.thoughtpad"  # Specify the package name of your application
             aab_file_path: "./app/release/app-release.aab"  # Path to the generated AAB file
             track: "production"  # Specify the release track (internal, alpha, beta, production)
