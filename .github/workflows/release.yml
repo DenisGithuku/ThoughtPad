@@ -66,6 +66,5 @@ jobs:
             packageName: com.gitsoft.thoughtpad  # Specify the package name of your application
             releaseFiles: app/release/app-release.aab  # Path to the generated AAB file
             track: production  # Specify the release track (internal, alpha, beta, production)
-            status: inProgress
             
             mappingFile: app/build/outputs/mapping/release/mapping.txt
