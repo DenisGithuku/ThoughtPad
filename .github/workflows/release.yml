@@ -55,11 +55,14 @@ jobs:
       - name: Decode Service Account JSON
         run: echo "${{ secrets.APP_SERVICE_ACCOUNT_JSON }}" | base64 --decode > service-account-key.json
         # Decode the base64 encoded service account JSON file for Google Play API access
+        
+      - name: Verify Service Account File
+        run: ls -l service-account-key.json
 
       - name: Upload AAB to Google Play Store
         uses: r0adkll/upload-google-play@v1.0.0  # Use action to upload AAB to Google Play Store
         with:
-            service_account_json: ${{ secrets.APP_SERVICE_ACCOUNT_JSON }}  # Provide service account JSON for authentication
+            service_account_json: $(pwd)/service-account-key.json  # Provide service account JSON for authentication
             package_name: "com.gitsoft.thoughtpad"  # Specify the package name of your application
             aab_file_path: "./app/release/app-release.aab"  # Path to the generated AAB file
             track: "production"  # Specify the release track (internal, alpha, beta, production)
