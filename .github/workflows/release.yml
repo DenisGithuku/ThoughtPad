@@ -30,7 +30,7 @@ jobs:
         run: ./increment_version.sh  # Call the script to update versionCode and versionName
 
       - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+        run: echo "${{ secrets.KEYSTORE_BASE_64 }}" | base64 --decode > app/keystore.jks
         # Decode the base64 encoded keystore file and save it to app/keystore.jks
         
       - name: Create missing schema directory
@@ -39,7 +39,7 @@ jobs:
       - name: Build release AAB with signing
         run: |
             ./gradlew bundleRelease \
-            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.file=app/keystore.jks \
             -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }} \
             -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEYSTORE_ALIAS }} \
             -Pandroid.injected.signing.key.password=${{ secrets.RELEASE_KEY_PASSWORD }}
