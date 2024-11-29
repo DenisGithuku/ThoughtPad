@@ -60,10 +60,12 @@ jobs:
         run: ls -l service-account-key.json
 
       - name: Upload AAB to Google Play Store
-        uses: r0adkll/upload-google-play@v1.0.0  # Use action to upload AAB to Google Play Store
+        uses: r0adkll/upload-google-play@v1  # Use action to upload AAB to Google Play Store
         with:
-            service_account_json: $(pwd)/service-account-key.json  # Provide service account JSON for authentication
-            package_name: "com.gitsoft.thoughtpad"  # Specify the package name of your application
-            aab_file_path: "./app/release/app-release.aab"  # Path to the generated AAB file
-            track: "production"  # Specify the release track (internal, alpha, beta, production)
-            release_status: "draft"  # Set release status to draft or completed based on your needs
+            serviceAccountJsonPlainText: $(pwd)/service-account-key.json  # Provide service account JSON for authentication
+            packageName: com.gitsoft.thoughtpad  # Specify the package name of your application
+            releaseFiles: app/release/app-release.aab  # Path to the generated AAB file
+            track: production  # Specify the release track (internal, alpha, beta, production)
+            status: inProgress
+            
+            mappingFile: app/build/outputs/mapping/release/mapping.txt
