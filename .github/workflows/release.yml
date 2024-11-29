@@ -32,6 +32,9 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
         # Decode the base64 encoded keystore file and save it to app/keystore.jks
+        
+      - name: Create missing schema directory
+        run: mkdir -p core/model/schemas
 
       - name: Build release AAB with signing
         run: |
