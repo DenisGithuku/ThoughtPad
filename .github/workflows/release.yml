@@ -62,7 +62,7 @@ jobs:
       - name: Upload AAB to Google Play Store
         uses: r0adkll/upload-google-play@v1  # Use action to upload AAB to Google Play Store
         with:
-            serviceAccountJsonPlainText: $(pwd)/service-account-key.json  # Provide service account JSON for authentication
+            serviceAccountJson: service-account-key.json  # Provide service account JSON for authentication
             packageName: com.gitsoft.thoughtpad  # Specify the package name of your application
             releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Path to the generated AAB file
             track: draft  # Specify the release track (internal, alpha, beta, production)
