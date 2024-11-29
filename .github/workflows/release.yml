@@ -64,7 +64,7 @@ jobs:
         with:
             serviceAccountJsonPlainText: $(pwd)/service-account-key.json  # Provide service account JSON for authentication
             packageName: com.gitsoft.thoughtpad  # Specify the package name of your application
-            releaseFiles: $(pwd)/app/release/app-release.aab  # Path to the generated AAB file
+            releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Path to the generated AAB file
             track: draft  # Specify the release track (internal, alpha, beta, production)
             
-            mappingFile: $(pwd)/app/build/outputs/mapping/release/mapping.txt
+            mappingFile: app/build/outputs/mapping/release/mapping.txt
