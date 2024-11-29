@@ -14,7 +14,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4  # Set up Java Development Kit (JDK) version 11
         with:
-          java-version: '17'  # Specify the JDK version to use
+          distribution: 'temurin'
+          java-version: 17  # Specify the JDK version to use
           
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2.0.10
