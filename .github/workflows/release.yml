@@ -34,10 +34,13 @@ jobs:
         # Decode the base64 encoded keystore file and save it to app/keystore.jks
 
       - name: Build release AAB with signing
-        run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=app/keystore.jks \
-              -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }} \
-              -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEYSTORE_ALIAS }} \
-              -Pandroid.injected.signing.key.password=${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+            ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=app/keystore.jks \
+            -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEYSTORE_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.RELEASE_KEY_PASSWORD }}
+
         # Build the Android App Bundle (AAB) for release, using the specified signing configurations
 
       - name: Decode Service Account JSON
@@ -51,4 +54,4 @@ jobs:
             package_name: "com.gitsoft.thoughtpad"  # Specify the package name of your application
             aab_file_path: "./app/release/app-release.aab"  # Path to the generated AAB file
             track: "production"  # Specify the release track (internal, alpha, beta, production)
-            release_status: "completed"  # Set release status to draft or completed based on your needs
+            release_status: "draft"  # Set release status to draft or completed based on your needs
