@@ -34,7 +34,7 @@ jobs:
         # Decode the base64 encoded keystore file and save it to app/keystore.jks
         
       - name: Verify Keystore File
-        run: ls -l keystore.jks
+        run: ls -l app/keystore.jks
         
       - name: Create missing schema directory
         run: mkdir -p core/model/schemas
